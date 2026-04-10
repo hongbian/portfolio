@@ -3,608 +3,1031 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dev Compendium — Portfolio</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<title>Dev Compendium</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Syne:wght@700;800&family=Special+Elite&family=Playfair+Display:ital,wght@0,700;1,400&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
 <style>
+/* ═══════════════════════════════════════
+   GLOBAL RESET & PAGE SYSTEM
+═══════════════════════════════════════ */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+.page { display: none; min-height: 100vh; }
+.page.active { display: block; }
+
+/* ═══════════════════════════════════════
+   PORTFOLIO PAGE
+═══════════════════════════════════════ */
 :root {
-  --cream: #fdf6e8;
-  --cream2: #f5ecce;
-  --cream3: #edddb0;
-  --ink: #2b1f10;
-  --ink2: #5c4730;
-  --ink3: #8a6f52;
-  --sage: #7aab8a;
-  --sage-dark: #4a7a5a;
-  --sage-pale: #d4ead9;
-  --rose: #e07a72;
-  --rose-pale: #fae5e3;
-  --sky: #7aafc4;
-  --sky-pale: #daf0f7;
-  --amber: #e8a020;
-  --amber-pale: #fef3d0;
-  --lilac: #a07ec4;
-  --lilac-pale: #ede4f8;
-  --spine: #6b5540;
-  --spine-dark: #4a3828;
+  --cream: #f5ecca; --cream2: #ede0b0; --cream3: #d9c990;
+  --ink: #1a1008; --ink2: #4a3820; --ink3: #7a6040;
+  --sage: #6b9e7a; --sage-dark: #3d6b4f; --sage-pale: #c8e0ce;
+  --rose: #d96860; --rose-pale: #f5d8d6;
+  --sky: #5c9ab5; --sky-pale: #cce8f4;
+  --amber: #d4900a; --amber-pale: #faecc8;
+  --lilac: #8e6db8; --lilac-pale: #e4d8f5;
 }
 
-body {
-  min-height: 100vh;
-  background: #d6c4a0;
+#portfolio-page {
+  background: #1e1508;
   background-image:
-    radial-gradient(circle at 20% 20%, rgba(180,150,100,0.3) 0%, transparent 60%),
-    radial-gradient(circle at 80% 80%, rgba(140,110,70,0.25) 0%, transparent 50%);
-  padding: 2.5rem 1rem 5rem;
+    radial-gradient(ellipse at 30% 20%, rgba(80,50,20,0.8) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 80%, rgba(60,35,10,0.6) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 10%, rgba(160,100,30,0.25) 0%, transparent 45%);
+  padding: 3rem 1.5rem 6rem;
   font-family: 'Nunito', sans-serif;
   color: var(--ink);
+  position: relative;
+  overflow-x: hidden;
 }
+#portfolio-page::before {
+  content: ''; position: fixed; inset: 0;
+  background-image:
+    repeating-linear-gradient(88deg, transparent 0px, transparent 40px, rgba(0,0,0,0.03) 40px, rgba(0,0,0,0.03) 41px),
+    repeating-linear-gradient(92deg, transparent 0px, transparent 80px, rgba(255,255,255,0.015) 80px, rgba(255,255,255,0.015) 81px);
+  pointer-events: none; z-index: 0;
+}
+#portfolio-page::after {
+  content: ''; position: fixed; top: -300px; left: 50%; transform: translateX(-50%);
+  width: 1000px; height: 800px;
+  background: radial-gradient(ellipse, rgba(255,200,100,0.1) 0%, transparent 60%);
+  pointer-events: none; z-index: 0;
+}
+.scene { position: relative; z-index: 1; max-width: 920px; margin: 0 auto; }
 
 .binder {
-  max-width: 900px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 44px 1fr;
-  border-radius: 8px 16px 16px 8px;
-  box-shadow: -4px 0 0 var(--spine-dark), 0 12px 40px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.2);
-  position: relative;
+  position: relative; background: var(--cream);
+  border-radius: 4px 18px 18px 4px;
+  transform: perspective(1400px) rotateX(4deg) rotateY(-1.5deg);
+  transform-origin: center top;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.75), 0 20px 40px rgba(0,0,0,0.5),
+    -8px 0 0 #3a2810, -14px 6px 12px rgba(0,0,0,0.45),
+    inset 0 1px 0 rgba(255,255,255,0.5);
+  animation: bookSettle 0.9s cubic-bezier(0.34,1.4,0.64,1) both;
 }
-
+@keyframes bookSettle {
+  from { transform: perspective(1400px) rotateX(12deg) rotateY(-4deg) translateY(-30px); opacity: 0; }
+  to { transform: perspective(1400px) rotateX(4deg) rotateY(-1.5deg); opacity: 1; }
+}
 .spine {
-  background: linear-gradient(to right, var(--spine-dark), var(--spine));
-  border-radius: 8px 0 0 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 22px;
-  padding: 16px 0;
+  position: absolute; left: 0; top: 0; bottom: 0; width: 46px;
+  background: linear-gradient(to right, #2e1e0e, #5a3d22, #4a3018);
+  border-radius: 4px 0 0 4px;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 24px; padding: 20px 0;
+  box-shadow: inset -4px 0 8px rgba(0,0,0,0.4);
 }
-
 .ring {
-  width: 20px; height: 20px;
-  border-radius: 50%;
-  border: 3px solid #a09080;
-  background: radial-gradient(circle at 35% 35%, #c8b8a0, #7a6850);
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5), 0 1px 2px rgba(255,255,255,0.1);
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 3px solid #887060;
+  background: radial-gradient(circle at 30% 30%, #c8b090, #6a5030);
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.3);
 }
-
-.tabs {
-  position: absolute;
-  right: -28px;
-  top: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  z-index: 10;
-}
-
+.tabs { position: absolute; right: -30px; top: 50px; display: flex; flex-direction: column; gap: 5px; z-index: 10; }
 .tab {
-  width: 28px;
-  padding: 12px 5px;
-  border-radius: 0 8px 8px 0;
-  font-family: 'Nunito', sans-serif;
-  font-size: 10px;
-  font-weight: 800;
-  writing-mode: vertical-rl;
-  text-align: center;
-  cursor: pointer;
-  color: white;
-  transition: transform 0.2s, filter 0.2s;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+  width: 30px; padding: 13px 5px; border-radius: 0 10px 10px 0;
+  font-size: 10px; font-weight: 800; writing-mode: vertical-rl;
+  text-align: center; cursor: pointer; color: white;
+  transition: transform 0.2s; letter-spacing: 1.5px; text-transform: uppercase;
+  box-shadow: 3px 3px 10px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.2);
 }
-.tab:hover { transform: translateX(5px); filter: brightness(1.12); }
-.tab.t1 { background: var(--sage-dark); }
-.tab.t2 { background: var(--rose); }
-.tab.t3 { background: var(--sky); }
-.tab.t4 { background: var(--lilac); }
+.tab:hover { transform: translateX(6px); }
+.tab.t1 { background: linear-gradient(135deg,#4a8a60,#2d5c3c); }
+.tab.t2 { background: linear-gradient(135deg,#c85850,#8a3028); }
+.tab.t3 { background: linear-gradient(135deg,#4a88aa,#2a5878); }
+.tab.t4 { background: linear-gradient(135deg,#8050a8,#503080); }
 
-.pages {
-  background: var(--cream);
-  border-radius: 0 16px 16px 0;
-  overflow: hidden;
-  position: relative;
-}
-
-.pages-inner {
-  padding: 2.8rem 2.8rem 3.5rem 2.8rem;
-  position: relative;
-}
-
-/* Subtle dot grid — no lines, no margin bar */
+.pages { margin-left: 46px; background: var(--cream); border-radius: 0 18px 18px 0; overflow: hidden; position: relative; }
+.pages-inner { padding: 2.8rem 3rem 3.5rem 2.8rem; position: relative; }
 .pages-inner::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle, rgba(140,110,70,0.13) 1px, transparent 1px);
-  background-size: 22px 22px;
-  pointer-events: none;
-  z-index: 0;
+  content: ''; position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(120,90,40,0.1) 1px, transparent 1px);
+  background-size: 22px 22px; pointer-events: none; z-index: 0;
 }
-
+.pages-inner::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 20% 10%, rgba(255,220,100,0.07) 0%, transparent 60%);
+  pointer-events: none; z-index: 0;
+}
 .pages-inner > * { position: relative; z-index: 1; }
 
-/* HEADER */
 .header {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 1.5rem;
-  align-items: center;
-  margin-bottom: 2.2rem;
-  padding-bottom: 1.8rem;
+  display: grid; grid-template-columns: auto 1fr auto;
+  gap: 1.5rem; align-items: center;
+  margin-bottom: 2.2rem; padding-bottom: 1.8rem;
   border-bottom: 2px dashed var(--cream3);
 }
-
 .avatar-frame {
-  width: 96px; height: 96px;
-  background: var(--cream2);
-  border: 3px solid var(--cream3);
-  border-radius: 14px;
+  width: 96px; height: 96px; background: var(--cream2);
+  border: 3px solid var(--cream3); border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 48px;
-  flex-shrink: 0;
-  transform: rotate(-2deg);
-  box-shadow: 3px 3px 0 var(--cream3);
-  position: relative;
+  font-size: 46px; flex-shrink: 0; transform: rotate(-3deg);
+  box-shadow: 4px 6px 0 var(--cream3), 4px 6px 18px rgba(0,0,0,0.15); position: relative;
 }
 .avatar-frame::after {
-  content: 'your photo!';
-  position: absolute;
-  bottom: -19px; left: 50%;
-  transform: translateX(-50%);
-  font-size: 10px;
-  color: var(--ink3);
-  white-space: nowrap;
+  content: 'your photo!'; position: absolute; bottom: -20px; left: 50%;
+  transform: translateX(-50%); font-size: 10px; color: var(--ink3); white-space: nowrap;
 }
-
 .header-center h1 {
-  font-family: 'Syne', sans-serif;
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: var(--ink);
-  line-height: 1;
-  letter-spacing: -1px;
+  font-family: 'Syne', sans-serif; font-size: 2.6rem; font-weight: 800;
+  color: var(--ink); line-height: 1; letter-spacing: -1px;
 }
 .header-center h1 span { color: var(--sage-dark); }
-
-.tagline {
-  font-size: 1rem;
-  color: var(--ink2);
-  margin-top: 8px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.tagline-dot {
-  width: 6px; height: 6px;
-  background: var(--rose);
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
+.tagline { font-size: 1rem; color: var(--ink2); margin-top: 8px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.tagline-dot { width: 6px; height: 6px; background: var(--rose); border-radius: 50%; }
 .stamp {
-  width: 74px; height: 74px;
-  border: 2.5px solid var(--rose);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  text-align: center;
-  color: var(--rose);
-  font-size: 9.5px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  opacity: 0.78;
-  transform: rotate(10deg);
-  line-height: 1.4;
-  padding: 8px;
+  width: 74px; height: 74px; border: 2.5px solid var(--rose); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  color: var(--rose); font-family: 'Special Elite', monospace;
+  font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+  opacity: 0.75; transform: rotate(10deg); line-height: 1.4; padding: 8px;
 }
-
-/* SECTION HEADS */
-.sec-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 1rem;
-}
-.sec-icon {
-  width: 28px; height: 28px;
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px;
-  flex-shrink: 0;
-}
+.sec-head { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
+.sec-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
 .sec-icon.sage { background: var(--sage-pale); }
 .sec-icon.rose { background: var(--rose-pale); }
 .sec-icon.amber { background: var(--amber-pale); }
 .sec-icon.sky { background: var(--sky-pale); }
-
-.sec-head h2 {
-  font-family: 'Syne', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 800;
-  color: var(--ink);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
+.sec-head h2 { font-family: 'Syne', sans-serif; font-size: 0.92rem; font-weight: 800; color: var(--ink); letter-spacing: 1.5px; text-transform: uppercase; }
 .sec-line { flex: 1; height: 1.5px; background: var(--cream3); border-radius: 2px; }
-
-/* ABOUT */
 .about-card {
-  background: var(--cream2);
-  border: 1.5px solid var(--cream3);
-  border-radius: 14px;
-  padding: 1.1rem 1.3rem;
-  margin-bottom: 1.8rem;
-  font-size: 1.05rem;
-  line-height: 1.7;
-  color: var(--ink2);
-  font-weight: 600;
-  position: relative;
+  background: var(--cream2); border: 1.5px solid var(--cream3); border-radius: 12px;
+  padding: 1.1rem 1.3rem; margin-bottom: 1.8rem;
+  font-size: 1.05rem; line-height: 1.7; color: var(--ink2); font-weight: 600; position: relative;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.6);
 }
-.tape {
-  position: absolute;
-  height: 16px;
-  background: rgba(255,215,100,0.5);
-  border-radius: 2px;
-  top: -8px;
-}
+.tape { position: absolute; height: 18px; border-radius: 2px; top: -9px; background: rgba(255,210,80,0.55); box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
 .tape1 { width: 55px; left: 24px; transform: rotate(-1.5deg); }
-.tape2 { width: 40px; right: 44px; transform: rotate(2deg); }
-
-.hl {
-  display: inline-block;
-  background: var(--sage-pale);
-  color: var(--sage-dark);
-  border-radius: 6px;
-  padding: 1px 7px;
-  font-weight: 700;
-}
-
-/* SKILLS */
-.skills-wrap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 1.8rem;
-}
+.tape2 { width: 42px; right: 44px; transform: rotate(2deg); }
+.hl { display: inline-block; background: var(--sage-pale); color: var(--sage-dark); border-radius: 6px; padding: 1px 7px; font-weight: 700; }
+.skills-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.8rem; }
 .skill {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 13px 5px 10px;
-  border-radius: 30px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  border: 1.5px solid;
-  transition: transform 0.15s;
-  cursor: default;
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 13px 5px 10px; border-radius: 30px;
+  font-size: 0.85rem; font-weight: 700; border: 1.5px solid;
+  transition: transform 0.15s, box-shadow 0.15s; cursor: default;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
-.skill:hover { transform: translateY(-2px); }
+.skill:hover { transform: translateY(-3px); box-shadow: 0 6px 14px rgba(0,0,0,0.12); }
 .skill .dot { width: 7px; height: 7px; border-radius: 50%; }
 .skill.sage { border-color: var(--sage); color: var(--sage-dark); background: var(--sage-pale); }
 .skill.sage .dot { background: var(--sage-dark); }
-.skill.rose { border-color: var(--rose); color: #b04840; background: var(--rose-pale); }
+.skill.rose { border-color: var(--rose); color: #a03830; background: var(--rose-pale); }
 .skill.rose .dot { background: var(--rose); }
-.skill.sky { border-color: var(--sky); color: #3a7a99; background: var(--sky-pale); }
+.skill.sky { border-color: var(--sky); color: #2a6888; background: var(--sky-pale); }
 .skill.sky .dot { background: var(--sky); }
-.skill.amber { border-color: var(--amber); color: #9a6010; background: var(--amber-pale); }
+.skill.amber { border-color: var(--amber); color: #885800; background: var(--amber-pale); }
 .skill.amber .dot { background: var(--amber); }
-.skill.lilac { border-color: var(--lilac); color: #6a4898; background: var(--lilac-pale); }
+.skill.lilac { border-color: var(--lilac); color: #5a3888; background: var(--lilac-pale); }
 .skill.lilac .dot { background: var(--lilac); }
 
-/* PROJECTS */
-.proj-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.1rem;
-  margin-bottom: 2rem;
-}
-@media (max-width: 580px) { .proj-grid { grid-template-columns: 1fr; } }
-
+.proj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 2rem; }
+@media (max-width: 600px) { .proj-grid { grid-template-columns: 1fr; } }
 .pcard {
-  background: white;
-  border: 1.5px solid var(--cream3);
-  border-radius: 16px;
-  padding: 1.2rem;
-  position: relative;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  animation: popIn 0.4s ease backwards;
-  overflow: hidden;
+  background: white; border: 1.5px solid #e0d0b0; border-radius: 14px;
+  padding: 1.2rem; position: relative;
+  transition: transform 0.25s cubic-bezier(0.34,1.4,0.64,1), box-shadow 0.25s ease;
+  animation: cardAppear 0.5s ease backwards; overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8);
 }
-.pcard::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 4px;
-  border-radius: 16px 16px 0 0;
-}
-.pcard.c-sage::before { background: var(--sage); }
-.pcard.c-rose::before { background: var(--rose); }
-.pcard.c-sky::before { background: var(--sky); }
-.pcard.c-amber::before { background: var(--amber); }
-.pcard.c-lilac::before { background: var(--lilac); }
-
-.pcard:nth-child(2) { transform: rotate(0.4deg); }
-.pcard:nth-child(3) { transform: rotate(-0.5deg); }
-.pcard:nth-child(4) { transform: rotate(0.3deg); }
-.pcard:nth-child(5) { transform: rotate(-0.4deg); }
-
+.pcard[data-project] { cursor: pointer; }
+.pcard[data-project]:hover .p-title::after { content: ' →'; color: var(--sage-dark); }
+.pcard::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; border-radius: 14px 14px 0 0; }
+.pcard.c-sage::before { background: linear-gradient(90deg, var(--sage-dark), var(--sage)); }
+.pcard.c-rose::before { background: linear-gradient(90deg, #a83830, var(--rose)); }
+.pcard.c-sky::before { background: linear-gradient(90deg, #2a5878, var(--sky)); }
+.pcard.c-amber::before { background: linear-gradient(90deg, #885800, var(--amber)); }
+.pcard.c-lilac::before { background: linear-gradient(90deg, #5a3888, var(--lilac)); }
+.pcard:nth-child(2) { transform: rotate(0.5deg); }
+.pcard:nth-child(3) { transform: rotate(-0.6deg); }
+.pcard:nth-child(4) { transform: rotate(0.4deg); }
+.pcard:nth-child(5) { transform: rotate(-0.5deg); }
 .pcard:hover {
-  transform: rotate(0deg) translateY(-4px) !important;
-  box-shadow: 0 10px 28px rgba(0,0,0,0.11), 0 4px 8px rgba(0,0,0,0.07);
-  z-index: 3;
+  transform: perspective(800px) rotateX(-2deg) rotateY(1deg) translateY(-6px) rotate(0deg) !important;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.18), 0 8px 16px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.9);
+  z-index: 5;
 }
-
 .pcard.featured {
-  grid-column: 1 / -1;
-  transform: none !important;
-  display: grid;
-  grid-template-columns: 92px 1fr;
-  gap: 1.2rem;
-  align-items: start;
-  padding-top: 1.5rem;
+  grid-column: 1 / -1; transform: none !important;
+  display: grid; grid-template-columns: 95px 1fr;
+  gap: 1.2rem; align-items: start; padding-top: 1.6rem;
+  background: linear-gradient(135deg, white 60%, #f0f8f2 100%);
 }
-.pcard.featured:hover { transform: translateY(-4px) !important; }
-
+.pcard.featured:hover { transform: perspective(800px) rotateX(-1.5deg) translateY(-6px) !important; }
 .feat-img {
-  width: 92px; height: 92px;
-  background: var(--sage-pale);
-  border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2.6rem;
-  border: 2px dashed var(--sage);
-  flex-shrink: 0;
+  width: 95px; height: 95px; background: var(--sage-pale);
+  border-radius: 12px; display: flex; align-items: center; justify-content: center;
+  font-size: 2.8rem; border: 2px dashed var(--sage); flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 .feat-ribbon {
-  position: absolute;
-  top: 0; left: 20px;
-  background: var(--sage-dark);
-  color: white;
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  padding: 4px 12px;
-  border-radius: 0 0 8px 8px;
+  position: absolute; top: 0; left: 20px;
+  background: linear-gradient(135deg, var(--sage-dark), #2a5040);
+  color: white; font-size: 9px; font-weight: 800;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 0 0 10px 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
 }
-
 .p-emoji { font-size: 1.8rem; margin-bottom: 8px; display: block; line-height: 1; }
 .p-title { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--ink); margin-bottom: 5px; }
 .p-desc { font-size: 0.88rem; color: var(--ink2); line-height: 1.6; font-weight: 600; margin-bottom: 10px; }
-
 .p-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
-.p-tag { font-size: 0.72rem; font-weight: 700; padding: 2px 9px; background: var(--cream); border: 1px solid var(--cream3); border-radius: 20px; color: var(--ink2); }
-
+.p-tag { font-size: 0.72rem; font-weight: 700; padding: 2px 9px; background: #faf5e8; border: 1px solid #e0d0a0; border-radius: 20px; color: var(--ink2); }
 .p-links { display: flex; gap: 7px; flex-wrap: wrap; }
 .p-link {
-  font-size: 0.76rem; font-weight: 800;
-  text-decoration: none; padding: 5px 13px;
-  border-radius: 20px;
-  transition: filter 0.15s, transform 0.15s;
+  font-size: 0.76rem; font-weight: 800; text-decoration: none;
+  padding: 5px 13px; border-radius: 20px;
+  transition: filter 0.15s, transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
-.p-link:hover { filter: brightness(1.1); transform: scale(1.04); }
-.p-link.gh { background: var(--ink); color: var(--cream); }
-.p-link.demo { background: var(--sky); color: white; }
-.p-link.itch { background: var(--rose); color: white; }
-.p-link.blog { background: var(--sage-dark); color: white; }
-
+.p-link:hover { filter: brightness(1.1); transform: translateY(-2px); }
+.p-link.gh { background: linear-gradient(135deg,#2a1f10,#4a3520); color: #f5e8c8; }
+.p-link.demo { background: linear-gradient(135deg,#2a5878,var(--sky)); color: white; }
+.p-link.itch { background: linear-gradient(135deg,#a83830,var(--rose)); color: white; }
+.p-link.blog { background: linear-gradient(135deg,#2a5040,var(--sage-dark)); color: white; }
 .p-status {
-  position: absolute;
-  top: 12px; right: 12px;
-  font-size: 8.5px; font-weight: 800;
-  letter-spacing: 1.5px; text-transform: uppercase;
-  padding: 3px 9px; border-radius: 20px;
+  position: absolute; top: 13px; right: 12px;
+  font-size: 8.5px; font-weight: 800; letter-spacing: 1.5px;
+  text-transform: uppercase; padding: 3px 9px; border-radius: 20px;
 }
-.p-status.wip { background: var(--amber-pale); color: #9a6010; }
+.p-status.wip { background: var(--amber-pale); color: #7a5000; }
 .p-status.done { background: var(--sage-pale); color: var(--sage-dark); }
-.p-status.jam { background: var(--rose-pale); color: #b04840; }
-
-/* CONTACT */
+.p-status.jam { background: var(--rose-pale); color: #a03830; }
 .contact-row {
   display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
-  padding: 1rem 1.2rem;
-  background: var(--cream2);
-  border-radius: 14px;
-  border: 1.5px solid var(--cream3);
+  padding: 1rem 1.3rem; background: var(--cream2);
+  border-radius: 12px; border: 1.5px solid var(--cream3);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.6);
 }
 .c-link {
-  font-size: 0.9rem; font-weight: 700;
-  color: var(--sky); text-decoration: none;
-  padding: 4px 13px; border-radius: 20px;
-  background: var(--sky-pale);
-  transition: filter 0.15s, transform 0.15s;
+  font-size: 0.9rem; font-weight: 700; color: var(--sky);
+  text-decoration: none; padding: 5px 14px; border-radius: 20px;
+  background: var(--sky-pale); transition: filter 0.15s, transform 0.15s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 .c-link:hover { filter: brightness(0.9); transform: translateY(-2px); }
 .date-note { font-size: 0.78rem; color: var(--ink3); font-weight: 600; margin-left: auto; }
-
 .page-num { text-align: right; font-size: 0.78rem; color: var(--ink3); font-weight: 700; margin-top: 1.4rem; letter-spacing: 1px; }
 
-/* DOODLES */
-.doodle { position: absolute; opacity: 0.14; pointer-events: none; font-size: 18px; }
-@keyframes slowspin { to { transform: rotate(360deg); } }
-.spin { animation: slowspin 14s linear infinite; display: inline-block; }
-
-@keyframes popIn {
-  from { opacity: 0; transform: translateY(14px) scale(0.97); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+.prop { position: absolute; pointer-events: none; z-index: 2; animation: propDrop 0.7s cubic-bezier(0.34,1.4,0.64,1) backwards; }
+@keyframes propDrop { from { opacity: 0; transform: translateY(-20px) scale(0.9); } to { opacity: 1; } }
+.mug { top: -24px; left: -55px; animation-delay: 0.3s; }
+.mug svg { filter: drop-shadow(4px 10px 18px rgba(0,0,0,0.8)); }
+.pencil { bottom: 30px; right: -48px; transform: rotate(-32deg); animation-delay: 0.45s; }
+.pencil svg { filter: drop-shadow(2px 5px 10px rgba(0,0,0,0.55)); }
+.sticky { top: -14px; right: 70px; transform: rotate(4deg); animation-delay: 0.55s; }
+.sticky-inner {
+  width: 105px; background: linear-gradient(160deg,#f5e040,#e8d020);
+  padding: 10px 10px 16px; border-radius: 2px;
+  box-shadow: 4px 8px 20px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.3);
+  font-family: 'Special Elite', monospace; font-size: 11px; color: #3a2800; line-height: 1.55;
 }
-.header { animation: popIn 0.5s ease 0s backwards; }
-.about-card { animation: popIn 0.45s ease 0.07s backwards; }
-.skills-wrap { animation: popIn 0.4s ease 0.12s backwards; }
-.pcard:nth-child(1) { animation-delay: 0.14s; }
-.pcard:nth-child(2) { animation-delay: 0.2s; }
-.pcard:nth-child(3) { animation-delay: 0.25s; }
-.pcard:nth-child(4) { animation-delay: 0.3s; }
-.pcard:nth-child(5) { animation-delay: 0.35s; }
+.eraser { bottom: 14px; left: -36px; transform: rotate(14deg); animation-delay: 0.35s; }
+.eraser svg { filter: drop-shadow(2px 5px 10px rgba(0,0,0,0.5)); }
+.paperclip-wrap { position: absolute; top: -4px; right: 130px; pointer-events: none; z-index: 5; }
+@keyframes cardAppear {
+  from { opacity: 0; transform: translateY(18px) scale(0.96); }
+  to { opacity: 1; }
+}
+.header { animation: cardAppear 0.6s ease 0.1s backwards; }
+.about-card { animation: cardAppear 0.5s ease 0.18s backwards; }
+.skills-wrap { animation: cardAppear 0.5s ease 0.24s backwards; }
+.pcard:nth-child(1) { animation-delay: 0.30s; }
+.pcard:nth-child(2) { animation-delay: 0.37s; }
+.pcard:nth-child(3) { animation-delay: 0.43s; }
+.pcard:nth-child(4) { animation-delay: 0.49s; }
+.pcard:nth-child(5) { animation-delay: 0.55s; }
+
+
+/* ═══════════════════════════════════════
+   BAKING PAW PAW PAGE
+   Theme: warm cozy kitchen, recipe cards,
+   flour dust, handwritten notes, oven glow
+═══════════════════════════════════════ */
+#bakingpawpaw-page {
+  background: #2a1a08;
+  background-image:
+    radial-gradient(ellipse at 50% 0%, rgba(220,120,40,0.35) 0%, transparent 55%),
+    radial-gradient(ellipse at 20% 100%, rgba(160,80,20,0.4) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 60%, rgba(100,50,10,0.3) 0%, transparent 40%);
+  min-height: 100vh;
+  font-family: 'Nunito', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Tile floor / kitchen counter texture */
+#bakingpawpaw-page::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(255,255,255,0.025) 59px, rgba(255,255,255,0.025) 60px),
+    repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(255,255,255,0.025) 59px, rgba(255,255,255,0.025) 60px);
+  pointer-events: none; z-index: 0;
+}
+
+/* Warm oven glow from the top */
+#bakingpawpaw-page::after {
+  content: '';
+  position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+  width: 800px; height: 600px;
+  background: radial-gradient(ellipse, rgba(255,160,40,0.18) 0%, transparent 65%);
+  pointer-events: none; z-index: 0;
+}
+
+/* Flour dust particles */
+.flour-particle {
+  position: fixed;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.55);
+  pointer-events: none;
+  z-index: 1;
+  animation: flourFloat linear infinite;
+}
+@keyframes flourFloat {
+  0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.3; }
+  100% { transform: translateY(-10vh) rotate(360deg) translateX(40px); opacity: 0; }
+}
+
+.bpp-scene {
+  position: relative; z-index: 2;
+  max-width: 960px; margin: 0 auto;
+  padding: 2.5rem 1.5rem 5rem;
+}
+
+/* BACK BUTTON */
+.back-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.12);
+  border: 1.5px solid rgba(255,255,255,0.2);
+  color: rgba(255,240,210,0.9);
+  padding: 8px 18px; border-radius: 30px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85rem; font-weight: 700;
+  cursor: pointer; margin-bottom: 2.5rem;
+  transition: background 0.2s, transform 0.2s;
+  backdrop-filter: blur(4px);
+  letter-spacing: 0.5px;
+}
+.back-btn:hover { background: rgba(255,255,255,0.2); transform: translateX(-3px); }
+
+/* HERO AREA */
+.bpp-hero {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2rem;
+  align-items: start;
+  margin-bottom: 3rem;
+}
+
+/* Main recipe card — the "cover" */
+.recipe-cover {
+  background: #fdf5e4;
+  border-radius: 4px;
+  padding: 2.5rem 2.8rem;
+  position: relative;
+  box-shadow:
+    0 30px 60px rgba(0,0,0,0.6),
+    0 10px 20px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+  transform: perspective(1200px) rotateX(3deg) rotateY(1deg);
+  transform-origin: top left;
+  animation: recipeReveal 0.9s cubic-bezier(0.34,1.3,0.64,1) both;
+}
+@keyframes recipeReveal {
+  from { opacity: 0; transform: perspective(1200px) rotateX(8deg) rotateY(4deg) translateY(-20px); }
+  to { opacity: 1; transform: perspective(1200px) rotateX(3deg) rotateY(1deg); }
+}
+
+/* Flour/stain marks on the card */
+.recipe-cover::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(circle at 85% 15%, rgba(255,255,255,0.7) 0%, transparent 12%),
+    radial-gradient(circle at 10% 80%, rgba(255,255,255,0.5) 0%, transparent 8%),
+    radial-gradient(circle at 60% 90%, rgba(255,255,255,0.4) 0%, transparent 6%);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* Top colored band */
+.recipe-cover::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 8px;
+  background: linear-gradient(90deg, #c0621a, #e8882a, #c0621a);
+  border-radius: 4px 4px 0 0;
+}
+
+.recipe-top {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; margin-bottom: 1.5rem;
+}
+
+.recipe-label {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase;
+  color: #c0621a; margin-bottom: 6px;
+}
+
+.recipe-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem; font-weight: 700;
+  color: #2a1508; line-height: 1;
+  text-shadow: 1px 2px 0 rgba(0,0,0,0.08);
+}
+.recipe-title em {
+  font-style: italic; color: #c0621a;
+  font-size: 1.1em;
+}
+
+.recipe-subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.1rem; color: #7a5030;
+  margin-top: 6px;
+}
+
+/* Paw stamp */
+.paw-stamp {
+  width: 80px; height: 80px;
+  border: 3px solid #c0621a;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  color: #c0621a;
+  font-family: 'Special Elite', monospace;
+  font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+  text-align: center; line-height: 1.4;
+  transform: rotate(-8deg);
+  opacity: 0.8; flex-shrink: 0;
+  padding: 6px;
+}
+.paw-stamp .paw-icon { font-size: 22px; margin-bottom: 2px; }
+
+/* Divider */
+.recipe-divider {
+  border: none; border-top: 1.5px solid #d4b888;
+  margin: 1.2rem 0;
+  position: relative;
+}
+.recipe-divider::before {
+  content: '✦';
+  position: absolute; top: -9px; left: 50%; transform: translateX(-50%);
+  background: #fdf5e4; padding: 0 8px;
+  color: #c0621a; font-size: 12px;
+}
+
+/* Info row */
+.recipe-meta {
+  display: flex; gap: 2rem; margin-bottom: 1.4rem;
+  flex-wrap: wrap;
+}
+.meta-item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 2px;
+}
+.meta-label {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase;
+  color: #a07850;
+}
+.meta-value {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2rem; font-weight: 700; color: #2a1508;
+}
+.meta-icon { font-size: 1.2rem; }
+
+/* Description on the recipe card */
+.recipe-desc-text {
+  font-family: 'Caveat', cursive;
+  font-size: 1.15rem; line-height: 1.7;
+  color: #4a3020;
+  border-left: 3px solid #e8b060;
+  padding-left: 14px;
+  margin-bottom: 1.4rem;
+}
+
+/* Tags on card */
+.recipe-tags { display: flex; flex-wrap: wrap; gap: 7px; }
+.r-tag {
+  padding: 4px 12px; border-radius: 30px;
+  font-size: 0.78rem; font-weight: 700;
+  background: #f0e0c0; color: #7a4820;
+  border: 1px solid #d4b888;
+}
+.r-tag.highlight { background: #c0621a; color: white; border-color: #c0621a; }
+
+/* RIGHT SIDE — stacked recipe index cards */
+.side-cards {
+  display: flex; flex-direction: column; gap: 1rem;
+  width: 220px; flex-shrink: 0;
+  animation: sideReveal 0.8s ease 0.3s both;
+}
+@keyframes sideReveal {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; }
+}
+
+.index-card {
+  background: white;
+  border-radius: 3px;
+  padding: 14px 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5), 0 3px 8px rgba(0,0,0,0.3);
+  position: relative;
+  border-top: 4px solid;
+}
+.index-card:nth-child(1) { border-color: #c0621a; transform: rotate(2deg); }
+.index-card:nth-child(2) { border-color: #5c9a70; transform: rotate(-1.5deg); }
+.index-card:nth-child(3) { border-color: #5c88aa; transform: rotate(1deg); }
+
+.index-card-title {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase;
+  color: #888; margin-bottom: 8px;
+}
+.index-card-content {
+  font-family: 'Caveat', cursive;
+  font-size: 1rem; color: #2a2010; line-height: 1.6;
+}
+.index-card-content ul { padding-left: 16px; }
+.index-card-content li { margin-bottom: 3px; }
+
+/* LOWER SECTION — 3 column layout */
+.bpp-lower {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.4rem;
+  animation: sideReveal 0.8s ease 0.5s both;
+}
+@media (max-width: 700px) { .bpp-lower { grid-template-columns: 1fr; } .bpp-hero { grid-template-columns: 1fr; } .side-cards { width: 100%; flex-direction: row; flex-wrap: wrap; } }
+
+/* Feature cards in the lower row */
+.feat-card {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 1.4rem;
+  backdrop-filter: blur(6px);
+  position: relative;
+  transition: transform 0.2s, background 0.2s;
+}
+.feat-card:hover { transform: translateY(-4px); background: rgba(255,255,255,0.11); }
+
+.feat-card-icon {
+  font-size: 2rem; margin-bottom: 10px; display: block;
+}
+.feat-card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.95rem; font-weight: 800;
+  color: #fde8c0; margin-bottom: 8px; letter-spacing: 0.5px;
+}
+.feat-card-body {
+  font-size: 0.88rem; color: rgba(255,220,160,0.8);
+  line-height: 1.65; font-weight: 600;
+}
+
+/* Gemini API badge */
+.api-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: linear-gradient(135deg, #4285f4, #34a853, #ea4335, #fbbc05);
+  background-size: 200% 200%;
+  animation: gradShift 4s ease infinite;
+  padding: 6px 14px; border-radius: 30px;
+  font-size: 0.78rem; font-weight: 800;
+  color: white; margin-top: 10px;
+  box-shadow: 0 4px 14px rgba(66,133,244,0.4);
+  letter-spacing: 0.5px;
+}
+@keyframes gradShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Handwritten note at the bottom */
+.handwritten-note {
+  background: #f9f0c0;
+  border-radius: 3px;
+  padding: 1.2rem 1.5rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5), 3px 3px 0 rgba(0,0,0,0.2);
+  transform: rotate(-1deg);
+  position: relative;
+  grid-column: 1 / -1;
+  margin-top: 0.5rem;
+}
+.handwritten-note::before {
+  content: '';
+  position: absolute; top: 0; left: 26px; bottom: 0;
+  width: 1.5px; background: rgba(255,100,100,0.3);
+}
+.note-text {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2rem; color: #3a2808; line-height: 1.7;
+  padding-left: 20px;
+}
+.note-sig {
+  font-family: 'Caveat', cursive;
+  font-size: 1.1rem; color: #7a5020;
+  text-align: right; margin-top: 8px;
+  font-weight: 700;
+}
+
+/* PROJECT LINKS at bottom */
+.bpp-links {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  margin-top: 1.8rem; justify-content: center;
+  animation: sideReveal 0.7s ease 0.7s both;
+}
+.bpp-link {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.88rem; font-weight: 800;
+  text-decoration: none; padding: 12px 28px;
+  border-radius: 30px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  letter-spacing: 0.5px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+.bpp-link:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.bpp-link.primary { background: linear-gradient(135deg, #c0621a, #e8882a); color: white; }
+.bpp-link.secondary { background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.25); color: rgba(255,240,210,0.9); }
 </style>
 </head>
 <body>
-<div class="binder">
 
-  <div class="spine">
-    <div class="ring"></div>
-    <div class="ring"></div>
-    <div class="ring"></div>
-    <div class="ring"></div>
-    <div class="ring"></div>
-    <div class="ring"></div>
-  </div>
+<!-- ══════════════════════════════════════
+     PAGE 1: PORTFOLIO
+══════════════════════════════════════ -->
+<div id="portfolio-page" class="page active">
 
-  <div class="pages">
-    <div class="tabs">
-      <div class="tab t1">Games</div>
-      <div class="tab t2">Jams</div>
-      <div class="tab t3">Tools</div>
-      <div class="tab t4">About</div>
+  <div class="scene">
+    <!-- DESK PROPS -->
+    <div class="prop mug">
+      <svg width="90" height="100" viewBox="0 0 90 100">
+        <ellipse cx="38" cy="22" rx="28" ry="10" fill="#1a0e05"/>
+        <ellipse cx="38" cy="22" rx="22" ry="7" fill="#2a1a0a"/>
+        <ellipse cx="38" cy="22" rx="12" ry="4" fill="#0d0704" opacity="0.8"/>
+        <path d="M10,22 Q8,80 12,85 Q38,92 64,85 Q68,80 66,22 Z" fill="#e8e0d0"/>
+        <path d="M10,22 Q8,80 12,85 Q38,92 64,85 Q68,80 66,22 Z" fill="url(#mg)" opacity="0.4"/>
+        <path d="M64,38 Q82,38 82,60 Q82,78 64,75" stroke="#d0c8b8" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <path d="M64,38 Q78,38 78,60 Q78,74 64,75" stroke="#e8e0d0" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5"/>
+        <path d="M30,14 Q27,5 30,0" stroke="rgba(255,255,255,0.28)" stroke-width="2" fill="none" stroke-linecap="round">
+          <animate attributeName="opacity" values="0.28;0.65;0.28" dur="2.2s" repeatCount="indefinite"/>
+        </path>
+        <path d="M42,12 Q39,3 42,0" stroke="rgba(255,255,255,0.22)" stroke-width="2" fill="none" stroke-linecap="round">
+          <animate attributeName="opacity" values="0.22;0.55;0.22" dur="2.8s" begin="0.6s" repeatCount="indefinite"/>
+        </path>
+        <ellipse cx="38" cy="97" rx="30" ry="5" fill="rgba(0,0,0,0.45)"/>
+        <defs>
+          <linearGradient id="mg" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="rgba(0,0,0,0.3)"/>
+            <stop offset="35%" stop-color="rgba(255,255,255,0.2)"/>
+            <stop offset="100%" stop-color="rgba(0,0,0,0.2)"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <div class="prop pencil">
+      <svg width="160" height="18" viewBox="0 0 160 18">
+        <rect x="0" y="4" width="14" height="10" rx="2" fill="#d4a0a0"/>
+        <rect x="13" y="4" width="3" height="10" fill="#b0b0b0"/>
+        <rect x="16" y="3" width="120" height="12" fill="#f0d060"/>
+        <rect x="16" y="3" width="120" height="4" fill="rgba(255,255,255,0.2)"/>
+        <polygon points="136,3 160,9 136,15" fill="#e8c050"/>
+        <polygon points="148,7 160,9 148,11" fill="#c89040"/>
+        <ellipse cx="80" cy="17" rx="70" ry="3" fill="rgba(0,0,0,0.25)"/>
+      </svg>
+    </div>
+    <div class="prop sticky">
+      <div class="sticky-inner">
+        remember:<br>add screenshots!<br><br>★ update<br>&nbsp;&nbsp;links
+      </div>
+    </div>
+    <div class="prop eraser">
+      <svg width="70" height="28" viewBox="0 0 70 28">
+        <rect x="0" y="4" width="70" height="20" rx="4" fill="#e88080"/>
+        <rect x="0" y="4" width="30" height="20" rx="4 0 0 4" fill="#c06060"/>
+        <rect x="0" y="4" width="70" height="6" fill="rgba(255,255,255,0.2)"/>
+        <text x="35" y="17" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.55)" font-family="sans-serif" letter-spacing="1">ERASER</text>
+        <ellipse cx="35" cy="27" rx="30" ry="4" fill="rgba(0,0,0,0.3)"/>
+      </svg>
     </div>
 
-    <div class="pages-inner">
-      <div class="doodle" style="top:16px;right:56px;"><span class="spin">✦</span></div>
-      <div class="doodle" style="bottom:70px;left:28px;font-size:14px;"><span class="spin" style="animation-duration:20s;">✶</span></div>
-
-      <!-- HEADER -->
-      <div class="header">
-        <div class="avatar-frame">🐱</div>
-        <div class="header-center">
-          <h1>Dev <span>Compendium</span></h1>
-          <div class="tagline">
-            <span class="tagline-dot"></span>
-            YourName · Game Developer & Designer
-          </div>
+    <div class="binder">
+      <div class="spine">
+        <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+        <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+      </div>
+      <div class="pages">
+        <div class="tabs">
+          <div class="tab t1">Games</div>
+          <div class="tab t2">Jams</div>
+          <div class="tab t3">Tools</div>
+          <div class="tab t4">About</div>
         </div>
-        <div class="stamp">Portfolio<br>Certified<br>★ ★ ★</div>
-      </div>
-
-      <!-- ABOUT -->
-      <div class="sec-head">
-        <div class="sec-icon sage">👋</div>
-        <h2>About Me</h2>
-        <div class="sec-line"></div>
-      </div>
-      <div class="about-card">
-        <div class="tape tape1"></div>
-        <div class="tape tape2"></div>
-        Hi! I'm a game developer who loves building <span class="hl">weird little worlds</span>.
-        I specialize in indie games, game jams, and tools that make other devs' lives easier.
-        Currently cooking up a cozy monster-collecting RPG 🌿
-      </div>
-
-      <!-- SKILLS -->
-      <div class="sec-head">
-        <div class="sec-icon rose">🛠️</div>
-        <h2>Skills & Tools</h2>
-        <div class="sec-line"></div>
-      </div>
-      <div class="skills-wrap">
-        <span class="skill sage"><span class="dot"></span>Unity</span>
-        <span class="skill rose"><span class="dot"></span>Godot</span>
-        <span class="skill sky"><span class="dot"></span>C#</span>
-        <span class="skill amber"><span class="dot"></span>GDScript</span>
-        <span class="skill lilac"><span class="dot"></span>Aseprite</span>
-        <span class="skill sage"><span class="dot"></span>Tiled</span>
-        <span class="skill rose"><span class="dot"></span>FMOD</span>
-        <span class="skill sky"><span class="dot"></span>Blender</span>
-        <span class="skill amber"><span class="dot"></span>Game Design</span>
-        <span class="skill lilac"><span class="dot"></span>Pixel Art</span>
-      </div>
-
-      <!-- PROJECTS -->
-      <div class="sec-head">
-        <div class="sec-icon amber">🎮</div>
-        <h2>Projects</h2>
-        <div class="sec-line"></div>
-      </div>
-      <div class="proj-grid">
-
-        <div class="pcard featured c-sage">
-          <div class="feat-ribbon">✦ Featured Project</div>
-          <div class="feat-img">🌿</div>
-          <div>
-            <div class="p-title">Mossveil Chronicles</div>
-            <div class="p-desc">A cozy monster-collecting RPG set in a foggy enchanted forest. Raise creatures, brew potions, uncover ancient secrets.</div>
-            <div class="p-tags">
-              <span class="p-tag">Unity</span><span class="p-tag">C#</span>
-              <span class="p-tag">Pixel Art</span><span class="p-tag">RPG</span>
+        <div class="paperclip-wrap">
+          <svg width="24" height="60" viewBox="0 0 24 60">
+            <path d="M12,4 Q20,4 20,14 L20,46 Q20,56 12,56 Q4,56 4,46 L4,18 Q4,10 10,10 L10,48 Q10,52 12,52 Q14,52 14,48 L14,14" stroke="#a09080" stroke-width="3" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="pages-inner">
+          <div class="header">
+            <div class="avatar-frame">🐱</div>
+            <div class="header-center">
+              <h1>Dev <span>Compendium</span></h1>
+              <div class="tagline"><span class="tagline-dot"></span>YourName · Game Developer & Designer</div>
             </div>
-            <div class="p-links">
-              <a href="https://github.com/yourusername/mossveil" class="p-link gh">GitHub</a>
-              <a href="#" class="p-link blog">Dev Blog</a>
+            <div class="stamp">Portfolio<br>Certified<br>★ ★ ★</div>
+          </div>
+
+          <div class="sec-head"><div class="sec-icon sage">👋</div><h2>About Me</h2><div class="sec-line"></div></div>
+          <div class="about-card">
+            <div class="tape tape1"></div><div class="tape tape2"></div>
+            Hi! I'm a game developer who loves building <span class="hl">weird little worlds</span>.
+            I specialize in indie games, game jams, and tools that make other devs' lives easier.
+            Currently cooking up a cozy monster-collecting RPG 🌿
+          </div>
+
+          <div class="sec-head"><div class="sec-icon rose">🛠️</div><h2>Skills & Tools</h2><div class="sec-line"></div></div>
+          <div class="skills-wrap">
+            <span class="skill sage"><span class="dot"></span>Unity</span>
+            <span class="skill rose"><span class="dot"></span>Godot</span>
+            <span class="skill sky"><span class="dot"></span>C#</span>
+            <span class="skill amber"><span class="dot"></span>GDScript</span>
+            <span class="skill lilac"><span class="dot"></span>Aseprite</span>
+            <span class="skill sage"><span class="dot"></span>Tiled</span>
+            <span class="skill rose"><span class="dot"></span>FMOD</span>
+            <span class="skill sky"><span class="dot"></span>Blender</span>
+            <span class="skill amber"><span class="dot"></span>Game Design</span>
+            <span class="skill lilac"><span class="dot"></span>Pixel Art</span>
+          </div>
+
+          <div class="sec-head"><div class="sec-icon amber">🎮</div><h2>Projects</h2><div class="sec-line"></div></div>
+          <div class="proj-grid">
+
+            <div class="pcard featured c-sage">
+              <div class="feat-ribbon">✦ Featured Project</div>
+              <div class="feat-img">🌿</div>
+              <div>
+                <div class="p-title">Mossveil Chronicles</div>
+                <div class="p-desc">A cozy monster-collecting RPG in a foggy enchanted forest. Raise creatures, brew potions, uncover ancient secrets.</div>
+                <div class="p-tags"><span class="p-tag">Unity</span><span class="p-tag">C#</span><span class="p-tag">Pixel Art</span><span class="p-tag">RPG</span></div>
+                <div class="p-links">
+                  <a href="https://github.com/yourusername/mossveil" class="p-link gh">GitHub</a>
+                  <a href="#" class="p-link blog">Dev Blog</a>
+                </div>
+              </div>
+              <span class="p-status wip">W.I.P.</span>
             </div>
-          </div>
-          <span class="p-status wip">W.I.P.</span>
-        </div>
 
-        <div class="pcard c-rose">
-          <span class="p-status jam">Game Jam</span>
-          <span class="p-emoji">🏚️</span>
-          <div class="p-title">Hollow Estate</div>
-          <div class="p-desc">Spooky puzzle platformer with light mechanics and a ghost companion. Made in 72 hrs for Ludum Dare 54.</div>
-          <div class="p-tags"><span class="p-tag">Godot</span><span class="p-tag">GDScript</span><span class="p-tag">Puzzle</span></div>
-          <div class="p-links">
-            <a href="#" class="p-link gh">GitHub</a>
-            <a href="#" class="p-link itch">itch.io</a>
-          </div>
-        </div>
+            <!-- BAKING PAW PAW — clickable -->
+            <div class="pcard c-amber" data-project="bakingpawpaw" onclick="showPage('bakingpawpaw-page')">
+              <span class="p-status jam">HackGT 12</span>
+              <span class="p-emoji">🍪</span>
+              <div class="p-title">Baking Paw Paw</div>
+              <div class="p-desc">Unity cooking assistant that generates personalized recipes using Google Gemini AI. Built at HackGT 12, Atlanta.</div>
+              <div class="p-tags"><span class="p-tag">Unity</span><span class="p-tag">Gemini API</span><span class="p-tag">C#</span><span class="p-tag">AI</span></div>
+              <div class="p-links">
+                <a href="#" class="p-link gh" onclick="event.stopPropagation()">GitHub</a>
+              </div>
+            </div>
 
-        <div class="pcard c-sky">
-          <span class="p-status done">Complete</span>
-          <span class="p-emoji">🐟</span>
-          <div class="p-title">Deepwater Drift</div>
-          <div class="p-desc">Relaxing ocean exploration game. Collect sea creatures, discover hidden caves, lo-fi ambience included.</div>
-          <div class="p-tags"><span class="p-tag">Unity</span><span class="p-tag">C#</span><span class="p-tag">Chill</span></div>
-          <div class="p-links">
-            <a href="#" class="p-link gh">GitHub</a>
-            <a href="#" class="p-link demo">Play</a>
-          </div>
-        </div>
+            <div class="pcard c-sky">
+              <span class="p-status done">Complete</span>
+              <span class="p-emoji">🐟</span>
+              <div class="p-title">Deepwater Drift</div>
+              <div class="p-desc">Relaxing ocean exploration. Collect sea creatures, discover hidden caves, lo-fi ambience included.</div>
+              <div class="p-tags"><span class="p-tag">Unity</span><span class="p-tag">C#</span><span class="p-tag">Chill</span></div>
+              <div class="p-links"><a href="#" class="p-link gh">GitHub</a><a href="#" class="p-link demo">Play</a></div>
+            </div>
 
-        <div class="pcard c-amber">
-          <span class="p-status done">Complete</span>
-          <span class="p-emoji">⚙️</span>
-          <div class="p-title">TileKit Pro</div>
-          <div class="p-desc">Open-source Unity tool for procedural tile map generation with rule-based autotiling. Used by 200+ devs.</div>
-          <div class="p-tags"><span class="p-tag">Unity</span><span class="p-tag">Tool</span><span class="p-tag">Open Source</span></div>
-          <div class="p-links">
-            <a href="#" class="p-link gh">GitHub</a>
-          </div>
-        </div>
+            <div class="pcard c-rose">
+              <span class="p-status jam">Game Jam</span>
+              <span class="p-emoji">🏚️</span>
+              <div class="p-title">Hollow Estate</div>
+              <div class="p-desc">Spooky puzzle platformer with light mechanics and a ghost companion. Made in 72 hrs for Ludum Dare 54.</div>
+              <div class="p-tags"><span class="p-tag">Godot</span><span class="p-tag">GDScript</span><span class="p-tag">Puzzle</span></div>
+              <div class="p-links"><a href="#" class="p-link gh">GitHub</a><a href="#" class="p-link itch">itch.io</a></div>
+            </div>
 
-        <div class="pcard c-lilac">
-          <span class="p-status jam">Game Jam</span>
-          <span class="p-emoji">🎲</span>
-          <div class="p-title">Dungeon Dash</div>
-          <div class="p-desc">Roguelite dungeon crawler for GitHub Game Off 2023. Procedural levels, 30+ enemies, 5 bosses.</div>
-          <div class="p-tags"><span class="p-tag">Godot</span><span class="p-tag">Roguelite</span><span class="p-tag">Pixel Art</span></div>
-          <div class="p-links">
-            <a href="#" class="p-link gh">GitHub</a>
-            <a href="#" class="p-link itch">itch.io</a>
-          </div>
-        </div>
+            <div class="pcard c-lilac">
+              <span class="p-status jam">Game Jam</span>
+              <span class="p-emoji">🎲</span>
+              <div class="p-title">Dungeon Dash</div>
+              <div class="p-desc">Roguelite dungeon crawler for GitHub Game Off 2023. Procedural levels, 30+ enemies, 5 bosses.</div>
+              <div class="p-tags"><span class="p-tag">Godot</span><span class="p-tag">Roguelite</span><span class="p-tag">Pixel Art</span></div>
+              <div class="p-links"><a href="#" class="p-link gh">GitHub</a><a href="#" class="p-link itch">itch.io</a></div>
+            </div>
 
+          </div>
+
+          <div class="sec-head"><div class="sec-icon sky">💌</div><h2>Find Me</h2><div class="sec-line"></div></div>
+          <div class="contact-row">
+            <a href="https://github.com/yourusername" class="c-link">GitHub</a>
+            <a href="https://yourusername.itch.io" class="c-link">itch.io</a>
+            <a href="https://twitter.com/yourusername" class="c-link">Twitter / X</a>
+            <a href="mailto:you@email.com" class="c-link">Email</a>
+            <span class="date-note">Updated Apr 2026 ✦</span>
+          </div>
+          <div class="page-num">— pg. 01 —</div>
+        </div>
       </div>
-
-      <!-- CONTACT -->
-      <div class="sec-head">
-        <div class="sec-icon sky">💌</div>
-        <h2>Find Me</h2>
-        <div class="sec-line"></div>
-      </div>
-      <div class="contact-row">
-        <a href="https://github.com/yourusername" class="c-link">GitHub</a>
-        <a href="https://yourusername.itch.io" class="c-link">itch.io</a>
-        <a href="https://twitter.com/yourusername" class="c-link">Twitter / X</a>
-        <a href="mailto:you@email.com" class="c-link">Email</a>
-        <span class="date-note">Updated Apr 2026 ✦</span>
-      </div>
-
-      <div class="page-num">— pg. 01 —</div>
     </div>
   </div>
-
 </div>
+
+
+<!-- ══════════════════════════════════════
+     PAGE 2: BAKING PAW PAW
+     Theme: warm kitchen, recipe book,
+     flour dust, oven glow, handwritten notes
+══════════════════════════════════════ -->
+<div id="bakingpawpaw-page" class="page">
+
+  <!-- Flour dust particles (created by JS) -->
+
+  <div class="bpp-scene">
+
+    <button class="back-btn" onclick="showPage('portfolio-page')">← Back to Compendium</button>
+
+    <div class="bpp-hero">
+
+      <!-- Main Recipe Card -->
+      <div class="recipe-cover">
+        <div class="recipe-top">
+          <div>
+            <div class="recipe-label">✦ HackGT 12 · Atlanta, GA · October 2025 ✦</div>
+            <div class="recipe-title"><em>Baking</em><br>Paw Paw</div>
+            <div class="recipe-subtitle">A recipe for the perfect meal, powered by AI 🐾</div>
+          </div>
+          <div class="paw-stamp">
+            <span class="paw-icon">🐾</span>
+            <span>Project<br>Lead</span>
+          </div>
+        </div>
+
+        <hr class="recipe-divider">
+
+        <div class="recipe-meta">
+          <div class="meta-item">
+            <span class="meta-icon">⏱️</span>
+            <span class="meta-label">Duration</span>
+            <span class="meta-value">36 hrs</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-icon">👥</span>
+            <span class="meta-label">Team Size</span>
+            <span class="meta-value">4 devs</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-icon">🏆</span>
+            <span class="meta-label">Event</span>
+            <span class="meta-value">HackGT 12</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-icon">🎮</span>
+            <span class="meta-label">Engine</span>
+            <span class="meta-value">Unity</span>
+          </div>
+        </div>
+
+        <hr class="recipe-divider">
+
+        <div class="recipe-desc-text">
+          An interactive Unity cooking assistant that generates personalized recipes
+          from your ingredients, available time, and skill level — all through a charming
+          cat chef powered by Google Gemini AI.
+        </div>
+
+        <div class="recipe-tags">
+          <span class="r-tag highlight">Project Lead</span>
+          <span class="r-tag">Unity</span>
+          <span class="r-tag">C#</span>
+          <span class="r-tag">Google Gemini API</span>
+          <span class="r-tag">AI Chatbot</span>
+          <span class="r-tag">UX Design</span>
+        </div>
+      </div>
+
+      <!-- Side index cards -->
+      <div class="side-cards">
+        <div class="index-card">
+          <div class="index-card-title">🧂 Ingredients Used</div>
+          <div class="index-card-content">
+            <ul>
+              <li>Unity (C#)</li>
+              <li>Google Gemini API</li>
+              <li>Custom UI system</li>
+              <li>Input parsing</li>
+              <li>Real-time chat</li>
+            </ul>
+          </div>
+        </div>
+        <div class="index-card">
+          <div class="index-card-title">👩‍🍳 My Role</div>
+          <div class="index-card-content">
+            Led the team · designed the concept & UX · built the full Unity scene hierarchy · integrated Gemini API · interactive systems
+          </div>
+        </div>
+        <div class="index-card">
+          <div class="index-card-title">⭐ Highlights</div>
+          <div class="index-card-content">
+            Real-time AI recipe gen · ingredient-aware suggestions · difficulty scaling · chef persona chatbot
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lower feature cards -->
+    <div class="bpp-lower">
+
+      <div class="feat-card">
+        <span class="feat-card-icon">🤖</span>
+        <div class="feat-card-title">Gemini AI Integration</div>
+        <div class="feat-card-body">
+          Integrated Google Gemini API to power a chef chatbot capable of generating personalized recipes on the fly and responding to user questions in real-time.
+          <div><span class="api-badge">✦ Google Gemini API</span></div>
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <span class="feat-card-icon">🏗️</span>
+        <div class="feat-card-title">Full Unity Architecture</div>
+        <div class="feat-card-body">
+          Designed and built the complete Unity scene hierarchy and interactive systems from scratch — including ingredient input, difficulty sliders, and the conversational UI flow.
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <span class="feat-card-icon">🎨</span>
+        <div class="feat-card-title">Concept & UX Design</div>
+        <div class="feat-card-body">
+          Designed the core concept, character (Paw Paw the chef cat 🐱), and end-to-end user experience — from the initial ingredient input to recipe delivery and follow-up chat.
+        </div>
+      </div>
+
+      <!-- handwritten note spans full width -->
+      <div class="handwritten-note">
+        <div class="note-text">
+          "I think what made this one special was that Paw Paw actually felt like a real chef — not just a chatbot. We had 36 hours and I honestly didn't sleep. I'm really proud of what we shipped." 🐾🍰
+        </div>
+        <div class="note-sig">— dev note, 3am, HackGT 12</div>
+      </div>
+
+    </div>
+
+    <div class="bpp-links">
+      <a href="https://github.com/yourusername/baking-paw-paw" class="bpp-link primary">View on GitHub 🍪</a>
+      <a href="#" class="bpp-link secondary">Watch Demo</a>
+      <button class="bpp-link secondary" onclick="showPage('portfolio-page')" style="border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:800;letter-spacing:0.5px;">← Back to all projects</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// Flour particle system for baking page
+function spawnFlour() {
+  const page = document.getElementById('bakingpawpaw-page');
+  if (!page.classList.contains('active')) return;
+  const p = document.createElement('div');
+  p.className = 'flour-particle';
+  const size = Math.random() * 5 + 2;
+  p.style.cssText = `
+    width:${size}px; height:${size}px;
+    left:${Math.random()*100}vw;
+    bottom:-10px;
+    animation-duration:${Math.random()*8+6}s;
+    animation-delay:${Math.random()*3}s;
+    opacity:${Math.random()*0.4+0.2};
+  `;
+  page.appendChild(p);
+  setTimeout(() => p.remove(), 12000);
+}
+setInterval(spawnFlour, 400);
+
+// Page switcher with smooth transition
+function showPage(id) {
+  const pages = document.querySelectorAll('.page');
+  pages.forEach(p => {
+    p.style.opacity = '0';
+    p.style.transition = 'opacity 0.3s ease';
+  });
+  setTimeout(() => {
+    pages.forEach(p => { p.classList.remove('active'); p.style.opacity = ''; p.style.transition = ''; });
+    const target = document.getElementById(id);
+    target.classList.add('active');
+    target.style.opacity = '0';
+    target.style.transition = 'opacity 0.4s ease';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        target.style.opacity = '1';
+        setTimeout(() => { target.style.opacity = ''; target.style.transition = ''; }, 400);
+      });
+    });
+    window.scrollTo(0, 0);
+  }, 280);
+}
+</script>
 </body>
 </html>
