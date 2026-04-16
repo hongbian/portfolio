@@ -1,353 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Portfolio</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=M+PLUS+Rounded+1c:wght@400;700;800&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet"/>
-<style>
-:root {
-  --orange: #F07820;
-  --blue: #2B6CB8;
-  --yellow: #F5C842;
-  --bg: #EEEAE2;
-  --white: #FAFAF8;
-  --dark: #1A1A1A;
-  --mid: #555;
-  --light-border: #D0CBC0;
-  --green: #3DAA6A;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--dark);
-  font-family: 'M PLUS Rounded 1c', sans-serif;
-  overflow-x: hidden;
-}
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(0,0,0,0.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,0,0,0.018) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 999;
-}
-.page { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 0 1.5rem 6rem; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Starbound Portfolio</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top, #0a0f2c, #050814);
+      color: white;
+      overflow: hidden;
+    }
 
-/* HERO */
-.hero {
-  padding: 3rem 0 0;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 2rem;
-  align-items: start;
-  opacity: 0;
-  animation: fadeIn 0.5s 0.1s forwards;
-}
-@keyframes fadeIn { to { opacity: 1; } }
+    .stars {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      overflow: hidden;
+      z-index: 0;
+    }
 
-.product-label {
-  display: inline-block;
-  background: var(--orange);
-  color: white;
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  padding: 4px 20px 4px 12px;
-  margin-bottom: 0.8rem;
-  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%);
-}
-.hero-name {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(3.5rem, 11vw, 7.5rem);
-  line-height: 0.9;
-  color: var(--dark);
-  letter-spacing: 0.02em;
-  margin-bottom: 0.4rem;
-}
-.hero-name span { color: var(--orange); }
-.hero-subtitle {
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--blue);
-  margin-bottom: 1.4rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.hero-subtitle::before { content: ''; display: inline-block; width: 20px; height: 2px; background: var(--blue); }
-.hero-bio { font-size: 0.92rem; color: var(--mid); max-width: 420px; line-height: 1.8; border-left: 3px solid var(--orange); padding-left: 1rem; }
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      animation: twinkle 3s infinite alternate;
+    }
 
-.hero-box {
-  background: var(--white);
-  border: 2px solid var(--dark);
-  padding: 1.2rem 1.4rem;
-  min-width: 155px;
-  position: relative;
-  box-shadow: 4px 4px 0 var(--dark);
-  text-align: center;
-  margin-top: 1rem;
-}
-.hero-box::before {
-  content: 'GOOD SMILE';
-  position: absolute;
-  top: -10px; left: 50%;
-  transform: translateX(-50%);
-  background: var(--white);
-  padding: 0 6px;
-  font-size: 0.55rem;
-  font-weight: 800;
-  letter-spacing: 0.15em;
-  color: var(--mid);
-}
-.box-pct { font-family: 'Bebas Neue', sans-serif; font-size: 3.8rem; line-height: 1; color: var(--orange); display: block; }
-.box-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); }
-.box-jp { font-family: 'Noto Sans JP', sans-serif; font-size: 0.55rem; color: #bbb; margin-top: 0.3rem; }
+    @keyframes twinkle {
+      from { opacity: 0.2; }
+      to { opacity: 1; }
+    }
 
-/* ORANGE BAND */
-.orange-band {
-  background: var(--orange);
-  margin: 2rem -1.5rem;
-  padding: 0.55rem 0;
-  overflow: hidden;
-}
-.band-inner { display: flex; gap: 0; white-space: nowrap; animation: scrollband 18s linear infinite; }
-@keyframes scrollband { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-.band-item { display: inline-flex; align-items: baseline; gap: 0.4rem; padding: 0 1.5rem; color: white; }
-.band-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; line-height: 1; }
-.band-lbl { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.8; }
-.band-sep { color: rgba(255,255,255,0.35); font-size: 1rem; padding: 0 0.5rem; }
+    .desktop {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+    }
 
-/* SECTION HEADERS */
-.sec-header { display: flex; align-items: center; gap: 1rem; margin: 3rem 0 1.5rem; }
-.sec-tag { background: var(--dark); color: white; font-family: 'Bebas Neue', sans-serif; font-size: 1.15rem; letter-spacing: 0.1em; padding: 4px 16px; }
-.sec-jp { font-family: 'Noto Sans JP', sans-serif; font-size: 0.68rem; color: #aaa; }
-.sec-line { flex: 1; height: 2px; background: var(--dark); }
+    .icon {
+      width: 80px;
+      text-align: center;
+      cursor: pointer;
+      margin: 20px;
+      display: inline-block;
+    }
 
-/* ABOUT */
-.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; opacity: 0; transform: translateY(16px); transition: opacity 0.5s, transform 0.5s; }
-.about-grid.vis { opacity: 1; transform: translateY(0); }
-.about-main { background: var(--white); border: 2px solid var(--dark); padding: 1.5rem; box-shadow: 4px 4px 0 var(--dark); }
-.about-main p { font-size: 0.88rem; line-height: 1.8; color: var(--mid); margin-bottom: 0.6rem; }
-.about-main p:first-child { color: var(--dark); font-weight: 700; }
-.char-card { background: var(--blue); border: 2px solid var(--dark); padding: 1.2rem; box-shadow: 4px 4px 0 var(--dark); color: white; }
-.char-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.1em; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 0.5rem; margin-bottom: 0.8rem; }
-.char-row { display: flex; justify-content: space-between; font-size: 0.8rem; padding: 0.35rem 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
-.char-k { opacity: 0.6; }
-.char-v { font-weight: 700; }
-.char-v.open { color: var(--yellow); }
+    .icon img {
+      width: 60px;
+      border-radius: 12px;
+    }
 
-/* SKILLS */
-.skills-wrap { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.8rem; opacity: 0; transform: translateY(16px); transition: opacity 0.5s, transform 0.5s; }
-.skills-wrap.vis { opacity: 1; transform: translateY(0); }
-.skill-pill { background: var(--white); border: 2px solid var(--dark); padding: 0.8rem 1rem; position: relative; overflow: hidden; box-shadow: 3px 3px 0 var(--dark); transition: transform 0.15s, box-shadow 0.15s; }
-.skill-pill:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--dark); }
-.skill-pill::after { content: ''; position: absolute; bottom: 0; left: 0; height: 3px; background: var(--orange); width: 0%; transition: width 1s cubic-bezier(0.4,0,0.2,1); }
-.skill-pill.filled::after { width: var(--w); }
-.sp-name { font-weight: 800; font-size: 0.85rem; margin-bottom: 0.4rem; }
-.sp-dots { display: flex; gap: 3px; margin-bottom: 0.35rem; }
-.dot { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid var(--dark); background: transparent; transition: background 0.3s; }
-.dot.on { background: var(--orange); }
-.sp-lv { font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mid); }
+    .window {
+      position: absolute;
+      width: 400px;
+      background: rgba(20, 25, 60, 0.9);
+      border: 1px solid #6aa0ff;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(100,150,255,0.4);
+      display: none;
+    }
 
-/* QUESTS */
-.quests-wrap { display: flex; flex-direction: column; gap: 1rem; opacity: 0; transform: translateY(16px); transition: opacity 0.5s, transform 0.5s; }
-.quests-wrap.vis { opacity: 1; transform: translateY(0); }
-.quest { background: var(--white); border: 2px solid var(--dark); display: grid; grid-template-columns: 70px 1fr; box-shadow: 4px 4px 0 var(--dark); overflow: hidden; transition: transform 0.15s, box-shadow 0.15s; cursor: pointer; text-decoration: none; color: inherit; }
-.quest:hover { transform: translate(-3px,-3px); box-shadow: 7px 7px 0 var(--dark); }
-.quest-num { background: var(--orange); color: white; font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; line-height: 1; display: flex; align-items: center; justify-content: center; writing-mode: vertical-rl; letter-spacing: 0.05em; }
-.quest.blue .quest-num { background: var(--blue); }
-.quest-body { padding: 1.2rem 1.5rem; }
-.quest-top2 { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
-.quest-name2 { font-weight: 800; font-size: 1.05rem; }
-.qbadge { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; padding: 2px 8px; border: 1.5px solid currentColor; }
-.qb-main { color: var(--orange); }
-.qb-new  { color: var(--green); }
-.quest-desc2 { font-size: 0.88rem; color: var(--mid); line-height: 1.7; margin-bottom: 0.8rem; }
-.quest-tags2 { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-.qtag { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; background: var(--bg); border: 1.5px solid var(--light-border); padding: 2px 8px; color: var(--mid); }
+    .window-header {
+      padding: 10px;
+      background: #10163a;
+      border-bottom: 1px solid #6aa0ff;
+      cursor: move;
+    }
 
-/* CONTACT */
-.contact-wrap { display: flex; gap: 1rem; flex-wrap: wrap; opacity: 0; transform: translateY(16px); transition: opacity 0.5s, transform 0.5s; }
-.contact-wrap.vis { opacity: 1; transform: translateY(0); }
-.cbtn { display: inline-flex; align-items: center; gap: 0.6rem; font-weight: 800; font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: white; background: var(--dark); border: 2px solid var(--dark); padding: 0.75rem 1.4rem; box-shadow: 3px 3px 0 var(--orange); transition: transform 0.15s, box-shadow 0.15s; }
-.cbtn:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--orange); }
-.cbtn.outline { background: transparent; color: var(--dark); box-shadow: 3px 3px 0 var(--blue); }
-.cbtn.outline:hover { box-shadow: 5px 5px 0 var(--blue); }
+    .window-content {
+      padding: 15px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
 
-/* FOOTER */
-.footer { margin-top: 4rem; padding: 1.2rem 0; border-top: 2px solid var(--dark); display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: var(--mid); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0; animation: fadeIn 1s 1s forwards; }
-.footer-jp { font-family: 'Noto Sans JP', sans-serif; font-size: 0.65rem; opacity: 0.4; }
+    .portrait {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      width: 180px;
+    }
 
-@media (max-width: 600px) {
-  .hero { grid-template-columns: 1fr; }
-  .hero-box { display: none; }
-  .about-grid { grid-template-columns: 1fr; }
-}
-</style>
+    .portrait img {
+      width: 100%;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(255,255,255,0.2);
+    }
+
+    .taskbar {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 50px;
+      background: rgba(10,10,30,0.9);
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+    }
+
+    .taskbar span {
+      margin-right: 20px;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+  </style>
 </head>
 <body>
-<div class="page">
 
-  <section class="hero">
-    <div class="hero-left">
-      <div class="product-label">Game Designer · Developer</div>
-      <h1 class="hero-name">HONGBI<br><span>AN</span></h1>
-      <div class="hero-subtitle">Interactive Experience Creator</div>
-      <p class="hero-bio">Building worlds, mechanics, and moments that feel alive. CS student at Georgia Tech with a passion for game development.</p>
-    </div>
-    <div class="hero-box">
-      <span class="box-pct">100%</span>
-      <div class="box-label">Passion Level</div>
-      <div class="box-jp">ゲームデベロッパー</div>
-      <div style="margin-top:0.8rem;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid)">Ver. 1.0</div>
-    </div>
-  </section>
+<div class="stars" id="stars"></div>
 
-  <div class="orange-band">
-    <div class="band-inner">
-      <span class="band-item"><span class="band-num">02</span><span class="band-lbl">Projects</span></span>
-      <span class="band-sep">·</span>
-      <span class="band-item"><span class="band-num">03</span><span class="band-lbl">Languages</span></span>
-      <span class="band-sep">·</span>
-      <span class="band-item" style="font-family:'Noto Sans JP',sans-serif;font-size:0.9rem;opacity:0.85">ゲームデザイン</span>
-      <span class="band-sep">·</span>
-      <span class="band-item"><span class="band-num">01</span><span class="band-lbl">Years Building</span></span>
-      <span class="band-sep">·</span>
-      <span class="band-item"><span class="band-num">02</span><span class="band-lbl">Projects</span></span>
-      <span class="band-sep">·</span>
-      <span class="band-item"><span class="band-num">03</span><span class="band-lbl">Languages</span></span>
-      <span class="band-sep">·</span>
-      <span class="band-item" style="font-family:'Noto Sans JP',sans-serif;font-size:0.9rem;opacity:0.85">ゲームデザイン</span>
-      <span class="band-sep">·</span>
-      <span class="band-item"><span class="band-num">01</span><span class="band-lbl">Years Building</span></span>
-      <span class="band-sep">·</span>
+<div class="desktop">
+
+  <div class="icon" onclick="openWindow('about')">
+    <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" />
+    <div>About</div>
+  </div>
+
+  <div class="icon" onclick="openWindow('projects')">
+    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828919.png" />
+    <div>Projects</div>
+  </div>
+
+  <div class="icon" onclick="openWindow('contact')">
+    <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" />
+    <div>Contact</div>
+  </div>
+
+  <!-- WINDOWS -->
+
+  <div class="window" id="about" style="top:100px; left:100px;">
+    <div class="window-header">About Me</div>
+    <div class="window-content">
+      <p>Hi! I'm a game designer who loves building imaginative worlds.</p>
+      <p>I focus on interactive storytelling, immersive environments, and experimental UI.</p>
+      <p>This portfolio is designed like a digital space you can explore—because I believe design should be experienced, not just shown.</p>
     </div>
   </div>
 
-  <div class="sec-header">
-    <div class="sec-tag">Origin Story</div>
-    <span class="sec-jp">自己紹介</span>
-    <div class="sec-line"></div>
-  </div>
-  <div class="about-grid" id="about">
-    <div class="about-main">
-      <p>Hi — I'm a game designer and developer who cares deeply about how things feel to play.</p>
-      <p>Currently studying Computer Science at Georgia Tech, I build games on the side because I genuinely love it. I'm interested in mechanics, systems design, and the moment a player realizes they understand your game.</p>
-      <p>Looking for internships, collaborations, and opportunities to work on real shipped projects.</p>
-    </div>
-    <div class="char-card">
-      <div class="char-title">Character Sheet</div>
-      <div class="char-row"><span class="char-k">Class</span><span class="char-v">Game Dev / Designer</span></div>
-      <div class="char-row"><span class="char-k">School</span><span class="char-v">Georgia Tech</span></div>
-      <div class="char-row"><span class="char-k">Engine</span><span class="char-v">Unity · Custom</span></div>
-      <div class="char-row"><span class="char-k">Specialty</span><span class="char-v">Systems Design</span></div>
-      <div class="char-row"><span class="char-k">Status</span><span class="char-v open">▶ Open to Work</span></div>
+  <div class="window" id="projects" style="top:150px; left:200px;">
+    <div class="window-header">Projects</div>
+    <div class="window-content">
+      <p><b>Project 1:</b> Dreamscape Explorer</p>
+      <p>A surreal exploration game where environments shift based on player emotion.</p>
+
+      <p><b>Project 2:</b> Echo UI</p>
+      <p>An experimental interface that reacts to sound and movement.</p>
+
+      <p><b>Project 3:</b> Fragmented Reality</p>
+      <p>A narrative-driven experience blending AR and storytelling.</p>
     </div>
   </div>
 
-  <div class="sec-header">
-    <div class="sec-tag">Abilities</div>
-    <span class="sec-jp">スキル</span>
-    <div class="sec-line"></div>
-  </div>
-  <div class="skills-wrap" id="skills">
-    <div class="skill-pill" data-dots="5" data-filled="4" style="--w:80%"><div class="sp-name">Java</div><div class="sp-dots"></div><div class="sp-lv">Advanced</div></div>
-    <div class="skill-pill" data-dots="5" data-filled="4" style="--w:75%"><div class="sp-name">C#</div><div class="sp-dots"></div><div class="sp-lv">Proficient</div></div>
-    <div class="skill-pill" data-dots="5" data-filled="3" style="--w:70%"><div class="sp-name">Unity</div><div class="sp-dots"></div><div class="sp-lv">Proficient</div></div>
-    <div class="skill-pill" data-dots="5" data-filled="3" style="--w:60%"><div class="sp-name">HTML / CSS</div><div class="sp-dots"></div><div class="sp-lv">Intermediate</div></div>
-    <div class="skill-pill" data-dots="5" data-filled="3" style="--w:65%"><div class="sp-name">Game Design</div><div class="sp-dots"></div><div class="sp-lv">Intermediate</div></div>
-    <div class="skill-pill" data-dots="5" data-filled="2" style="--w:45%"><div class="sp-name">Python</div><div class="sp-dots"></div><div class="sp-lv">Learning</div></div>
+  <div class="window" id="contact" style="top:200px; left:300px;">
+    <div class="window-header">Contact</div>
+    <div class="window-content">
+      <p>Email: your@email.com</p>
+      <p>GitHub: github.com/yourname</p>
+      <p>LinkedIn: linkedin.com/in/yourname</p>
+    </div>
   </div>
 
-  <div class="sec-header">
-    <div class="sec-tag">Quest Log</div>
-    <span class="sec-jp">プロジェクト</span>
-    <div class="sec-line"></div>
-  </div>
-  <div class="quests-wrap" id="quests">
-    <a class="quest" href="#" target="_blank">
-      <div class="quest-num">01</div>
-      <div class="quest-body">
-        <div class="quest-top2">
-          <div class="quest-name2">Project One — Working Title</div>
-          <span class="qbadge qb-main">Main Quest</span>
-        </div>
-        <p class="quest-desc2">A short description of what this game or project is. What does the player experience? What was interesting about building it? Keep it punchy — 2 to 3 sentences.</p>
-        <div class="quest-tags2">
-          <span class="qtag">Unity</span><span class="qtag">C#</span><span class="qtag">2D Platformer</span>
-        </div>
-      </div>
-    </a>
-    <a class="quest blue" href="#" target="_blank">
-      <div class="quest-num">02</div>
-      <div class="quest-body">
-        <div class="quest-top2">
-          <div class="quest-name2">Project Two — Working Title</div>
-          <span class="qbadge qb-new">New</span>
-        </div>
-        <p class="quest-desc2">Another project here. What problem did you solve? What did you learn? What's the most impressive thing about it technically or creatively?</p>
-        <div class="quest-tags2">
-          <span class="qtag">Java</span><span class="qtag">Data Structures</span><span class="qtag">Game Logic</span>
-        </div>
-      </div>
-    </a>
+  <div class="portrait">
+    <img src="https://via.placeholder.com/200x300" alt="character portrait" />
   </div>
 
-  <div class="sec-header">
-    <div class="sec-tag">Contact</div>
-    <span class="sec-jp">お問い合わせ</span>
-    <div class="sec-line"></div>
-  </div>
-  <div class="contact-wrap" id="contact">
-    <a href="mailto:your@email.com" class="cbtn">✉ Email Me</a>
-    <a href="https://linkedin.com/in/yourprofile" target="_blank" class="cbtn outline">in LinkedIn</a>
-    <a href="https://github.com/yourusername" target="_blank" class="cbtn outline">⌥ GitHub</a>
+  <div class="taskbar">
+    <span>Starbound OS</span>
+    <span>v1.0</span>
   </div>
 
-  <div class="footer">
-    <span>Your Name · Game Dev Portfolio · 2025</span>
-    <span class="footer-jp">ゲームデザイナー &amp; デベロッパー</span>
-  </div>
 </div>
 
 <script>
-const els = document.querySelectorAll('#about, #skills, #quests, #contact');
-const obs = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('vis'); }), { threshold: 0.1 });
-els.forEach(el => obs.observe(el));
-
-document.querySelectorAll('.skill-pill').forEach(card => {
-  const total = parseInt(card.dataset.dots);
-  const filled = parseInt(card.dataset.filled);
-  const wrap = card.querySelector('.sp-dots');
-  for (let i = 0; i < total; i++) {
-    const d = document.createElement('div');
-    d.className = 'dot' + (i < filled ? ' on' : '');
-    wrap.appendChild(d);
+  function openWindow(id) {
+    const win = document.getElementById(id);
+    win.style.display = 'block';
   }
-});
 
-const skillObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      setTimeout(() => {
-        e.target.querySelectorAll('.skill-pill').forEach((p, i) => {
-          setTimeout(() => p.classList.add('filled'), i * 80);
-        });
-      }, 200);
-      skillObs.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.2 });
-const sg = document.getElementById('skills');
-if (sg) skillObs.observe(sg);
+  // Generate stars
+  const starsContainer = document.getElementById('stars');
+  for (let i = 0; i < 150; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+    starsContainer.appendChild(star);
+  }
 </script>
+
 </body>
 </html>
