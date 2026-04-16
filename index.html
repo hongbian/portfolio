@@ -1,197 +1,264 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Starbound Portfolio</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: radial-gradient(circle at top, #0a0f2c, #050814);
-      color: white;
-      overflow: hidden;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✦ Collector's Edition: Portfolio ✦</title>
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Space+Grotesk:wght@300;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-pink: #ff77ff;
+            --star-gold: #fff3a3;
+            --box-blue: #1a1a2e;
+            --glass: rgba(255, 255, 255, 0.1);
+        }
 
-    .stars {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      background: transparent;
-      overflow: hidden;
-      z-index: 0;
-    }
+        body, html {
+            margin: 0;
+            padding: 0;
+            background: #050510;
+            color: white;
+            font-family: 'Space Grotesk', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-    .star {
-      position: absolute;
-      width: 2px;
-      height: 2px;
-      background: white;
-      animation: twinkle 3s infinite alternate;
-    }
+        /* ── STARFIELD BACKGROUND ── */
+        .stars-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
 
-    @keyframes twinkle {
-      from { opacity: 0.2; }
-      to { opacity: 1; }
-    }
+        /* ── THE NENDOROID BOX ── */
+        .nendo-box {
+            position: relative;
+            width: 900px;
+            height: 600px;
+            background: var(--box-blue);
+            border: 8px solid #fff;
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(123, 94, 167, 0.5), inset 0 0 20px rgba(0,0,0,1);
+            display: grid;
+            grid-template-columns: 300px 1fr 200px;
+            padding: 20px;
+            overflow: hidden;
+            z-index: 2;
+        }
 
-    .desktop {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      z-index: 1;
-    }
+        /* The Plastic Window Effect */
+        .nendo-box::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.05) 100%);
+            pointer-events: none;
+            z-index: 10;
+        }
 
-    .icon {
-      width: 80px;
-      text-align: center;
-      cursor: pointer;
-      margin: 20px;
-      display: inline-block;
-    }
+        /* ── LEFT PANEL: CHARACTER DISPLAY ── */
+        .char-slot {
+            border: 4px dashed rgba(255,255,255,0.3);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.3);
+            position: relative;
+        }
 
-    .icon img {
-      width: 60px;
-      border-radius: 12px;
-    }
+        .character-img {
+            width: 90%;
+            filter: drop-shadow(0 0 15px var(--neon-pink));
+            animation: float 4s ease-in-out infinite;
+        }
 
-    .window {
-      position: absolute;
-      width: 400px;
-      background: rgba(20, 25, 60, 0.9);
-      border: 1px solid #6aa0ff;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(100,150,255,0.4);
-      display: none;
-    }
+        .nendo-label {
+            position: absolute;
+            bottom: -10px;
+            background: var(--star-gold);
+            color: #000;
+            padding: 5px 15px;
+            font-weight: bold;
+            font-family: 'DotGothic16';
+            transform: rotate(-2deg);
+        }
 
-    .window-header {
-      padding: 10px;
-      background: #10163a;
-      border-bottom: 1px solid #6aa0ff;
-      cursor: move;
-    }
+        /* ── CENTER PANEL: THE OS WINDOWS ── */
+        .desktop-area {
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
 
-    .window-content {
-      padding: 15px;
-      font-size: 14px;
-      line-height: 1.5;
-    }
+        .app-window {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border-radius: 8px;
+            padding: 0;
+            box-shadow: 8px 8px 0px var(--purp-dk);
+            overflow: hidden;
+        }
 
-    .portrait {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      width: 180px;
-    }
+        .window-header {
+            background: #333;
+            color: white;
+            padding: 5px 10px;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
 
-    .portrait img {
-      width: 100%;
-      border-radius: 20px;
-      box-shadow: 0 0 25px rgba(255,255,255,0.2);
-    }
+        .window-body {
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
 
-    .taskbar {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      height: 50px;
-      background: rgba(10,10,30,0.9);
-      display: flex;
-      align-items: center;
-      padding-left: 10px;
-    }
+        /* ── RIGHT PANEL: ACCESSORIES (SKILLS) ── */
+        .acc-slots {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-    .taskbar span {
-      margin-right: 20px;
-      font-size: 14px;
-      opacity: 0.8;
-    }
-  </style>
+        .accessory {
+            height: 80px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .accessory:hover {
+            background: var(--glass);
+            border-color: var(--star-gold);
+            transform: scale(1.05);
+        }
+
+        .acc-tip {
+            position: absolute;
+            right: 110%;
+            background: white;
+            color: black;
+            padding: 5px;
+            font-size: 10px;
+            display: none;
+            white-space: nowrap;
+        }
+
+        .accessory:hover .acc-tip { display: block; }
+
+        /* ── ANIMATIONS ── */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--d) infinite;
+        }
+
+    </style>
 </head>
 <body>
 
-<div class="stars" id="stars"></div>
+    <div class="stars-container" id="star-field"></div>
 
-<div class="desktop">
+    <div class="nendo-box">
+        <div style="position:absolute; top: 10px; left: 15px; color: var(--star-gold); font-size: 10px; z-index: 11;">
+            ITEM NO. 001 // CREATIVE SERIES
+        </div>
 
-  <div class="icon" onclick="openWindow('about')">
-    <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" />
-    <div>About</div>
-  </div>
+        <div class="char-slot">
+            <img src="Illustration9.png" alt="My Character" class="character-img">
+            <div class="nendo-label">✦ YOUR NAME ✦</div>
+        </div>
 
-  <div class="icon" onclick="openWindow('projects')">
-    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828919.png" />
-    <div>Projects</div>
-  </div>
+        <div class="desktop-area">
+            <div class="app-window">
+                <div class="window-header">
+                    <span>QUEST_LOG.exe</span>
+                    <span>×</span>
+                </div>
+                <div class="window-body">
+                    <h3>Featured Projects</h3>
+                    <p><strong>Project: Star-Bound Horror</strong><br>A distorted school horror experience using typing mechanics.</p>
+                    <hr>
+                    <p><strong>Project: Quackify</strong><br>Java-based playlist manager with logical undo/redo systems.</p>
+                </div>
+            </div>
 
-  <div class="icon" onclick="openWindow('contact')">
-    <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" />
-    <div>Contact</div>
-  </div>
+            <div class="app-window" style="background: var(--star-gold);">
+                <div class="window-header" style="background: #000;">
+                    <span>DESIGNER_STATS.txt</span>
+                    <span>×</span>
+                </div>
+                <div class="window-body" style="color: black;">
+                    <p>“Imaginative, technical, and slightly obsessed with futuristic aesthetics.”</p>
+                    <p>Focus: Game Design & Systems Engineering</p>
+                </div>
+            </div>
+        </div>
 
-  <!-- WINDOWS -->
+        <div class="acc-slots">
+            <div class="accessory">
+                <span>🎨</span>
+                <div class="acc-tip">Skill: Concept Art</div>
+            </div>
+            <div class="accessory">
+                <span>💻</span>
+                <div class="acc-tip">Skill: Java / CS</div>
+            </div>
+            <div class="accessory">
+                <span>🔭</span>
+                <div class="acc-tip">Trait: Astronomical Detail</div>
+            </div>
+            <div class="accessory">
+                <span>⭐</span>
+                <div class="acc-tip">Trait: Creative Narrative</div>
+            </div>
+        </div>
 
-  <div class="window" id="about" style="top:100px; left:100px;">
-    <div class="window-header">About Me</div>
-    <div class="window-content">
-      <p>Hi! I'm a game designer who loves building imaginative worlds.</p>
-      <p>I focus on interactive storytelling, immersive environments, and experimental UI.</p>
-      <p>This portfolio is designed like a digital space you can explore—because I believe design should be experienced, not just shown.</p>
+        <div style="position:absolute; bottom: 10px; right: 20px; font-size: 24px; font-weight: bold; color: rgba(255,255,255,0.1);">
+            GEN-01
+        </div>
     </div>
-  </div>
 
-  <div class="window" id="projects" style="top:150px; left:200px;">
-    <div class="window-header">Projects</div>
-    <div class="window-content">
-      <p><b>Project 1:</b> Dreamscape Explorer</p>
-      <p>A surreal exploration game where environments shift based on player emotion.</p>
-
-      <p><b>Project 2:</b> Echo UI</p>
-      <p>An experimental interface that reacts to sound and movement.</p>
-
-      <p><b>Project 3:</b> Fragmented Reality</p>
-      <p>A narrative-driven experience blending AR and storytelling.</p>
-    </div>
-  </div>
-
-  <div class="window" id="contact" style="top:200px; left:300px;">
-    <div class="window-header">Contact</div>
-    <div class="window-content">
-      <p>Email: your@email.com</p>
-      <p>GitHub: github.com/yourname</p>
-      <p>LinkedIn: linkedin.com/in/yourname</p>
-    </div>
-  </div>
-
-  <div class="portrait">
-    <img src="https://via.placeholder.com/200x300" alt="character portrait" />
-  </div>
-
-  <div class="taskbar">
-    <span>Starbound OS</span>
-    <span>v1.0</span>
-  </div>
-
-</div>
-
-<script>
-  function openWindow(id) {
-    const win = document.getElementById(id);
-    win.style.display = 'block';
-  }
-
-  // Generate stars
-  const starsContainer = document.getElementById('stars');
-  for (let i = 0; i < 150; i++) {
-    const star = document.createElement('div');
-    star.className = 'star';
-    star.style.top = Math.random() * 100 + '%';
-    star.style.left = Math.random() * 100 + '%';
-    star.style.animationDuration = (Math.random() * 3 + 2) + 's';
-    starsContainer.appendChild(star);
-  }
-</script>
-
+    <script>
+        // Generate random stars
+        const field = document.getElementById('star-field');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3 + 'px';
+            star.style.width = size;
+            star.style.height = size;
+            star.style.top = Math.random() * 100 + '%';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.setProperty('--d', (Math.random() * 3 + 2) + 's');
+            field.appendChild(star);
+        }
+    </script>
 </body>
 </html>
