@@ -56,16 +56,19 @@
     position:fixed; inset:0; z-index:-2;
     background: url('assets/wallpaper.jpg') repeat;
     background-size: 580px auto;
-    opacity: 1;
+    opacity: .85;
+    filter: brightness(.78) saturate(.9);
   }
   body::after{
     content:"";
     position:fixed; inset:0; z-index:-1;
     background:
-      radial-gradient(circle at 20% 10%, rgba(255,181,208,.3) 0%, transparent 45%),
-      radial-gradient(circle at 80% 30%, rgba(168,213,232,.25) 0%, transparent 45%),
-      radial-gradient(circle at 60% 85%, rgba(255,223,122,.22) 0%, transparent 45%),
-      linear-gradient(180deg, rgba(255,250,240,.35) 0%, rgba(255,240,248,.3) 40%, rgba(255,245,235,.45) 100%);
+      /* Vignette darkening toward edges */
+      radial-gradient(ellipse at center, transparent 20%, rgba(61,40,23,.35) 100%),
+      radial-gradient(circle at 20% 10%, rgba(255,181,208,.18) 0%, transparent 45%),
+      radial-gradient(circle at 80% 30%, rgba(168,213,232,.15) 0%, transparent 45%),
+      radial-gradient(circle at 60% 85%, rgba(255,223,122,.14) 0%, transparent 45%),
+      linear-gradient(180deg, rgba(61,40,23,.1) 0%, rgba(61,40,23,.05) 40%, rgba(61,40,23,.2) 100%);
     pointer-events: none;
   }
 
@@ -225,19 +228,7 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-  h1.title .w2::after{
-    content: "";
-    position: absolute;
-    bottom: 10px;
-    left: 4%;
-    width: 92%;
-    height: 10px;
-    background: var(--red-cherry);
-    z-index: -1;
-    border-radius: 20px;
-    transform: skew(-6deg) rotate(-2deg);
-    opacity: .8;
-  }
+  h1.title .w2::after{ content: none }
   /* Decorative stars around title */
   h1.title::before{
     content: "✦";
@@ -437,7 +428,6 @@
       drop-shadow( 0 6px 0 rgba(61,40,23,.15));
   }
   .section-head h2 .underline{
-    /* Inherit the gradient from parent by re-applying */
     display: inline;
     position: relative;
     white-space: nowrap;
@@ -445,13 +435,6 @@
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-  }
-  .section-head h2 .underline::after{
-    content:""; position:absolute;
-    left: -6px; right: -6px; bottom: -14px;
-    height: 10px; background: var(--red-cherry);
-    z-index: -1; border-radius: 12px;
-    transform: skew(-6deg) rotate(-1deg); opacity: .85;
   }
   .section-head p{
     font-family:'Shadows Into Light', cursive;
@@ -845,56 +828,183 @@
     50%{transform: translateX(-50%) scale(1.05)}
   }
 
-  /* --- Scene: ACHIEVEMENT --- */
+  /* --- Scene: ACHIEVEMENT COLLECTION GALLERY --- */
   .scene-achievement{
     width: 100%; height: 100%; position: relative;
-    background: url('assets/main-menu.jpg') center/cover;
+    background:
+      radial-gradient(ellipse at 50% 40%, rgba(255,245,215,.3) 0%, transparent 60%),
+      linear-gradient(160deg, #f8d9c4 0%, #e8b9a8 40%, #c98b7a 100%);
+    padding: 18px 22px;
+    overflow: hidden;
   }
+  /* Wood shelf planks feeling */
   .scene-achievement::before{
     content:"";
-    position:absolute; inset:0;
-    background: rgba(61,40,23,.15);
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 40px, rgba(139,90,60,.04) 40px 41px),
+      repeating-linear-gradient(0deg, transparent 0 60px, rgba(139,90,60,.06) 60px 62px);
+    pointer-events: none;
   }
-  .scene-achievement .toast{
-    position:absolute;
-    top: 14%; left: 50%; transform: translateX(-50%);
+  .scene-achievement .ach-header{
+    position: relative; z-index: 2;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .scene-achievement .ach-header .label{
+    display: inline-block;
+    font-family: 'Caveat Brush', cursive;
+    color: var(--paper);
+    background: var(--red-cherry);
+    padding: 3px 16px;
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    box-shadow: 0 2px 0 var(--ink);
+    transform: rotate(-2deg);
+  }
+  .scene-achievement .ach-header h4{
+    font-family: 'Baloo 2', sans-serif; font-weight: 800;
+    color: var(--brown-coco);
+    font-size: 18px;
+    margin-top: 4px;
+    -webkit-text-stroke: 1px var(--ink);
+  }
+  .scene-achievement .ach-grid{
+    position: relative; z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding: 4px;
+  }
+  .scene-achievement .ach-card{
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: 10px;
+    padding: 10px 6px 8px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 2px 0 var(--ink);
+    transform: rotate(var(--r, 0deg));
+  }
+  .scene-achievement .ach-card:nth-child(1){--r: -2deg}
+  .scene-achievement .ach-card:nth-child(2){--r: 1.5deg}
+  .scene-achievement .ach-card:nth-child(3){--r: -1deg}
+  .scene-achievement .ach-card:nth-child(4){--r: 2deg}
+  .scene-achievement .ach-card:nth-child(5){--r: 1deg}
+  .scene-achievement .ach-card:nth-child(6){--r: -1.5deg}
+  .scene-achievement .ach-card:nth-child(7){--r: 2deg}
+  .scene-achievement .ach-card:nth-child(8){--r: -1deg}
+  /* Gold badge circle */
+  .scene-achievement .ach-card .badge{
+    width: 42px; height: 42px; margin: 0 auto 4px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff3a8 0%, #f3d876 40%, #c8953a 100%);
+    border: 2px solid var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Baloo 2', sans-serif; font-weight: 800;
+    font-size: 18px; color: var(--brown-coco);
+    position: relative;
+    box-shadow: 0 2px 0 var(--ink);
+  }
+  /* Sunburst rays */
+  .scene-achievement .ach-card .badge::before{
+    content:"";
+    position: absolute;
+    inset: -6px;
+    background: conic-gradient(from 0deg, #ffe694 0deg 20deg, transparent 20deg 45deg,
+                                         #ffe694 45deg 65deg, transparent 65deg 90deg,
+                                         #ffe694 90deg 110deg, transparent 110deg 135deg,
+                                         #ffe694 135deg 155deg, transparent 155deg 180deg,
+                                         #ffe694 180deg 200deg, transparent 200deg 225deg,
+                                         #ffe694 225deg 245deg, transparent 245deg 270deg,
+                                         #ffe694 270deg 290deg, transparent 290deg 315deg,
+                                         #ffe694 315deg 335deg, transparent 335deg 360deg);
+    border-radius: 50%;
+    z-index: -1;
+    opacity: .75;
+  }
+  .scene-achievement .ach-card.locked .badge{
+    background: rgba(120,100,90,.3);
+    color: rgba(61,40,23,.4);
+  }
+  .scene-achievement .ach-card.locked .badge::before{display: none}
+  .scene-achievement .ach-card.locked{opacity: .55}
+  .scene-achievement .ach-card .ach-name{
+    font-family: 'Baloo 2', sans-serif; font-weight: 700;
+    font-size: 10px; color: var(--brown-coco);
+    line-height: 1.15;
+    margin-bottom: 2px;
+  }
+  .scene-achievement .ach-card .ach-hint{
+    font-family: 'Shadows Into Light', cursive;
+    font-size: 9px; color: var(--ink-soft);
+    line-height: 1.1;
+  }
+  /* Featured achievement: current unlock ribbon animating in */
+  .scene-achievement .featured{
+    position: absolute;
+    top: 36%; left: 50%;
+    transform: translateX(-50%);
     width: 58%;
-    animation: toast-slide 3s ease-in-out infinite;
+    z-index: 5;
+    animation: ach-toast 4s ease-in-out infinite;
+    pointer-events: none;
   }
-  @keyframes toast-slide{
-    0%{transform: translate(-50%, -140%); opacity: 0}
-    20%, 80%{transform: translate(-50%, 0); opacity: 1}
-    100%{transform: translate(-50%, -140%); opacity: 0}
+  @keyframes ach-toast{
+    0%{transform: translate(-50%, -180%) scale(.9); opacity: 0}
+    12%, 40%{transform: translate(-50%, 0) scale(1); opacity: 1}
+    52%, 100%{transform: translate(-50%, -180%) scale(.9); opacity: 0}
   }
-  .scene-achievement .toast .ribbon{
-    position:relative;
+  .scene-achievement .featured .ribbon-bg{
+    position: relative;
     width: 100%;
-    aspect-ratio: 4/1.8;
+    aspect-ratio: 4/2;
     background-image: url('assets/achievement-ribbon.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    display:flex; flex-direction: column;
-    align-items:center; justify-content:center;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding-top: 4%;
     padding-bottom: 18%;
+    filter: drop-shadow(0 8px 16px rgba(61,40,23,.4));
   }
-  .scene-achievement .toast .ribbon .badge-img{
-    position:absolute;
-    left: -8%; top: 10%;
-    width: 26%;
-    transform: rotate(-10deg);
+  .scene-achievement .featured .ribbon-bg .new-badge{
+    position: absolute;
+    top: 6%; left: 4%;
+    background: var(--red-cherry);
+    color: var(--paper);
+    font-family: 'Baloo 2', sans-serif; font-weight: 800;
+    font-size: 10px;
+    padding: 2px 8px;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    transform: rotate(-12deg);
   }
-  .scene-achievement .toast .ribbon .ach-title{
-    font-family:'Baloo 2', sans-serif; font-weight: 800;
+  .scene-achievement .featured .ribbon-bg .title{
+    font-family: 'Baloo 2', sans-serif; font-weight: 800;
     color: var(--brown-coco); font-size: 18px;
-    margin-top: 14%;
-    line-height: 1;
+    -webkit-text-stroke: 0.5px var(--ink);
+    margin-top: 4%;
   }
-  .scene-achievement .toast .ribbon .ach-desc{
-    font-family:'Shadows Into Light', cursive;
-    color: var(--red-cherry); font-size: 13px;
+  .scene-achievement .featured .ribbon-bg .desc{
+    font-family: 'Shadows Into Light', cursive;
+    color: var(--red-cherry); font-size: 12px;
     margin-top: 2px;
   }
+  /* Cat cookie decoration floating */
+  .scene-achievement .cookie{
+    position: absolute;
+    width: 42px;
+    filter: drop-shadow(2px 3px 4px rgba(61,40,23,.3));
+    z-index: 1;
+    animation: float-slow 5s ease-in-out infinite;
+  }
+  .scene-achievement .cookie-1{top: 4%; left: 3%; transform: rotate(-15deg); --rot: -15deg}
+  .scene-achievement .cookie-2{top: 6%; right: 4%; transform: rotate(12deg); --rot: 12deg; animation-delay: 1s}
 
   /* ================ INGREDIENT SHOWCASE GRID ================ */
   section.ingredients-showcase{padding: 40px 40px 80px; position: relative}
@@ -1342,10 +1452,7 @@
     </div>
     <div class="scene-viewport">
       <div class="game-screen">
-        <div class="scene-menu">
-          <div class="game-title">Baking PawPaw</div>
-          <div class="start-btn">START ✦</div>
-        </div>
+        <div class="scene-menu"></div>
       </div>
     </div>
   </div>
@@ -1497,11 +1604,63 @@
     <div class="scene-viewport">
       <div class="game-screen">
         <div class="scene-achievement">
-          <div class="toast">
-            <div class="ribbon">
-              <img class="badge-img" src="assets/achievement-badge.png" alt="achievement badge">
-              <div class="ach-title">Collection</div>
-              <div class="ach-desc">made 5 recipes</div>
+          <img class="cookie cookie-1" src="assets/cat-cookies.png" alt="">
+          <img class="cookie cookie-2" src="assets/cat-cookies.png" alt="">
+
+          <div class="ach-header">
+            <span class="label">★ ACHIEVEMENTS ★</span>
+            <h4>Your cozy collection</h4>
+          </div>
+
+          <div class="ach-grid">
+            <div class="ach-card">
+              <div class="badge">★</div>
+              <div class="ach-name">First Bake</div>
+              <div class="ach-hint">1 recipe made</div>
+            </div>
+            <div class="ach-card">
+              <div class="badge">5</div>
+              <div class="ach-name">Collection</div>
+              <div class="ach-hint">5 recipes made</div>
+            </div>
+            <div class="ach-card">
+              <div class="badge">♡</div>
+              <div class="ach-name">Cat Friend</div>
+              <div class="ach-hint">chatted 10 times</div>
+            </div>
+            <div class="ach-card locked">
+              <div class="badge">?</div>
+              <div class="ach-name">Pantry Pro</div>
+              <div class="ach-hint">use every ingredient</div>
+            </div>
+            <div class="ach-card">
+              <div class="badge">✦</div>
+              <div class="ach-name">Sweet Tooth</div>
+              <div class="ach-hint">3 desserts</div>
+            </div>
+            <div class="ach-card locked">
+              <div class="badge">?</div>
+              <div class="ach-name">Early Bird</div>
+              <div class="ach-hint">bake before 8am</div>
+            </div>
+            <div class="ach-card">
+              <div class="badge">10</div>
+              <div class="ach-name">Dedicated</div>
+              <div class="ach-hint">10 recipes made</div>
+            </div>
+            <div class="ach-card locked">
+              <div class="badge">?</div>
+              <div class="ach-name">Master Chef</div>
+              <div class="ach-hint">25 recipes made</div>
+            </div>
+          </div>
+
+          <!-- Currently unlocking notification -->
+          <div class="featured">
+            <div class="ribbon-bg">
+              <span class="new-badge">NEW!</span>
+              <div class="title">Collection</div>
+              <div class="desc">made 5 recipes ♡</div>
             </div>
           </div>
         </div>
