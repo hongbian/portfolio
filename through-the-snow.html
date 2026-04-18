@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Through the Snow — An interactive story · Nurfatin Syazliana</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Caveat:wght@400;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IM+Fell+English+SC&family=Rubik:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink-ink:#2a1f1a;
+    --ink-deep:#4a3528;
+    --ink-soft:#6b5543;
+    --parchment:#f5e8c8;
+    --parchment-light:#faf0d4;
+    --parchment-deep:#e8d49a;
+    --gold:#e3b14e;
+    --gold-warm:#f1c868;
+    --amber:#f4a84a;
+    --flame:#ffcf6b;
+    --lantern-glow:#ffe39c;
+    --snow:#f8fbff;
+    --snow-shadow:#dbe4ec;
+    --snow-deep:#b8c5d4;
+    --sky-dawn:#6a7590;
+    --sky-mid:#4a5a78;
+    --sky-deep:#2e3a54;
+    --sky-night:#1a243a;
+    --pine:#2c4a3a;
+    --cabin-brown:#5a3724;
+    --cabin-warm:#8b5d3a;
+    --red-hood:#b5484a;
+    --red-warm:#c55858;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background: var(--sky-night);
+    color: var(--parchment);
+    font-family: 'Crimson Pro', serif;
+    font-weight: 400;
+    overflow-x: hidden;
+    line-height: 1.65;
+  }
+
+  /* === ATMOSPHERIC BACKGROUND === */
+  body::before{
+    content:"";
+    position: fixed; inset: 0; z-index: -3;
+    background:
+      radial-gradient(ellipse at 50% 10%, var(--sky-dawn) 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 40%, rgba(106,117,144,.6) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 60%, rgba(74,90,120,.4) 0%, transparent 50%),
+      linear-gradient(180deg, var(--sky-mid) 0%, var(--sky-deep) 50%, var(--sky-night) 100%);
+  }
+  /* Vignette */
+  body::after{
+    content:"";
+    position: fixed; inset: 0; z-index: -2;
+    background: radial-gradient(ellipse at center, transparent 20%, rgba(0,0,0,.5) 100%);
+    pointer-events: none;
+  }
+
+  /* === FALLING SNOW === */
+  .snow-layer{
+    position: fixed; inset: 0; z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .snowflake{
+    position: absolute;
+    top: -10px;
+    color: rgba(248,251,255,.85);
+    animation: snowfall linear infinite;
+    text-shadow: 0 0 6px rgba(248,251,255,.5);
+  }
+  @keyframes snowfall{
+    0%{transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0}
+    10%{opacity: 1}
+    90%{opacity: 1}
+    100%{transform: translateY(110vh) translateX(40px) rotate(360deg); opacity: 0}
+  }
+
+  /* === NAVBAR === */
+  nav.topbar{
+    position: sticky; top: 16px; z-index: 50;
+    margin: 20px 24px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(42,31,26,.85);
+    backdrop-filter: blur(10px);
+    border: 2px solid var(--gold);
+    border-radius: 999px;
+    padding: 10px 22px 10px 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.35), inset 0 0 30px rgba(227,177,78,.08);
+  }
+  nav.topbar a.back{
+    font-family: 'Amatic SC', sans-serif;
+    font-size: 24px; font-weight: 700;
+    color: var(--parchment);
+    text-decoration: none;
+    display: flex; align-items: center; gap: 10px;
+    padding: 4px 14px;
+    border-radius: 999px;
+    transition: background .2s, transform .2s;
+    letter-spacing: 1px;
+  }
+  nav.topbar a.back:hover{background: rgba(227,177,78,.2); transform: translateX(-3px)}
+  nav.topbar .brand{
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'IM Fell English SC', serif;
+    font-size: 16px;
+    color: var(--gold-warm);
+    letter-spacing: 2px;
+  }
+  nav.topbar .brand .lantern{
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--flame);
+    box-shadow: 0 0 12px 2px var(--flame), 0 0 24px 4px rgba(244,168,74,.4);
+    animation: flicker 2s ease-in-out infinite;
+  }
+  @keyframes flicker{
+    0%,100%{opacity: 1; transform: scale(1)}
+    50%{opacity: .75; transform: scale(.92)}
+  }
+  nav.topbar .meta{
+    font-family: 'Amatic SC', sans-serif;
+    font-size: 22px; font-weight: 700;
+    color: var(--gold-warm);
+    letter-spacing: 1.5px;
+  }
+
+  /* === HERO: FULL-BLEED VILLAGE === */
+  section.hero{
+    position: relative;
+    min-height: 95vh;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    margin: 20px;
+    border: 3px solid var(--gold);
+    border-radius: 28px;
+    box-shadow: 0 10px 60px rgba(0,0,0,.6), inset 0 0 120px rgba(26,36,58,.5);
+  }
+  .hero-bg{
+    position: absolute; inset: 0;
+    background: url('assets-snow/title-screen.jpg') center/cover;
+    filter: brightness(.85) saturate(1.1);
+  }
+  .hero-bg::after{
+    content:"";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 30%, transparent 30%, rgba(26,36,58,.55) 100%),
+      linear-gradient(180deg, rgba(74,90,120,.2) 0%, transparent 30%, rgba(26,36,58,.55) 100%);
+  }
+  .hero-content{
+    position: relative; z-index: 3;
+    text-align: center;
+    padding: 40px 40px 50px;
+    max-width: 960px;
+  }
+  .hero-kicker{
+    display: inline-flex; align-items: center; gap: 14px;
+    padding: 6px 20px;
+    background: rgba(42,31,26,.75);
+    backdrop-filter: blur(6px);
+    border: 2px solid var(--gold);
+    border-radius: 999px;
+    font-family: 'Amatic SC', sans-serif;
+    font-size: 22px; font-weight: 700;
+    color: var(--gold-warm);
+    letter-spacing: 3px;
+    margin-bottom: 24px;
+    box-shadow: 0 0 20px rgba(227,177,78,.3);
+  }
+  .hero-kicker::before, .hero-kicker::after{
+    content: "❈"; color: var(--gold);
+    font-size: 14px;
+  }
+  h1.story-title{
+    font-family: 'Amatic SC', sans-serif;
+    font-weight: 700;
+    font-size: clamp(66px, 12vw, 160px);
+    color: var(--snow);
+    letter-spacing: 2px;
+    line-height: .95;
+    text-shadow:
+      0 0 2px var(--ink-ink),
+      0 2px 0 var(--ink-ink),
+      0 4px 0 var(--sky-deep),
+      0 8px 24px rgba(0,0,0,.8),
+      0 0 60px rgba(248,251,255,.25);
+    margin-bottom: 20px;
+  }
+  h1.story-title .amp{color: var(--lantern-glow)}
+  .tagline{
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: clamp(18px, 2vw, 24px);
+    color: var(--parchment-light);
+    max-width: 620px;
+    margin: 0 auto 10px;
+    text-shadow: 0 2px 12px rgba(0,0,0,.8);
+  }
+  .tagline .glow{color: var(--gold-warm); font-style: normal; font-weight: 600}
+
+  .hero-buttons{
+    display: flex; gap: 16px; justify-content: center;
+    margin-top: 32px; flex-wrap: wrap;
+  }
+  .btn-lantern{
+    background: linear-gradient(180deg, var(--gold-warm) 0%, var(--amber) 100%);
+    color: var(--ink-ink);
+    padding: 14px 32px;
+    font-family: 'Amatic SC', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 2px;
+    border: 2px solid var(--ink-deep);
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 10px;
+    box-shadow:
+      0 0 0 3px var(--gold),
+      0 0 30px rgba(241,200,104,.4),
+      0 6px 20px rgba(0,0,0,.4);
+    transition: transform .2s, box-shadow .2s;
+    cursor: pointer;
+  }
+  .btn-lantern:hover{
+    transform: translateY(-3px);
+    box-shadow:
+      0 0 0 3px var(--gold),
+      0 0 40px rgba(241,200,104,.6),
+      0 10px 30px rgba(0,0,0,.5);
+  }
+  .btn-lantern.ghost{
+    background: rgba(42,31,26,.65);
+    backdrop-filter: blur(6px);
+    color: var(--parchment-light);
+    box-shadow: 0 0 0 3px var(--gold), 0 6px 20px rgba(0,0,0,.4);
+  }
+  .btn-lantern.ghost:hover{background: rgba(42,31,26,.8)}
+  .btn-lantern svg{width: 18px; height: 18px}
+
+  /* Glowing snow pile at bottom of hero */
+  .hero-snow-bottom{
+    position: absolute;
+    left: 0; right: 0; bottom: -2px;
+    height: 80px;
+    background:
+      linear-gradient(180deg, transparent 0%, rgba(248,251,255,.4) 50%, rgba(248,251,255,.7) 100%);
+    pointer-events: none;
+  }
+
+  /* === STORYBOOK META STRIP === */
+  .story-meta{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin: 30px 20px;
+    background: rgba(42,31,26,.85);
+    backdrop-filter: blur(8px);
+    border: 2px solid var(--gold);
+    border-radius: 16px;
+    padding: 4px;
+    box-shadow: 0 10px 40px rgba(0,0,0,.5);
+    overflow: hidden;
+  }
+  .story-meta .cell{
+    padding: 22px 24px;
+    border-right: 2px dashed rgba(227,177,78,.3);
+    position: relative;
+  }
+  .story-meta .cell:last-child{border-right: none}
+  .story-meta .cell .label{
+    font-family: 'Amatic SC', sans-serif;
+    font-size: 18px; font-weight: 700;
+    color: var(--gold-warm);
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+  .story-meta .cell .value{
+    font-family: 'IM Fell English SC', serif;
+    font-size: 17px;
+    color: var(--parchment);
+    line-height: 1.25;
+  }
+  .story-meta .cell .value .warm{color: var(--amber)}
+
+  /* === CHAPTER SECTIONS === */
+  section.chapter{
+    position: relative;
+    padding: 80px 40px 100px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .chapter-marker{
+    text-align: center;
+    margin-bottom: 50px;
+    position: relative;
+  }
+  .chapter-marker::before,
+  .chapter-marker::after{
+    content:"";
+    position: absolute;
+    top: 50%; width: 28%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, var(--gold) 50%, transparent 100%);
+  }
+  .chapter-marker::before{left: 6%}
+  .chapter-marker::after{right: 6%}
+  .chapter-marker .num{
+    display: inline-block;
+    font-family: 'Amatic SC', sans-serif;
+    font-size: 22px; font-weight: 700;
+    color: var(--gold-warm);
+    letter-spacing: 4px;
+    margin-bottom: 4px;
+  }
+  .chapter-marker h2{
+    font-family: 'Amatic SC', sans-serif;
+    font-weight: 700;
+    font-size: clamp(42px, 6vw, 78px);
+    color: var(--parchment-light);
+    letter-spacing: 1.5px;
+    line-height: 1;
+    text-shadow: 0 0 2px var(--ink-ink), 0 2px 0 var(--ink-ink), 0 4px 20px rgba(0,0,0,.6), 0 0 40px rgba(244,168,74,.25);
+  }
+  .chapter-marker h2 .accent{color: var(--amber); font-style: italic}
+  .chapter-marker p{
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    color: var(--parchment-light);
+    max-width: 520px;
+    margin: 10px auto 0;
+    opacity: .85;
+  }
+
+  /* === INNKEEPER NARRATOR BLOCK === */
+  .narrator-block{
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 40px;
+    align-items: center;
+    padding: 20px 0;
+  }
+  .narrator-block.reverse{grid-template-columns: 1fr 320px}
+  .narrator-block.reverse .narrator-char{order: 2}
+  .narrator-char{
+    position: relative;
+    aspect-ratio: 3/4;
+    background-size: cover;
+    background-position: center;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 3px var(--gold),
+      0 0 40px rgba(244,168,74,.25),
+      0 12px 40px rgba(0,0,0,.5);
+  }
+  .narrator-char::after{
+    content:"";
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 45%, transparent 45%, rgba(0,0,0,.4) 100%);
+  }
+  /* Speech scroll */
+  .speech-scroll{
+    position: relative;
+    background:
+      radial-gradient(ellipse at 30% 20%, var(--parchment-light) 0%, var(--parchment) 60%, var(--parchment-deep) 100%);
+    color: var(--ink-deep);
+    padding: 50px 60px 50px 60px;
+    border-radius: 6px;
+    font-family: 'Crimson Pro', serif;
+    font-size: 18px;
+    line-height: 1.75;
+    box-shadow:
+      0 8px 32px rgba(0,0,0,.45),
+      inset 0 0 80px rgba(139,93,58,.15),
+      inset 0 0 20px rgba(90,55,36,.1);
+    /* Torn edges */
+    clip-path: polygon(
+      0% 4%, 3% 2%, 8% 5%, 14% 2%, 22% 4%, 30% 1%, 38% 3%, 46% 1%, 54% 4%,
+      62% 2%, 70% 4%, 78% 1%, 86% 3%, 94% 2%, 100% 5%,
+      98% 12%, 100% 22%, 99% 32%, 100% 45%, 98% 58%, 100% 70%, 99% 82%, 100% 95%,
+      96% 98%, 90% 96%, 82% 99%, 74% 97%, 66% 100%, 58% 97%, 50% 99%, 42% 96%,
+      34% 99%, 26% 97%, 18% 100%, 10% 97%, 4% 99%, 0% 95%,
+      2% 82%, 0% 70%, 1% 58%, 0% 45%, 2% 32%, 0% 22%, 1% 12%);
+  }
+  .speech-scroll::before{
+    content:"";
+    position: absolute;
+    left: -6px; top: 8%; bottom: 8%;
+    width: 12px;
+    background: var(--ink-deep);
+    border-radius: 50%;
+    opacity: .5;
+    filter: blur(4px);
+  }
+  .speech-scroll h3{
+    font-family: 'Amatic SC', sans-serif;
+    font-weight: 700;
+    font-size: 36px;
+    color: var(--red-hood);
+    line-height: 1;
+    margin-bottom: 14px;
+    letter-spacing: 1px;
+  }
+  .speech-scroll p{margin-bottom: 14px}
+  .speech-scroll p:last-child{margin-bottom: 0}
+  .speech-scroll em{color: var(--red-warm); font-weight: 600}
+  .speech-scroll .highlight{
+    background: linear-gradient(180deg, transparent 60%, rgba(241,200,104,.6) 60%);
+    padding: 0 4px;
+  }
+  /* Lantern hanging from corner */
+  .speech-scroll .lantern-deco{
+    position: absolute;
+    top: -20px; right: 30px;
+    width: 60px; height: 80px;
+    z-index: 2;
+  }
+  .speech-scroll .lantern-deco svg{
+    width: 100%; height: 100%;
+    filter: drop-shadow(0 0 20px rgba(241,200,104,.6)) drop-shadow(0 6px 12px rgba(0,0,0,.4));
+  }
+
+  /* === GAME SCREEN SHOWCASES === */
+  .screen-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 60px;
+  }
+  .screen-card{
+    background: rgba(42,31,26,.6);
+    backdrop-filter: blur(6px);
+    border: 2px solid var(--gold);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.45);
+    transition: transform .3s, box-shadow .3s;
+  }
+  .screen-card:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 14px 40px rgba(0,0,0,.55), 0 0 50px rgba(241,200,104,.2);
+  }
+  .screen-card .screen-img{
+    width: 100%;
+    aspect-ratio: 16/9;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    border: 2px solid var(--ink-deep);
+    margin-bottom: 16px;
+  }
+  .screen-card h4{
+    font-family: 'Amatic SC', sans-serif;
+    font-weight: 700;
+    font-size: 30px;
+    color: var(--gold-warm);
+    letter-spacing: 1.5px;
+    margin-bottom: 6px;
+  }
+  .screen-card p{
+    font-family: 'Crimson Pro', serif;
+    font-size: 16px;
+    color: var(--parchment-light);
+    line-height: 1.6;
+    opacity: .9;
+  }
+  .screen-card .tag-row{
+    margin-top: 10px;
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .screen-card .tag{
+    font-family: 'IM Fell English SC', serif;
+    font-size: 11px;
+    color: var(--gold-warm);
+    padding: 3px 10px;
+    border: 1px solid rgba(227,177,78,.5);
+    border-radius: 999px;
+    letter-spacing: 1.5px;
+  }
+
+  /* === WARDROBE / CHARACTER CUSTOMIZATION === */
+  .wardrobe-section{
+    margin-top: 60px;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(139,93,58,.5) 0%, transparent 60%),
+      linear-gradient(180deg, rgba(90,55,36,.45) 0%, rgba(42,31,26,.65) 100%);
+    border: 2px solid var(--gold);
+    border-radius: 24px;
+    padding: 50px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .wardrobe-section::before{
+    content:"";
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 4px, rgba(90,55,36,.08) 4px 5px);
+    pointer-events: none;
+  }
+  .wardrobe-title{
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+  }
+  .wardrobe-title .tiny{
+    font-family: 'IM Fell English SC', serif;
+    color: var(--gold-warm); font-size: 14px;
+    letter-spacing: 4px; margin-bottom: 6px;
+  }
+  .wardrobe-title h3{
+    font-family: 'Amatic SC', sans-serif;
+    font-weight: 700;
+    font-size: 52px;
+    color: var(--parchment-light);
+    letter-spacing: 2px;
+    text-shadow: 0 2px 0 var(--ink-ink), 0 4px 20px rgba(0,0,0,.5);
+  }
+  .wardrobe-title p{
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    color: var(--parchment); opacity: .85;
+    max-width: 520px; margin: 8px auto 0;
+  }
+  .char-variants{
+    display: flex; justify-content: center; align-items: flex-end;
+    gap: 20px; flex-wrap: wrap;
+    margin-top: 20px;
+    position: relative;
+    z-index: 2;
+  }
+  .char-variant{
+    width: 140px;
+    text-align: center;
+    transition: transform .3s;
+    cursor: pointer;
+  }
+  .char-variant:hover{transform: translateY(-8px) scale(1.05)}
+  .char-variant .char-img{
+    width: 100%; aspect-ratio: 1;
+    border-radius: 50%;
+    background-size: 500% 500%;
+    border: 3px solid var(--gold);
+    box-shadow:
+      0 0 25px rgba(241,200,104,.3),
+      0 10px 20px rgba(0,0,0,.45),
+      inset 0 0 30px rgba(0,0,0,.3);
+  }
+  /* Each variant shows a different crop of the characters.jpg sheet */
+  .char-variant.red .char-img{background-image: url('assets-snow/characters.jpg'); background-position: 0% 0%}
+  .char-variant.yellow .char-img{background-image: url('assets-snow/characters.jpg'); background-position: 25% 0%}
+  .char-variant.blue .char-img{background-image: url('assets-snow/characters.jpg'); background-position: 50% 0%}
+  .char-variant.purple .char-img{background-image: url('assets-snow/characters.jpg'); background-position: 75% 0%}
+  .char-variant.green .char-img{background-image: url('assets-snow/characters.jpg'); background-position: 100% 0%}
+  .char-variant .label{
+    font-family: 'Amatic SC', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    color: var(--parchment-light);
+    margin-top: 10px;
+    letter-spacing: 2px;
+  }
+  .char-variant.red .label{color: #e99a9a}
+  .char-variant.yellow .label{color: #f0d77a}
+  .char-variant.blue .label{color: #8fb8d4}
+  .char-variant.purple .label{color: #c4a8d4}
+  .char-variant.green .label{color: #9fc8a5}
+
+  /* === MY ROLE / DEV NOTES === */
+  .role-scroll{
+    margin: 80px auto;
+    max-width: 900px;
+    padding: 60px 70px;
+    background:
+      radial-gradient(ellipse at 30% 20%, var(--parchment-light) 0%, var(--parchment) 60%, var(--parchment-deep) 100%);
+    color: var(--ink-deep);
+    box-shadow:
+      0 20px 60px rgba(0,0,0,.6),
+      inset 0 0 100px rgba(139,93,58,.15);
+    border-radius: 8px;
+    position: relative;
+    clip-path: polygon(
+      0% 3%, 4% 1%, 10% 3%, 18% 1%, 26% 3%, 34% 1%, 42% 3%, 50% 1%, 58% 3%,
+      66% 1%, 74% 3%, 82% 1%, 90% 3%, 96% 1%, 100% 3%,
+      99% 15%, 100% 30%, 99% 45%, 100% 60%, 99% 75%, 100% 90%, 99% 97%,
+      95% 99%, 88% 97%, 80% 99%, 72% 97%, 64% 99%, 56% 97%, 48% 99%, 40% 97%,
+      32% 99%, 24% 97%, 16% 99%, 8% 97%, 4% 99%, 0% 97%,
+      1% 85%, 0% 70%, 1% 55%, 0% 40%, 1% 25%, 0% 12%);
+  }
+  .role-scroll h3{
+    font-family: 'Amatic SC', sans-serif;
+    font-weight: 700;
+    font-size: 48px;
+    color: var(--red-hood);
+    text-align: center;
+    margin-bottom: 24px;
+    letter-spacing: 1.5px;
+  }
+  .role-scroll .divider{
+    text-align: center;
+    margin: 16px 0 24px;
+    color: var(--gold);
+    letter-spacing: 8px;
+    font-size: 14px;
+  }
+  .role-scroll p{
+    font-family: 'Crimson Pro', serif;
+    font-size: 17px;
+    line-height: 1.8;
+    margin-bottom: 16px;
+    color: var(--ink-deep);
+  }
+  .role-scroll p em{color: var(--red-hood); font-style: italic; font-weight: 600}
+  .role-scroll .role-list{
+    margin: 20px 0 10px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px 30px;
+  }
+  .role-scroll .role-list .item{
+    padding-left: 24px;
+    position: relative;
+  }
+  .role-scroll .role-list .item::before{
+    content: "❈";
+    position: absolute;
+    left: 0; top: 2px;
+    color: var(--gold);
+    font-size: 14px;
+  }
+  .role-scroll .role-list .item h5{
+    font-family: 'IM Fell English SC', serif;
+    font-size: 16px;
+    color: var(--cabin-brown);
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+  }
+  .role-scroll .role-list .item p{
+    font-size: 14px; line-height: 1.5;
+    margin-bottom: 0;
+    color: var(--ink-soft);
+  }
+
+  /* === TECH STACK === */
+  .tech-section{padding: 60px 40px; text-align: center}
+  .tech-section h3{
+    font-family: 'Amatic SC', sans-serif;
+    font-weight: 700;
+    font-size: 48px;
+    color: var(--gold-warm);
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 0 var(--ink-ink);
+  }
+  .tech-section .sub{
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    color: var(--parchment);
+    opacity: .8;
+    margin-bottom: 26px;
+  }
+  .tech-stack{
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 14px;
+  }
+  .tech-chip{
+    background: rgba(42,31,26,.75);
+    border: 2px solid var(--gold);
+    border-radius: 999px;
+    padding: 10px 22px;
+    font-family: 'IM Fell English SC', serif;
+    font-size: 14px;
+    color: var(--parchment-light);
+    letter-spacing: 1.5px;
+    box-shadow: inset 0 0 20px rgba(227,177,78,.1);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .tech-chip:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(241,200,104,.35), inset 0 0 20px rgba(227,177,78,.15);
+  }
+
+  /* === FINAL CTA === */
+  .final-cta{
+    margin: 60px 40px;
+    padding: 80px 40px;
+    position: relative;
+    background:
+      radial-gradient(ellipse at 50% 40%, rgba(241,200,104,.25) 0%, transparent 60%),
+      linear-gradient(180deg, rgba(42,31,26,.85) 0%, rgba(26,36,58,.9) 100%);
+    border: 2px solid var(--gold);
+    border-radius: 28px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .final-cta .big-lantern{
+    position: absolute;
+    top: -20px; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 140px;
+    z-index: 2;
+  }
+  .final-cta h3{
+    font-family: 'Amatic SC', sans-serif;
+    font-weight: 700;
+    font-size: clamp(42px, 6vw, 68px);
+    color: var(--parchment-light);
+    letter-spacing: 2px;
+    margin: 60px 0 14px;
+    line-height: 1.05;
+    text-shadow: 0 0 2px var(--ink-ink), 0 2px 0 var(--ink-ink), 0 4px 24px rgba(244,168,74,.4);
+  }
+  .final-cta h3 .accent{color: var(--amber); font-style: italic}
+  .final-cta p{
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 20px;
+    color: var(--parchment);
+    max-width: 540px;
+    margin: 0 auto 30px;
+    opacity: .88;
+  }
+  .final-cta .cta-row{
+    display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+  }
+
+  footer.credits{
+    text-align: center;
+    padding: 40px 20px;
+    font-family: 'IM Fell English SC', serif;
+    color: var(--parchment);
+    opacity: .6;
+    letter-spacing: 1px;
+    border-top: 1px solid rgba(227,177,78,.2);
+  }
+  footer.credits .flame{color: var(--amber)}
+
+  /* REVEAL ANIMATIONS */
+  .reveal{opacity: 0; transform: translateY(30px); transition: opacity .9s ease, transform .9s cubic-bezier(0.22,1,0.36,1)}
+  .reveal.in{opacity: 1; transform: none}
+
+  /* RESPONSIVE */
+  @media (max-width: 960px){
+    section.chapter{padding: 60px 20px 80px}
+    .narrator-block, .narrator-block.reverse{grid-template-columns: 1fr; gap: 30px}
+    .narrator-block.reverse .narrator-char{order: 0}
+    .narrator-char{aspect-ratio: 4/3; max-height: 320px; margin: 0 auto; max-width: 320px}
+    .screen-grid{grid-template-columns: 1fr; gap: 24px}
+    .story-meta{grid-template-columns: repeat(2, 1fr); margin: 20px 12px}
+    .story-meta .cell:nth-child(2){border-right: none}
+    .story-meta .cell:nth-child(1), .story-meta .cell:nth-child(2){border-bottom: 2px dashed rgba(227,177,78,.3)}
+    .speech-scroll{padding: 40px 36px}
+    .role-scroll{padding: 40px 36px; margin: 60px 20px}
+    .role-scroll .role-list{grid-template-columns: 1fr}
+    .wardrobe-section{padding: 40px 24px}
+    nav.topbar{margin: 12px 10px 0; padding: 8px 16px 8px 12px}
+    nav.topbar .meta{display: none}
+    section.hero{min-height: 70vh; margin: 12px}
+    .char-variants{gap: 14px}
+    .char-variant{width: 100px}
+    .final-cta{margin: 40px 14px; padding: 60px 20px}
+  }
+  @media (max-width: 520px){
+    h1.story-title{font-size: 52px}
+    .tagline{font-size: 16px}
+    .hero-buttons{flex-direction: column; align-items: stretch}
+    .btn-lantern{justify-content: center}
+    .char-variant{width: 85px}
+    .char-variant .label{font-size: 18px}
+    .chapter-marker::before, .chapter-marker::after{display: none}
+  }
+</style>
+</head>
+<body>
+
+<!-- Snow layer -->
+<div class="snow-layer" id="snow"></div>
+
+<!-- Navigation -->
+<nav class="topbar">
+  <a href="index.html" class="back">
+    <span>←</span>
+    <span>back to portfolio</span>
+  </a>
+  <div class="brand">
+    <span class="lantern"></span>
+    <span>NRF.SYZL · PROJECT 06</span>
+  </div>
+  <div class="meta">❈ case study ❈</div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-kicker">AN INTERACTIVE STORY · 2023</div>
+    <h1 class="story-title">Through <span class="amp">the</span><br>Snow</h1>
+    <p class="tagline">
+      A traveler arrives at a warm inn on a cold night.
+      The <span class="glow">innkeeper smiles</span>. A journey begins.
+    </p>
+    <div class="hero-buttons">
+      <a class="btn-lantern" href="#chapter-one">
+        <span>❈</span>
+        <span>enter the village</span>
+      </a>
+      <a class="btn-lantern ghost" href="#role">
+        <span>my role</span>
+        <span>→</span>
+      </a>
+    </div>
+  </div>
+  <div class="hero-snow-bottom"></div>
+</section>
+
+<!-- Story meta -->
+<div class="story-meta reveal">
+  <div class="cell">
+    <div class="label">The Year</div>
+    <div class="value">2023 <span class="warm">·</span> first Unity project</div>
+  </div>
+  <div class="cell">
+    <div class="label">My Role</div>
+    <div class="value">Designer <span class="warm">+</span> illustrator</div>
+  </div>
+  <div class="cell">
+    <div class="label">Built With</div>
+    <div class="value">Unity <span class="warm">·</span> C#</div>
+  </div>
+  <div class="cell">
+    <div class="label">The Vibe</div>
+    <div class="value">Warm <span class="warm">&amp;</span> cold <span class="warm">·</span> storybook</div>
+  </div>
+</div>
+
+<!-- ============ CHAPTER ONE: THE VILLAGE ============ -->
+<section class="chapter" id="chapter-one">
+  <div class="chapter-marker reveal">
+    <div class="num">❈ CHAPTER ONE ❈</div>
+    <h2>The <span class="accent">traveler</span> arrives</h2>
+    <p>where the snow never stops, and every window glows warm.</p>
+  </div>
+
+  <!-- Innkeeper narrator intro -->
+  <div class="narrator-block reveal">
+    <div class="narrator-char" style="background-image: url('assets-snow/innkeeper.jpg')"></div>
+    <div class="speech-scroll">
+      <svg class="lantern-deco" viewBox="0 0 60 80">
+        <line x1="30" y1="0" x2="30" y2="14" stroke="#2a1f1a" stroke-width="2"/>
+        <path d="M18 18 L42 18 L46 28 L42 38 L18 38 L14 28 Z" fill="#e3b14e" stroke="#2a1f1a" stroke-width="2"/>
+        <ellipse cx="30" cy="28" rx="8" ry="12" fill="#ffe39c"/>
+        <circle cx="30" cy="28" r="4" fill="#fff"/>
+        <line x1="30" y1="38" x2="30" y2="50" stroke="#2a1f1a" stroke-width="2"/>
+        <path d="M22 52 L38 52 L36 58 L24 58 Z" fill="#e3b14e" stroke="#2a1f1a" stroke-width="2"/>
+      </svg>
+      <h3>Welcome, traveler.</h3>
+      <p>
+        "<em>Through the Snow</em>" is an interactive story I built in 2023 — my first real Unity project.
+        A <span class="highlight">traveler enters an unfamiliar snow world</span> to experience uncertainty,
+        excitement, and growth.
+      </p>
+      <p>
+        The title works on two levels: it's both <em>playfully exploring</em> exciting new terrain,
+        and <em>persevering through hardship</em> to push forward.
+      </p>
+      <p>
+        I wanted the player to feel like they'd just stepped inside the warmest inn on the coldest night.
+        Every UI element is hand-painted to feel like it belongs in a storybook, not a menu.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHAPTER TWO: THE INN ============ -->
+<section class="chapter">
+  <div class="chapter-marker reveal">
+    <div class="num">❈ CHAPTER TWO ❈</div>
+    <h2>The <span class="accent">inn</span> &amp; its keeper</h2>
+    <p>a warm hub where every journey starts and ends.</p>
+  </div>
+
+  <div class="screen-grid">
+    <div class="screen-card reveal">
+      <div class="screen-img" style="background-image: url('assets-snow/title-screen.jpg')"></div>
+      <h4>The Title Screen</h4>
+      <p>
+        The player arrives at the snowy village to the hand-painted title, enters their traveler's name,
+        and confirms. The <em>Through the Snow</em> letters were drawn with a brush texture, echoing the
+        snow drifts in the scene behind them.
+      </p>
+      <div class="tag-row">
+        <span class="tag">TMP_INPUTFIELD</span>
+        <span class="tag">DONTDESTROYONLOAD</span>
+      </div>
+    </div>
+
+    <div class="screen-card reveal">
+      <div class="screen-img" style="background-image: url('assets-snow/hub-screen.jpg')"></div>
+      <h4>The Inn Hub</h4>
+      <p>
+        Inside, a painted doorway glows with "NEW ADVENTURE," with side nooks for Settings,
+        Achievements, and the Wardrobe. The innkeeper watches from her shelf, the lantern swings overhead.
+      </p>
+      <div class="tag-row">
+        <span class="tag">SCENE MANAGER</span>
+        <span class="tag">UI BUTTONS</span>
+      </div>
+    </div>
+
+    <div class="screen-card reveal">
+      <div class="screen-img" style="background-image: url('assets-snow/settings-screen.jpg')"></div>
+      <h4>Settings Scroll</h4>
+      <p>
+        Instead of a plain pop-up, settings unfurl as a taped-up parchment — volume slider, sound
+        effects toggle, a lantern glowing in the corner. The innkeeper appears beside it to explain.
+      </p>
+      <div class="tag-row">
+        <span class="tag">PLAYERPREFS</span>
+        <span class="tag">SLIDER UI</span>
+      </div>
+    </div>
+
+    <div class="screen-card reveal">
+      <div class="screen-img" style="background-image: url('assets-snow/journey-screen.jpg')"></div>
+      <h4>"Your Journey Begins Here…"</h4>
+      <p>
+        A quiet loading moment between scenes: the village fades back in, a slim blue progress bar
+        fills across the bottom, and the traveler stands ready. Small transitions, big feeling.
+      </p>
+      <div class="tag-row">
+        <span class="tag">ASYNC LOAD</span>
+        <span class="tag">FADE TRANSITIONS</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHAPTER THREE: THE WARDROBE ============ -->
+<section class="chapter">
+  <div class="chapter-marker reveal">
+    <div class="num">❈ CHAPTER THREE ❈</div>
+    <h2>Choose your <span class="accent">cloak</span></h2>
+    <p>before the traveler sets out, they pick the color they'll wear into the snow.</p>
+  </div>
+
+  <!-- Aviator guide narrator -->
+  <div class="narrator-block reverse reveal">
+    <div class="narrator-char" style="background-image: url('assets-snow/aviator-guide.jpg')"></div>
+    <div class="speech-scroll">
+      <svg class="lantern-deco" viewBox="0 0 60 80">
+        <line x1="30" y1="0" x2="30" y2="14" stroke="#2a1f1a" stroke-width="2"/>
+        <path d="M18 18 L42 18 L46 28 L42 38 L18 38 L14 28 Z" fill="#e3b14e" stroke="#2a1f1a" stroke-width="2"/>
+        <ellipse cx="30" cy="28" rx="8" ry="12" fill="#ffe39c"/>
+        <circle cx="30" cy="28" r="4" fill="#fff"/>
+        <line x1="30" y1="38" x2="30" y2="50" stroke="#2a1f1a" stroke-width="2"/>
+        <path d="M22 52 L38 52 L36 58 L24 58 Z" fill="#e3b14e" stroke="#2a1f1a" stroke-width="2"/>
+      </svg>
+      <h3>"Who will you be?"</h3>
+      <p>
+        I wanted the player to <em>identify with their traveler</em>, not just control them.
+        So before the journey starts, you open an old oak wardrobe and pick a color — <em>red, yellow, blue, purple,</em>
+        or <em>green</em> — and watch your character change in the soft glow of the lantern.
+      </p>
+      <p>
+        The <span class="highlight">wardrobe scene took the longest to paint</span>. I wanted it to feel
+        like an actual room, with the lantern casting light on one side and blue moonlight creeping in the other.
+      </p>
+    </div>
+  </div>
+
+  <!-- Character variants -->
+  <div class="wardrobe-section reveal">
+    <div class="wardrobe-title">
+      <div class="tiny">❈ CHARACTER VARIANTS ❈</div>
+      <h3>Five cloaks, one traveler</h3>
+      <p>hover any color to bring them forward</p>
+    </div>
+    <div class="char-variants">
+      <div class="char-variant red">
+        <div class="char-img"></div>
+        <div class="label">Red</div>
+      </div>
+      <div class="char-variant yellow">
+        <div class="char-img"></div>
+        <div class="label">Yellow</div>
+      </div>
+      <div class="char-variant blue">
+        <div class="char-img"></div>
+        <div class="label">Blue</div>
+      </div>
+      <div class="char-variant purple">
+        <div class="char-img"></div>
+        <div class="label">Purple</div>
+      </div>
+      <div class="char-variant green">
+        <div class="char-img"></div>
+        <div class="label">Green</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen-grid" style="margin-top: 60px">
+    <div class="screen-card reveal">
+      <div class="screen-img" style="background-image: url('assets-snow/wardrobe-screen.jpg')"></div>
+      <h4>The Wardrobe Scene</h4>
+      <p>
+        Warm lantern on the left, blue moonlight on the right, the wardrobe itself glowing
+        with colored cloaks inside. The traveler stands in a patch of magical light
+        as you flip through Color options.
+      </p>
+      <div class="tag-row">
+        <span class="tag">DROPDOWN UI</span>
+        <span class="tag">SPRITE SWAP</span>
+      </div>
+    </div>
+
+    <div class="screen-card reveal">
+      <div class="screen-img" style="background-image: url('assets-snow/name-entry.jpg')"></div>
+      <h4>Naming the Traveler</h4>
+      <p>
+        A second guide — aviator goggles, green cloak — hands over a parchment full of letter tiles.
+        The traveler's face peeks out from one corner, smiling back.
+      </p>
+      <div class="tag-row">
+        <span class="tag">TMP_INPUTFIELD</span>
+        <span class="tag">PERSISTENT NAME</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MY ROLE ============ -->
+<section class="chapter" id="role">
+  <div class="role-scroll reveal">
+    <h3>My hands made this</h3>
+    <div class="divider">❈  ❈  ❈</div>
+    <p>
+      <em>Through the Snow</em> was my very first Unity project — I built it solo in 2023 as a school
+      assignment that I let get out of hand, because I loved the world too much to stop at the brief.
+    </p>
+    <p>
+      Every illustration in this page — the village, the inn, the wardrobe, the innkeeper, the
+      traveler in five colors, the scrolls and lanterns — I painted by hand in Procreate. Every line of
+      C# is mine. I wanted the game to feel like someone had drawn it in the margins of a very old
+      storybook, and then somehow it learned how to respond when you clicked.
+    </p>
+    <div class="role-list">
+      <div class="item">
+        <h5>Illustration &amp; art direction</h5>
+        <p>All backgrounds, characters, UI scrolls, and props — painted in Procreate.</p>
+      </div>
+      <div class="item">
+        <h5>Unity + C# scripting</h5>
+        <p>Scene flow, input fields, persistent player data, async scene loads.</p>
+      </div>
+      <div class="item">
+        <h5>UI design</h5>
+        <p>Parchment menus, lantern accents, diegetic wardrobe, hand-lettered buttons.</p>
+      </div>
+      <div class="item">
+        <h5>Character design</h5>
+        <p>The traveler (5 color variants), the innkeeper, and the aviator-goggles guide.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TECH ============ -->
+<section class="tech-section reveal">
+  <h3>Tools of the trade</h3>
+  <p class="sub">everything that kept the lanterns lit</p>
+  <div class="tech-stack">
+    <span class="tech-chip">UNITY 2021</span>
+    <span class="tech-chip">C#</span>
+    <span class="tech-chip">PROCREATE</span>
+    <span class="tech-chip">ADOBE ILLUSTRATOR</span>
+    <span class="tech-chip">TEXTMESH PRO</span>
+    <span class="tech-chip">URP</span>
+    <span class="tech-chip">PLAYERPREFS</span>
+    <span class="tech-chip">SCENE MANAGER</span>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="final-cta reveal">
+  <svg class="big-lantern" viewBox="0 0 120 140">
+    <line x1="60" y1="0" x2="60" y2="20" stroke="#2a1f1a" stroke-width="3"/>
+    <path d="M35 26 L85 26 L95 44 L85 62 L35 62 L25 44 Z" fill="#e3b14e" stroke="#2a1f1a" stroke-width="3"/>
+    <ellipse cx="60" cy="44" rx="16" ry="20" fill="#ffe39c">
+      <animate attributeName="opacity" values="1;.6;1" dur="2s" repeatCount="indefinite"/>
+    </ellipse>
+    <circle cx="60" cy="44" r="8" fill="#fff"/>
+    <line x1="60" y1="62" x2="60" y2="82" stroke="#2a1f1a" stroke-width="3"/>
+    <path d="M40 84 L80 84 L76 96 L44 96 Z" fill="#e3b14e" stroke="#2a1f1a" stroke-width="3"/>
+  </svg>
+  <h3>The lantern is still <span class="accent">swinging</span>.</h3>
+  <p>
+    Thanks for taking the journey with me.
+    Head back to the portfolio for more, or stay a moment longer by the fire.
+  </p>
+  <div class="cta-row">
+    <a class="btn-lantern" href="index.html">
+      <span>←</span>
+      <span>back to portfolio</span>
+    </a>
+  </div>
+</section>
+
+<footer class="credits">
+  Painted &amp; coded with <span class="flame">♦</span> by Nurfatin Syazliana · 2023
+</footer>
+
+<script>
+  // Falling snow
+  (function(){
+    const layer = document.getElementById('snow');
+    const flakes = ['❄', '❅', '❆', '·', '*'];
+    const count = 40;
+    for (let i = 0; i < count; i++){
+      const s = document.createElement('span');
+      s.className = 'snowflake';
+      s.textContent = flakes[Math.floor(Math.random() * flakes.length)];
+      s.style.left = (Math.random() * 100) + 'vw';
+      s.style.fontSize = (8 + Math.random() * 16) + 'px';
+      s.style.animationDuration = (8 + Math.random() * 12) + 's';
+      s.style.animationDelay = (Math.random() * -15) + 's';
+      s.style.opacity = (.4 + Math.random() * .5);
+      layer.appendChild(s);
+    }
+  })();
+
+  // Reveal animations
+  document.documentElement.classList.add('js');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting){
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '60px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  setTimeout(() => {
+    document.querySelectorAll('.reveal:not(.in)').forEach(el => el.classList.add('in'));
+  }, 1500);
+</script>
+</body>
+</html>
