@@ -6,58 +6,99 @@
 <title>Baking PawPaw — A cozy AI baking game · Nurfatin Syazliana</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,500&family=Caveat+Brush&family=Nunito:wght@400;600;700;800&family=Shadows+Into+Light&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Fredoka:wght@400;500;600;700&family=Baloo+2:wght@400;500;600;700;800&family=Caveat+Brush&family=Shadows+Into+Light&display=swap" rel="stylesheet">
 <style>
   :root{
-    /* === COZY BAKERY PALETTE === */
     --cream:#fbf3e1;
     --cream-deep:#f5e8d0;
     --paper:#fffaf0;
     --pink-soft:#f4c4c9;
+    --pink-bubble:#ffb5d0;
     --pink-deeper:#e8a5ac;
     --pink-cheek:#f5b0b5;
+    --pink-pop:#ff89b5;
     --blue-soft:#bcd4df;
-    --blue-fridge:#7ba7b8;
+    --blue-fridge:#a8c8d5;
+    --blue-mint:#b8d9d2;
+    --blue-sky:#a8d5e8;
     --blue-deep:#4a7585;
     --brown-warm:#8b5a3c;
     --brown-coco:#6b3f22;
+    --brown-wood:#6e4028;
     --brown-light:#c9966b;
     --red-cherry:#d55555;
     --green-leaf:#9bc288;
+    --green-mint:#b8e4c4;
     --yellow-butter:#f3d876;
+    --yellow-pop:#ffdf7a;
+    --lavender:#d9c5e8;
     --ink:#3d2817;
     --ink-soft:#6b4a33;
     --shadow: 0 4px 0 rgba(61,40,23,.12), 0 8px 24px rgba(61,40,23,.1);
+    --shadow-chunky: 0 5px 0 var(--ink), 0 10px 28px rgba(61,40,23,.18);
+    --shadow-candy: 0 5px 0 var(--pink-deeper), 0 10px 24px rgba(232,165,172,.4);
   }
 
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
+  html.js .reveal{opacity:0; transform: translateY(30px)}
   body{
     background: var(--cream);
     color: var(--ink);
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Fredoka', sans-serif;
     font-weight: 500;
     overflow-x: hidden;
     line-height: 1.6;
   }
 
-  /* === REPEATING CAT/PAW/FISH WALLPAPER PATTERN === */
   body::before{
     content:"";
     position:fixed; inset:0; z-index:-2;
     background: url('assets/wallpaper.jpg') repeat;
-    background-size: 360px auto;
-    opacity: 0.55;
-    filter: saturate(0.9);
+    background-size: 320px auto;
+    opacity: 1;
   }
   body::after{
     content:"";
     position:fixed; inset:0; z-index:-1;
-    background: linear-gradient(180deg, rgba(251,243,225,.7) 0%, rgba(251,243,225,.5) 40%, rgba(251,243,225,.8) 100%);
+    background:
+      radial-gradient(circle at 20% 10%, rgba(255,181,208,.3) 0%, transparent 45%),
+      radial-gradient(circle at 80% 30%, rgba(168,213,232,.25) 0%, transparent 45%),
+      radial-gradient(circle at 60% 85%, rgba(255,223,122,.22) 0%, transparent 45%),
+      linear-gradient(180deg, rgba(255,250,240,.35) 0%, rgba(255,240,248,.3) 40%, rgba(255,245,235,.45) 100%);
     pointer-events: none;
   }
 
-  /* === NAV (back to main portfolio) === */
+  /* Scattered floating confetti decorations */
+  .confetti{
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+  .confetti.star{color: var(--yellow-pop); filter: drop-shadow(0 3px 0 var(--brown-warm))}
+  .confetti.heart{color: var(--pink-pop); filter: drop-shadow(0 3px 0 var(--red-cherry))}
+  .confetti.sparkle{color: var(--blue-sky); filter: drop-shadow(0 2px 0 var(--blue-deep))}
+  .confetti img{
+    display:block;
+    filter: drop-shadow(0 4px 0 rgba(61,40,23,.12)) drop-shadow(2px 3px 6px rgba(61,40,23,.1));
+  }
+  @keyframes float-slow{
+    0%,100%{transform: translateY(0) rotate(var(--rot,0deg))}
+    50%{transform: translateY(-10px) rotate(calc(var(--rot,0deg) + 3deg))}
+  }
+  @keyframes spin-slow{
+    from{transform: rotate(0deg)} to{transform: rotate(360deg)}
+  }
+  @keyframes twinkle{
+    0%,100%{opacity: 1; transform: scale(1) rotate(var(--rot,0deg))}
+    50%{opacity: .4; transform: scale(.8) rotate(var(--rot,0deg))}
+  }
+  .confetti.animate-float{animation: float-slow 4s ease-in-out infinite}
+  .confetti.animate-twinkle{animation: twinkle 2.2s ease-in-out infinite}
+  .confetti.animate-spin{animation: spin-slow 12s linear infinite}
+
+  /* ================ NAVBAR ================ */
   nav.topbar{
     position:sticky; top:16px; z-index:20;
     margin: 20px 24px 0;
@@ -79,11 +120,6 @@
     transition: transform .2s, background .2s;
   }
   nav.topbar a.back:hover{background: var(--pink-soft); transform: translateX(-3px)}
-  nav.topbar a.back .arrow{
-    display:inline-block;
-    transition:transform .2s;
-  }
-  nav.topbar a.back:hover .arrow{transform:translateX(-4px)}
   nav.topbar .brand{
     display:flex; align-items:center; gap:10px;
     font-family:'Caveat Brush', cursive;
@@ -101,38 +137,26 @@
     color: var(--ink-soft);
   }
 
-  /* ============================ HERO ============================ */
+  /* ================ HERO ================ */
   .hero{
     position:relative;
     padding: 60px 40px 40px;
-    min-height: 90vh;
     display:grid;
-    grid-template-columns: 1.15fr .85fr;
+    grid-template-columns: 1.1fr .9fr;
     gap: 40px;
     align-items: center;
   }
-
-  /* Little floating doodles */
   .doodle{
     position:absolute;
     font-family:'Caveat Brush', cursive;
-    color: var(--brown-coco);
-    opacity: .7;
     pointer-events: none;
+    opacity: .7;
   }
   .doodle.d1{top:40px; left: 8%; transform: rotate(-8deg); font-size: 22px; color: var(--blue-deep)}
-  .doodle.d2{top:100px; right: 10%; transform: rotate(12deg); font-size: 26px; color: var(--red-cherry)}
-  .doodle.d3{bottom: 4%; left: 30%; transform: rotate(-5deg); font-size: 20px;}
-  .doodle.d4{bottom: 12%; right: 42%; transform: rotate(8deg); font-size: 22px; color: var(--blue-deep)}
+  .doodle.d2{top:100px; right: 14%; transform: rotate(12deg); font-size: 26px; color: var(--red-cherry)}
+  .doodle.d3{bottom: 4%; left: 30%; transform: rotate(-5deg); font-size: 20px; color: var(--brown-coco)}
 
-  /* dashed heart */
-  .heart-doodle{position:absolute; color: var(--pink-deeper); opacity: .5}
-
-  .hero-content{
-    position:relative;
-    z-index: 2;
-    padding-left: 20px;
-  }
+  .hero-content{position:relative; z-index: 2; padding-left: 20px}
 
   .kicker{
     display:inline-flex; align-items:center; gap:10px;
@@ -146,45 +170,85 @@
     margin-bottom: 20px;
     transform: rotate(-2deg);
   }
-  .kicker .paw{
-    width:22px; height: 22px;
-    display:inline-flex; align-items:center; justify-content:center;
-  }
+  .kicker .paw{width:22px; height: 22px; display:inline-flex}
   .kicker .paw svg{width:100%;height:100%}
 
   h1.title{
-    font-family:'Fraunces', serif;
-    font-weight: 900;
-    font-size: clamp(54px, 8vw, 110px);
-    line-height: .92;
-    color: var(--brown-coco);
-    letter-spacing: -0.02em;
+    font-family:'Titan One', sans-serif;
+    font-weight: 400;
+    font-size: clamp(58px, 9vw, 120px);
+    line-height: .95;
+    letter-spacing: .01em;
     margin-bottom: 6px;
-    position:relative;
+    position: relative;
+  }
+  h1.title .w1, h1.title .w2{
+    position: relative;
+    display: inline-block;
+    -webkit-text-stroke: 4px var(--ink);
+    text-shadow:
+      4px 4px 0 var(--paper),
+      8px 8px 0 var(--ink),
+      0 0 40px rgba(255,181,208,.6);
   }
   h1.title .w1{
-    display:block;
-    color: var(--red-cherry);
-    font-style: italic;
-    transform: rotate(-2deg);
+    background: linear-gradient(180deg, #ffeb99 0%, #ffb5d0 50%, #ff89b5 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transform: rotate(-3deg);
     transform-origin: left bottom;
+    animation: wobble 3.5s ease-in-out infinite;
+    padding: 0 8px;
+  }
+  @keyframes wobble{
+    0%,100%{transform: rotate(-3deg) translateY(0)}
+    50%{transform: rotate(-1deg) translateY(-4px)}
   }
   h1.title .w2{
-    display:block;
-    color: var(--brown-coco);
-    position:relative;
+    display: block;
+    background: linear-gradient(180deg, #fff5b8 0%, #ffdf7a 40%, #ff89b5 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-top: 8px;
+    transform: rotate(1deg);
+    padding: 0 8px;
   }
   h1.title .w2::after{
-    content:"";
-    position:absolute;
-    bottom: 6px; left: 0;
-    width: 60%;
-    height: 14px;
-    background: var(--yellow-butter);
+    content: "";
+    position: absolute;
+    bottom: 10px;
+    left: 4%;
+    width: 92%;
+    height: 10px;
+    background: var(--red-cherry);
     z-index: -1;
-    border-radius: 8px;
-    transform: skew(-6deg);
-    opacity: .7;
+    border-radius: 20px;
+    transform: skew(-6deg) rotate(-2deg);
+    opacity: .8;
+  }
+  /* Decorative stars around title */
+  h1.title::before{
+    content: "✦";
+    position: absolute;
+    top: -10px; right: 8%;
+    color: var(--pink-pop);
+    font-size: 36px;
+    animation: twinkle 2s ease-in-out infinite;
+    -webkit-text-stroke: 0;
+    text-shadow: none;
+  }
+  h1.title::after{
+    content: "★";
+    position: absolute;
+    bottom: 10%; left: -5%;
+    color: var(--yellow-pop);
+    font-size: 28px;
+    animation: twinkle 1.8s ease-in-out infinite 0.5s;
+    -webkit-text-stroke: 0;
+    text-shadow: none;
+    filter: drop-shadow(0 2px 0 var(--brown-warm));
   }
 
   .tagline{
@@ -194,371 +258,725 @@
     margin: 14px 0 22px;
     max-width: 520px;
   }
-  .tagline em{
-    font-style: normal;
-    color: var(--red-cherry);
-    position: relative;
-    white-space: nowrap;
-  }
+  .tagline em{font-style: normal; color: var(--red-cherry); position: relative; white-space: nowrap}
   .tagline em::before{
-    content:"";
-    position:absolute;
-    left:-4px; right:-4px; bottom: 2px;
-    height: 6px;
-    background: var(--pink-soft);
-    z-index:-1;
-    border-radius: 4px;
+    content:""; position:absolute; left:-4px; right:-4px; bottom: 2px;
+    height: 6px; background: var(--pink-soft); z-index:-1; border-radius: 4px;
   }
 
   .hero-description{
-    font-size: 17px;
-    color: var(--ink-soft);
-    max-width: 520px;
-    margin-bottom: 28px;
+    font-size: 17px; color: var(--ink-soft);
+    max-width: 520px; margin-bottom: 28px;
   }
 
-  .hero-cta{
-    display:flex; gap:14px; flex-wrap:wrap;
-    margin-top: 10px;
-  }
+  .hero-cta{display:flex; gap:14px; flex-wrap:wrap; margin-top: 10px}
 
   .btn{
-    font-family:'Fraunces', serif;
-    font-weight: 700;
-    font-size: 16px;
+    font-family:'Baloo 2', sans-serif;
+    font-weight: 900; font-size: 16px;
     padding: 14px 28px;
-    border: 3px solid var(--ink);
+    border: 3.5px solid var(--ink);
     border-radius: 999px;
-    cursor: pointer;
-    text-decoration: none;
+    cursor: pointer; text-decoration: none;
     display:inline-flex; align-items:center; gap:10px;
     transition: transform .15s, box-shadow .15s;
-    box-shadow: var(--shadow);
-    background: var(--red-cherry);
-    color: var(--paper);
+    box-shadow: 0 5px 0 var(--ink), 0 10px 24px rgba(61,40,23,.2);
+    background: var(--pink-pop); color: var(--paper);
+    text-shadow: 0 2px 0 rgba(61,40,23,.15);
+    position: relative;
   }
-  .btn:hover{transform: translate(-2px,-2px); box-shadow: 0 6px 0 rgba(61,40,23,.15), 0 10px 28px rgba(61,40,23,.15)}
-  .btn:active{transform: translate(1px,1px); box-shadow: 0 2px 0 rgba(61,40,23,.15)}
-  .btn.alt{background: var(--paper); color: var(--ink)}
-  .btn.alt:hover{background: var(--blue-soft)}
+  .btn::before{
+    content: "";
+    position: absolute;
+    top: 6px; left: 14px;
+    width: 20px; height: 6px;
+    background: rgba(255,255,255,.45);
+    border-radius: 50%;
+    filter: blur(1px);
+  }
+  .btn:hover{transform: translate(-2px,-4px); box-shadow: 0 9px 0 var(--ink), 0 14px 32px rgba(61,40,23,.25)}
+  .btn:active{transform: translate(1px,2px); box-shadow: 0 2px 0 var(--ink)}
+  .btn.alt{background: var(--yellow-pop); color: var(--ink); text-shadow: none}
+  .btn.alt:hover{background: var(--blue-sky)}
   .btn svg{width:18px; height: 18px}
 
-  /* Character illustration placement */
   .hero-art{
-    position:relative;
-    z-index: 1;
+    position:relative; z-index: 1;
     display:flex; justify-content:center; align-items:flex-end;
     min-height: 480px;
   }
   .hero-art .blob{
-    position:absolute;
-    width: 90%;
-    aspect-ratio: 1;
+    position:absolute; width: 90%; aspect-ratio: 1;
     background:
       radial-gradient(circle at 30% 30%, var(--pink-soft) 0%, transparent 55%),
       radial-gradient(circle at 70% 60%, var(--yellow-butter) 0%, transparent 50%),
       radial-gradient(circle at 50% 80%, var(--blue-soft) 0%, transparent 55%);
-    opacity: .7;
-    filter: blur(20px);
-    z-index: -1;
-    top: 10%;
-    left: 5%;
+    opacity: .7; filter: blur(20px); z-index: -1;
+    top: 10%; left: 5%;
   }
   .hero-art img.chef{
-    width: 95%;
-    max-width: 500px;
+    width: 95%; max-width: 500px;
     filter: drop-shadow(-8px 12px 0 rgba(61,40,23,.08)) drop-shadow(0 20px 40px rgba(61,40,23,.15));
     animation: bob 4s ease-in-out infinite;
   }
-  @keyframes bob{
-    0%,100%{transform: translateY(0) rotate(-1deg)}
-    50%{transform: translateY(-14px) rotate(1deg)}
-  }
+  @keyframes bob{0%,100%{transform: translateY(0) rotate(-1deg)} 50%{transform: translateY(-14px) rotate(1deg)}}
 
-  /* Little tag cards floating around character */
   .float-card{
     position:absolute;
-    background: var(--paper);
-    border: 2.5px solid var(--ink);
-    border-radius: 20px;
-    padding: 12px 18px;
-    font-family:'Shadows Into Light', cursive;
-    font-size: 18px;
-    color: var(--ink);
-    box-shadow: var(--shadow);
-    z-index: 3;
-    display:flex; align-items:center; gap:10px;
+    background: var(--paper); border: 2.5px solid var(--ink);
+    border-radius: 20px; padding: 12px 18px;
+    font-family:'Shadows Into Light', cursive; font-size: 18px;
+    color: var(--ink); box-shadow: var(--shadow);
+    z-index: 3; display:flex; align-items:center; gap:10px;
   }
   .float-card::before{
-    content:"";
-    width:10px; height: 10px; border-radius: 50%;
-    background: var(--green-leaf);
-    box-shadow: 0 0 0 3px rgba(155,194,136,.3);
+    content:""; width:10px; height: 10px; border-radius: 50%;
+    background: var(--green-leaf); box-shadow: 0 0 0 3px rgba(155,194,136,.3);
   }
-  .float-card.fc-1{ top: 8%; left: -4%; transform: rotate(-6deg);}
-  .float-card.fc-2{ top: 18%; right: -6%; transform: rotate(5deg); background: var(--pink-soft)}
+  .float-card.fc-1{top: 8%; left: -4%; transform: rotate(-6deg)}
+  .float-card.fc-2{top: 18%; right: -6%; transform: rotate(5deg); background: var(--pink-soft)}
   .float-card.fc-2::before{background: var(--red-cherry); box-shadow: 0 0 0 3px rgba(213,85,85,.25)}
-  .float-card.fc-3{ bottom: 14%; left: -2%; transform: rotate(4deg); background: var(--yellow-butter)}
+  .float-card.fc-3{bottom: 14%; left: -2%; transform: rotate(4deg); background: var(--yellow-butter)}
   .float-card.fc-3::before{background: var(--brown-warm); box-shadow: 0 0 0 3px rgba(139,90,60,.25)}
 
-  /* ============================ INFO STRIP ============================ */
+  /* ================ INFO STRIP ================ */
   .info-strip{
-    display:grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
+    display:grid; grid-template-columns: repeat(4, 1fr); gap: 0;
     margin: 40px;
-    background: var(--paper);
-    border: 3px solid var(--ink);
+    background:
+      repeating-linear-gradient(45deg, var(--pink-soft) 0 12px, var(--paper) 12px 24px);
+    border: 3.5px solid var(--ink);
     border-radius: 32px;
     overflow:hidden;
-    box-shadow: var(--shadow);
-    position:relative;
-    z-index: 3;
+    box-shadow: 0 6px 0 var(--ink), 0 14px 32px rgba(61,40,23,.15);
+    position:relative; z-index: 3;
+  }
+  .info-strip::before{
+    content: "★  ✦  ♡  ✦  ★";
+    position: absolute;
+    top: -14px; left: 50%; transform: translateX(-50%);
+    background: var(--yellow-pop);
+    color: var(--ink);
+    padding: 3px 16px;
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    font-family: 'Caveat Brush', cursive;
+    font-size: 14px;
+    letter-spacing: 4px;
+    box-shadow: 0 3px 0 var(--ink);
   }
   .info-strip .cell{
-    padding: 22px 24px;
-    border-right: 2px dashed var(--brown-light);
-    position:relative;
+    padding: 28px 24px 22px;
+    border-right: 3px dashed var(--pink-deeper);
+    background: rgba(255,250,240,.85);
+    backdrop-filter: blur(4px);
   }
   .info-strip .cell:last-child{border-right: none}
   .info-strip .cell .label{
     font-family:'Shadows Into Light', cursive;
-    font-size: 16px;
-    color: var(--ink-soft);
-    margin-bottom: 4px;
+    font-size: 16px; color: var(--ink-soft); margin-bottom: 4px;
   }
   .info-strip .cell .value{
-    font-family:'Fraunces', serif;
-    font-weight: 900;
-    font-size: 22px;
-    color: var(--brown-coco);
-    line-height: 1.2;
+    font-family:'Baloo 2', sans-serif; font-weight: 800;
+    font-size: 22px; color: var(--brown-coco); line-height: 1.2;
   }
   .info-strip .cell .value .accent{color: var(--red-cherry)}
 
-  /* ============================ SECTION HEADS ============================ */
+  /* ================ SECTION HEADS ================ */
   .section-head{
     padding: 30px 40px 10px;
-    position:relative;
-    text-align: center;
+    position:relative; text-align: center;
     margin-top: 40px;
   }
-  .section-head .recipe-tag{
-    display:inline-block;
-    font-family:'Shadows Into Light', cursive;
-    color: var(--red-cherry);
-    font-size: 22px;
-    margin-bottom: 10px;
-    padding: 4px 16px;
-    background: var(--paper);
-    border: 2px solid var(--red-cherry);
+  .recipe-tag{
+    display:inline-flex; align-items: center; gap: 6px;
+    font-family:'Caveat Brush', cursive;
+    color: var(--paper);
+    background: var(--pink-pop);
+    font-size: 18px;
+    margin-bottom: 14px;
+    padding: 8px 18px;
+    border: 3px solid var(--ink);
     border-radius: 999px;
-    transform: rotate(-2deg);
+    transform: rotate(-3deg);
+    box-shadow: 0 4px 0 var(--ink), 0 8px 18px rgba(255,137,181,.4);
+    text-shadow: 0 2px 0 rgba(61,40,23,.2);
+    letter-spacing: 1px;
   }
+  .recipe-tag::before{content: "✦"; color: var(--yellow-pop); font-size: 16px}
+  .recipe-tag::after{content: "✦"; color: var(--yellow-pop); font-size: 16px}
   .section-head h2{
-    font-family:'Fraunces', serif;
-    font-weight: 900;
-    font-style: italic;
-    font-size: clamp(36px, 5vw, 64px);
-    color: var(--brown-coco);
-    line-height: 1.05;
-    letter-spacing: -0.01em;
+    font-family:'Titan One', sans-serif;
+    font-weight: 400;
+    font-size: clamp(36px, 5vw, 58px);
+    line-height: 1.1;
+    letter-spacing: .01em;
+    background: linear-gradient(180deg, #fff5b8 0%, #ffdf7a 45%, #ff89b5 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 3px var(--ink);
+    filter: drop-shadow(0 4px 0 var(--paper)) drop-shadow(0 8px 0 var(--ink));
   }
-  .section-head h2 .underline{
-    position:relative;
-    white-space: nowrap;
-  }
+  .section-head h2 .underline{position:relative; white-space: nowrap}
   .section-head h2 .underline::after{
-    content:"";
-    position:absolute;
-    left: -4px; right: -4px; bottom: 4px;
-    height: 14px;
-    background: var(--yellow-butter);
-    z-index: -1;
-    border-radius: 8px;
-    transform: skew(-6deg);
-    opacity: .75;
+    content:""; position:absolute;
+    left: -6px; right: -6px; bottom: -4px;
+    height: 10px; background: var(--red-cherry);
+    z-index: -1; border-radius: 12px;
+    transform: skew(-6deg) rotate(-1deg); opacity: .85;
   }
   .section-head p{
     font-family:'Shadows Into Light', cursive;
-    font-size: 22px;
-    color: var(--ink-soft);
-    margin-top: 10px;
-    max-width: 640px;
+    font-size: 22px; color: var(--ink-soft);
+    margin-top: 10px; max-width: 640px;
     margin-left: auto; margin-right: auto;
   }
 
-  /* ============================ FEATURES ============================ */
-  section.features{padding: 40px 40px 60px}
-  .features-grid{
-    display:grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 28px;
+  /* ============================================================= */
+  /* === SCENE RECONSTRUCTIONS ===================================== */
+  /* ============================================================= */
+
+  section.scenes{padding: 30px 40px 60px; position: relative; overflow: hidden}
+
+  .scene-block{
     margin-top: 50px;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
   }
-  .feat{
-    background: var(--paper);
-    border: 3px solid var(--ink);
-    border-radius: 28px;
-    padding: 28px 26px;
-    box-shadow: var(--shadow);
+  .scene-block.reverse{grid-template-columns: 1fr 1fr}
+  .scene-block.reverse .scene-copy{order: 2}
+  .scene-block.reverse .scene-viewport{order: 1}
+
+  .scene-copy{padding: 0 10px}
+  .scene-copy .step-num{
+    display:inline-flex; align-items:center; justify-content:center;
+    width: 68px; height: 68px;
+    background: var(--pink-pop); color: var(--paper);
+    border: 3.5px solid var(--ink); border-radius: 50%;
+    font-family:'Baloo 2', sans-serif; font-weight: 800;
+    font-size: 32px; font-style: italic;
+    margin-bottom: 18px;
+    box-shadow: 0 6px 0 var(--ink), 0 12px 20px rgba(255,137,181,.4);
+    text-shadow: 0 3px 0 rgba(61,40,23,.2);
+    position: relative;
+    transform: rotate(-6deg);
+  }
+  .scene-copy .step-num::after{
+    content: "✦";
+    position: absolute;
+    top: -14px; right: -12px;
+    color: var(--yellow-pop);
+    font-size: 22px;
+    filter: drop-shadow(0 2px 0 var(--ink));
+    animation: twinkle 2s ease-in-out infinite;
+  }
+  .scene-copy h3{
+    font-family:'Baloo 2', sans-serif; font-weight: 800;
+    font-size: clamp(28px, 3.5vw, 42px);
+    color: var(--brown-coco); line-height: 1.1;
+    margin-bottom: 14px;
+    -webkit-text-stroke: 1.2px var(--ink);
+  }
+  .scene-copy h3 em{
+    color: var(--pink-pop); font-style: normal;
+    background: linear-gradient(180deg, var(--yellow-pop) 0%, var(--pink-pop) 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 2px var(--ink);
+    filter: drop-shadow(2px 3px 0 rgba(61,40,23,.15));
+    padding: 0 4px;
+  }
+  .scene-copy p{
+    font-size: 16px; color: var(--ink-soft);
+    margin-bottom: 14px; line-height: 1.7;
+  }
+  .scene-copy .tech-tag{
+    display:inline-flex; align-items:center; gap: 6px;
+    font-family:'Shadows Into Light', cursive;
+    font-size: 16px; color: var(--brown-warm);
+    background: var(--paper); border: 2px dashed var(--brown-light);
+    border-radius: 999px; padding: 4px 14px;
+    margin: 4px 6px 0 0;
+  }
+
+  /* === GAME VIEWPORT === */
+  .scene-viewport{
+    background: var(--brown-coco);
+    border: 4px solid var(--ink);
+    border-radius: 26px;
+    padding: 8px;
+    box-shadow: 0 8px 0 var(--ink), 0 20px 40px rgba(61,40,23,.25);
     position:relative;
-    overflow:hidden;
-    transition: transform .25s;
   }
-  .feat:hover{transform: translate(-3px,-5px)}
-  .feat::before{
-    content:"";
-    position:absolute;
-    top:-1px; left: -1px; right: -1px; height: 8px;
-    background: var(--accent, var(--pink-soft));
+  .scene-viewport::before{
+    content:"● ● ●   Baking PawPaw";
+    display:block;
+    font-family:'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    color: rgba(255,250,240,.7);
+    letter-spacing: 1px;
+    padding: 6px 14px;
+    text-align: left;
   }
-  .feat .num{
-    position:absolute; top: 14px; right: 18px;
-    font-family:'Caveat Brush', cursive;
-    font-size: 28px;
-    color: var(--brown-light);
-    opacity: .5;
-  }
-  .feat .icon{
-    width: 72px; height: 72px;
-    background: var(--accent-soft, var(--pink-soft));
+  .scene-viewport::after{
+    content: "";
+    position: absolute;
+    top: -14px; right: 32px;
+    width: 70px; height: 26px;
+    background: repeating-linear-gradient(45deg, var(--pink-bubble) 0 6px, var(--paper) 6px 12px);
     border: 2.5px solid var(--ink);
-    border-radius: 22px;
-    display:flex; align-items:center; justify-content:center;
-    margin-bottom: 16px;
+    border-radius: 4px;
+    transform: rotate(6deg);
+    box-shadow: 0 3px 0 var(--ink);
+  }
+  .scene-viewport .game-screen{
+    background: var(--cream);
+    border-radius: 16px;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* --- Scene: FRIDGE --- */
+  .scene-fridge{
+    background: url('assets/fridge-inside.jpg') center/cover;
+    width: 100%; height: 100%;
+    position:relative;
+  }
+  .scene-fridge .shelf-ing{
+    position:absolute;
+    filter: drop-shadow(2px 3px 2px rgba(61,40,23,.2));
+  }
+  /* Shelf 1 (top) */
+  .scene-fridge .s1a{top: 17%; left: 7%; width: 12%}
+  .scene-fridge .s1b{top: 16%; left: 21%; width: 11%}
+  .scene-fridge .s1c{top: 15%; left: 33%; width: 14%}
+  /* Shelf 2 (middle) */
+  .scene-fridge .s2a{top: 44%; left: 6%; width: 10%}
+  .scene-fridge .s2b{top: 43%; left: 18%; width: 10%}
+  .scene-fridge .s2c{top: 43%; left: 30%; width: 10%}
+  .scene-fridge .s2d{top: 45%; left: 41%; width: 8%}
+  /* Shelf 3 (bottom) */
+  .scene-fridge .s3a{top: 71%; left: 8%; width: 11%}
+  .scene-fridge .s3b{top: 72%; left: 22%; width: 13%}
+  .scene-fridge .s3c{top: 70%; left: 37%; width: 11%}
+
+  /* recipe list box on right */
+  .scene-fridge .recipe-panel{
+    position:absolute;
+    top: 20%; right: 5%; width: 28%; height: 65%;
+    background: rgba(255,250,240,.95);
+    border: 2px solid var(--blue-fridge);
+    border-radius: 8px;
+    padding: 14px;
+    font-family:'Shadows Into Light', cursive;
+    color: var(--ink-soft);
+    font-size: 13px;
+  }
+  .scene-fridge .recipe-panel h5{
+    font-family:'Baloo 2', sans-serif;
+    font-weight: 700; color: var(--red-cherry);
+    font-size: 14px; margin-bottom: 10px;
+    text-align: center; border-bottom: 1.5px dashed var(--pink-deeper);
+    padding-bottom: 4px;
+  }
+  .scene-fridge .recipe-panel ul{list-style: none; padding: 0}
+  .scene-fridge .recipe-panel ul li{
+    padding: 3px 0;
+    display:flex; align-items:center; gap: 6px;
+  }
+  .scene-fridge .recipe-panel ul li::before{
+    content:"✓"; color: var(--green-leaf); font-weight: 700;
+  }
+
+  /* --- Scene: CABINET --- */
+  .scene-cabinet{
+    background: url('assets/cabinet-bg.jpg') center/cover;
+    width: 100%; height: 100%;
+    position: relative;
+  }
+  .scene-cabinet .c-ing{
+    position:absolute;
+    filter: drop-shadow(2px 3px 2px rgba(61,40,23,.3));
+  }
+  /* Shelf 1 */
+  .scene-cabinet .c1a{top: 7%; left: 10%; width: 9%}
+  .scene-cabinet .c1b{top: 8%; left: 22%; width: 8%}
+  .scene-cabinet .c1c{top: 8%; left: 33%; width: 8%}
+  .scene-cabinet .c1d{top: 7%; left: 44%; width: 8%}
+  /* Shelf 2 */
+  .scene-cabinet .c2a{top: 34%; left: 11%; width: 10%}
+  .scene-cabinet .c2b{top: 36%; left: 24%; width: 9%}
+  .scene-cabinet .c2c{top: 35%; left: 36%; width: 9%}
+  /* Shelf 3 */
+  .scene-cabinet .c3a{top: 63%; left: 10%; width: 10%}
+  .scene-cabinet .c3b{top: 62%; left: 23%; width: 10%}
+  .scene-cabinet .c3c{top: 63%; left: 36%; width: 9%}
+
+  /* Recipe popup overlayed on right side of cabinet */
+  .scene-cabinet .recipe-popup{
+    position:absolute;
+    top: 8%; right: 4%; width: 34%; height: 84%;
+    background: var(--paper);
+    border: 3px solid var(--green-leaf);
+    border-radius: 10px;
+    padding: 16px 16px;
+    display:flex; flex-direction: column;
+  }
+  .scene-cabinet .recipe-popup .title{
+    font-family:'Baloo 2', sans-serif; font-weight: 800;
+    color: var(--red-cherry); font-size: 14px; text-align: center;
+    padding-bottom: 6px; border-bottom: 2px dashed var(--pink-deeper);
+    margin-bottom: 10px;
+  }
+  .scene-cabinet .recipe-popup .diff-row{
+    display:flex; gap: 6px; margin-bottom: 10px;
+  }
+  .scene-cabinet .recipe-popup .diff-btn{
+    flex: 1; font-family:'Fredoka', sans-serif; font-weight: 700;
+    font-size: 10px; padding: 5px 4px; border-radius: 8px;
+    border: 1.5px solid var(--ink); text-align: center;
+    background: var(--paper); color: var(--ink);
+  }
+  .scene-cabinet .recipe-popup .diff-btn.active{background: var(--yellow-butter)}
+  .scene-cabinet .recipe-popup .time-input{
+    font-family:'Shadows Into Light', cursive; font-size: 13px;
+    color: var(--ink-soft); margin-bottom: 8px;
+    display:flex; align-items:center; gap: 6px;
+  }
+  .scene-cabinet .recipe-popup .time-input .input{
+    background: var(--cream-deep); border: 1.5px solid var(--brown-light);
+    border-radius: 6px; padding: 2px 8px; font-weight: 700; color: var(--ink);
+  }
+  .scene-cabinet .recipe-popup .gen-btn{
+    background: var(--red-cherry); color: var(--paper);
+    font-family:'Baloo 2', sans-serif; font-weight: 700;
+    font-size: 11px; padding: 6px 10px;
+    border: 2px solid var(--ink); border-radius: 999px;
+    text-align: center; margin-bottom: 10px;
+  }
+  .scene-cabinet .recipe-popup .recipes{
+    flex: 1; overflow: hidden;
+    font-family:'Shadows Into Light', cursive;
+    font-size: 11.5px; color: var(--ink-soft); line-height: 1.4;
+  }
+  .scene-cabinet .recipe-popup .recipes h6{
+    font-family:'Baloo 2', sans-serif; font-weight: 700;
+    color: var(--brown-coco); font-size: 11.5px;
+    margin: 4px 0 2px;
+  }
+
+  /* --- Scene: CHAT --- */
+  .scene-chat{
+    width: 100%; height: 100%; position: relative;
+    background: linear-gradient(180deg, #f8e8ef 0%, #e8d4e0 100%);
+    overflow: hidden;
+  }
+  /* Wallpaper-like dots */
+  .scene-chat::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: radial-gradient(circle, rgba(232,165,172,.15) 2px, transparent 3px);
+    background-size: 24px 24px;
+    pointer-events: none;
+  }
+  .scene-chat .chef-portrait{
+    position:absolute;
+    bottom: 0; left: 2%;
+    width: 24%;
+    filter: drop-shadow(2px 4px 8px rgba(61,40,23,.2));
+  }
+  .scene-chat .chat-frame{
+    position:absolute;
+    top: 6%; left: 22%; right: 3%; bottom: 6%;
+    background: var(--paper);
+    border: 4px solid var(--ink);
+    border-radius: 18px;
+    display:flex; flex-direction: column;
+    overflow: hidden;
+    box-shadow: inset 0 0 0 4px var(--pink-soft);
+  }
+  /* Cat ears on top of chat frame */
+  .scene-chat .chat-frame::before,
+  .scene-chat .chat-frame::after{
+    content:"";
+    position:absolute; top: -18px;
+    width: 30px; height: 28px;
+    background: var(--paper);
+    border: 4px solid var(--ink);
+    border-radius: 50% 50% 10% 10% / 100% 100% 10% 10%;
+  }
+  .scene-chat .chat-frame::before{left: 12%; transform: rotate(-12deg)}
+  .scene-chat .chat-frame::after{right: 12%; transform: rotate(12deg)}
+  .scene-chat .chat-header{
+    background: var(--pink-soft);
+    padding: 10px 16px;
+    border-bottom: 3px solid var(--ink);
+    font-family:'Baloo 2', sans-serif; font-weight: 800;
+    color: var(--brown-coco); font-size: 14px;
+    display:flex; align-items:center; gap: 8px;
+  }
+  .scene-chat .chat-header .online-dot{
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green-leaf);
+    box-shadow: 0 0 0 2px rgba(155,194,136,.4);
+  }
+  .scene-chat .messages{
+    flex: 1; padding: 12px 14px;
+    overflow-y: hidden;
+    display:flex; flex-direction: column; gap: 8px;
+  }
+  .scene-chat .bubble{
+    max-width: 80%;
+    padding: 8px 12px;
+    font-family:'Fredoka', sans-serif;
+    font-size: 12px;
+    line-height: 1.35;
+    border-radius: 14px;
+  }
+  .scene-chat .bubble.ai{
+    align-self: flex-start;
+    background: var(--blue-soft);
+    border-bottom-left-radius: 4px;
     color: var(--ink);
   }
-  .feat .icon svg{width: 38px; height: 38px}
-  .feat h3{
-    font-family:'Fraunces', serif;
-    font-weight: 900;
-    font-size: 24px;
-    color: var(--brown-coco);
-    margin-bottom: 8px;
-    line-height: 1.2;
+  .scene-chat .bubble.user{
+    align-self: flex-end;
+    background: var(--pink-soft);
+    border-bottom-right-radius: 4px;
+    color: var(--ink);
   }
-  .feat h3 em{color: var(--red-cherry); font-style: italic}
-  .feat p{
-    font-size: 15px;
-    color: var(--ink-soft);
-    line-height: 1.65;
+  .scene-chat .bubble.ai::before{
+    content:"🐾 ";
   }
-  .feat .tech-line{
-    margin-top: 16px;
-    padding-top: 14px;
-    border-top: 2px dashed var(--brown-light);
-    font-family: 'Shadows Into Light', cursive;
-    font-size: 17px;
-    color: var(--ink-soft);
-  }
-  .feat .tech-line b{color: var(--red-cherry); font-weight: normal}
-
-  .feat.wide{ grid-column: span 6 }
-  .feat.narrow{ grid-column: span 3 }
-  .feat.large{ grid-column: span 8; display:grid; grid-template-columns: 1fr 1fr; gap:24px; align-items:center}
-  .feat.large .copy{display:flex; flex-direction: column}
-  .feat.large .visual{
-    border-radius: 18px;
-    overflow:hidden;
-    border: 2.5px solid var(--ink);
+  .scene-chat .input-row{
+    padding: 10px 12px;
+    border-top: 2px dashed var(--pink-deeper);
+    display:flex; gap: 8px; align-items: center;
     background: var(--cream-deep);
   }
-  .feat.large .visual img{width: 100%; display:block}
-  .feat.small{ grid-column: span 4 }
-
-  /* ============================ GALLERY ============================ */
-  section.gallery{
-    padding: 40px 40px 60px;
-  }
-  .gallery-wrap{
+  .scene-chat .input-row .fake-input{
+    flex: 1;
     background: var(--paper);
-    border: 3px solid var(--ink);
-    border-radius: 32px;
-    padding: 40px;
-    margin-top: 40px;
-    box-shadow: var(--shadow);
-    position:relative;
-  }
-  .gallery-wrap::before{
-    content:"★ scenes from the game ★";
-    position:absolute;
-    top: -14px; left: 50%; transform: translateX(-50%);
-    background: var(--red-cherry);
-    color: var(--paper);
-    padding: 4px 20px;
-    border: 2.5px solid var(--ink);
+    border: 1.5px solid var(--brown-light);
     border-radius: 999px;
+    padding: 6px 12px;
     font-family:'Shadows Into Light', cursive;
-    font-size: 18px;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .scene-chat .input-row .send{
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--red-cherry); color: var(--paper);
+    display:flex; align-items:center; justify-content:center;
+    font-weight: 700; font-size: 14px;
+    border: 2px solid var(--ink);
+  }
+
+  /* --- Scene: MAIN MENU --- */
+  .scene-menu{
+    width: 100%; height: 100%; position: relative;
+    background: url('assets/main-menu.jpg') center/cover;
+  }
+  .scene-menu::before{
+    content:"";
+    position:absolute; inset:0;
+    background: linear-gradient(180deg, rgba(251,243,225,0) 50%, rgba(251,243,225,.4) 100%);
+  }
+  .scene-menu .game-title{
+    position:absolute;
+    top: 15%; left: 50%; transform: translateX(-50%);
+    font-family:'Baloo 2', sans-serif;
+    font-weight: 800;
+    color: var(--paper);
+    font-size: 42px;
+    text-shadow:
+      -3px -3px 0 var(--ink), 3px -3px 0 var(--ink),
+      -3px 3px 0 var(--ink), 3px 3px 0 var(--ink),
+      0 6px 0 var(--red-cherry);
+    letter-spacing: -1px;
     white-space: nowrap;
   }
-  .gallery-grid{
-    display:grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    grid-template-rows: auto auto;
-    gap: 20px;
-  }
-  .polaroid{
-    background: var(--paper);
-    border: 2.5px solid var(--ink);
-    border-radius: 12px;
-    padding: 10px 10px 34px;
-    box-shadow: 0 4px 0 rgba(61,40,23,.1), 0 12px 24px rgba(61,40,23,.12);
-    transition: transform .25s;
-    position:relative;
-  }
-  .polaroid:hover{transform: translateY(-4px) rotate(0deg)!important}
-  .polaroid .frame{
-    background: var(--cream-deep);
-    border-radius: 6px;
-    overflow:hidden;
-    aspect-ratio: 16/10;
-    display:flex; align-items:center; justify-content:center;
-  }
-  .polaroid .frame img{
-    width:100%; height:100%; object-fit:cover; display:block;
-  }
-  .polaroid .caption{
+  .scene-menu .start-btn{
     position:absolute;
-    bottom: 6px; left: 0; right: 0;
-    text-align:center;
-    font-family: 'Shadows Into Light', cursive;
-    font-size: 16px;
-    color: var(--ink-soft);
+    bottom: 18%; left: 50%; transform: translateX(-50%);
+    background: var(--red-cherry); color: var(--paper);
+    border: 3px solid var(--ink);
+    padding: 10px 32px;
+    border-radius: 999px;
+    font-family:'Baloo 2', sans-serif; font-weight: 800;
+    font-size: 18px;
+    box-shadow: 0 4px 0 rgba(61,40,23,.4);
+    animation: pulse-btn 2s ease-in-out infinite;
   }
-  .polaroid .tape{
-    position:absolute;
-    top: -10px; left: 50%; transform: translateX(-50%) rotate(-3deg);
-    width: 80px; height: 20px;
-    background: rgba(244,196,201,.6);
-    border: 1px solid rgba(232,165,172,.4);
+  @keyframes pulse-btn{
+    0%,100%{transform: translateX(-50%) scale(1)}
+    50%{transform: translateX(-50%) scale(1.05)}
   }
-  .polaroid.p1{grid-column: 1; grid-row: 1/3; transform: rotate(-2deg)}
-  .polaroid.p1 .frame{aspect-ratio: 4/3.3}
-  .polaroid.p2{transform: rotate(1.5deg)}
-  .polaroid.p3{transform: rotate(-1deg)}
-  .polaroid.p4{transform: rotate(2deg)}
-  .polaroid.p5{transform: rotate(-1.5deg)}
 
-  /* ============================ ROLE / PROCESS ============================ */
-  section.role{
-    padding: 60px 40px;
-    position:relative;
+  /* --- Scene: ACHIEVEMENT --- */
+  .scene-achievement{
+    width: 100%; height: 100%; position: relative;
+    background: url('assets/main-menu.jpg') center/cover;
   }
+  .scene-achievement::before{
+    content:"";
+    position:absolute; inset:0;
+    background: rgba(61,40,23,.15);
+  }
+  .scene-achievement .toast{
+    position:absolute;
+    top: 14%; left: 50%; transform: translateX(-50%);
+    width: 58%;
+    animation: toast-slide 3s ease-in-out infinite;
+  }
+  @keyframes toast-slide{
+    0%{transform: translate(-50%, -140%); opacity: 0}
+    20%, 80%{transform: translate(-50%, 0); opacity: 1}
+    100%{transform: translate(-50%, -140%); opacity: 0}
+  }
+  .scene-achievement .toast .ribbon{
+    position:relative;
+    width: 100%;
+    aspect-ratio: 4/1.8;
+    background-image: url('assets/achievement-ribbon.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display:flex; flex-direction: column;
+    align-items:center; justify-content:center;
+    padding-bottom: 18%;
+  }
+  .scene-achievement .toast .ribbon .badge-img{
+    position:absolute;
+    left: -8%; top: 10%;
+    width: 26%;
+    transform: rotate(-10deg);
+  }
+  .scene-achievement .toast .ribbon .ach-title{
+    font-family:'Baloo 2', sans-serif; font-weight: 800;
+    color: var(--brown-coco); font-size: 18px;
+    margin-top: 14%;
+    line-height: 1;
+  }
+  .scene-achievement .toast .ribbon .ach-desc{
+    font-family:'Shadows Into Light', cursive;
+    color: var(--red-cherry); font-size: 13px;
+    margin-top: 2px;
+  }
+
+  /* ================ INGREDIENT SHOWCASE GRID ================ */
+  section.ingredients-showcase{padding: 40px 40px 80px; position: relative}
+  .ing-wrap{
+    background:
+      radial-gradient(circle at 20% 20%, rgba(255,181,208,.25) 0%, transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(168,213,232,.25) 0%, transparent 40%),
+      var(--paper);
+    border: 4px solid var(--ink);
+    border-radius: 36px;
+    padding: 50px 36px 40px;
+    box-shadow: 0 8px 0 var(--ink), 0 16px 36px rgba(61,40,23,.15);
+    position: relative;
+    overflow: hidden;
+  }
+  .ing-wrap::before{
+    content:"✦  ALL 17 INGREDIENTS  ✦";
+    position:absolute;
+    top: -18px; left: 50%; transform: translateX(-50%) rotate(-2deg);
+    background: var(--pink-pop); color: var(--paper);
+    padding: 6px 22px;
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    font-family:'Caveat Brush', cursive;
+    font-size: 16px;
+    letter-spacing: 2px;
+    box-shadow: 0 4px 0 var(--ink), 0 8px 18px rgba(255,137,181,.4);
+    text-shadow: 0 2px 0 rgba(61,40,23,.2);
+    white-space: nowrap;
+  }
+  /* Sparkles in the corners */
+  .ing-wrap::after{
+    content: "✦";
+    position: absolute;
+    bottom: 16px; right: 24px;
+    color: var(--yellow-pop);
+    font-size: 40px;
+    filter: drop-shadow(0 3px 0 var(--brown-warm));
+    animation: twinkle 2.5s ease-in-out infinite;
+  }
+  .ing-grid{
+    display:grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .ing-card{
+    border: 3px solid var(--ink);
+    border-radius: 22px;
+    padding: 16px 10px 12px;
+    text-align: center;
+    transition: transform .25s;
+    position: relative;
+    box-shadow: 0 4px 0 var(--ink);
+    background: var(--pink-soft);
+  }
+  .ing-card:hover{transform: translateY(-6px) rotate(-2deg)}
+  .ing-card:nth-child(6n+1){background: var(--pink-bubble); transform: rotate(-2deg)}
+  .ing-card:nth-child(6n+2){background: var(--yellow-pop); transform: rotate(1deg)}
+  .ing-card:nth-child(6n+3){background: var(--blue-sky); transform: rotate(-1deg)}
+  .ing-card:nth-child(6n+4){background: var(--green-mint); transform: rotate(2deg)}
+  .ing-card:nth-child(6n+5){background: var(--lavender); transform: rotate(-1deg)}
+  .ing-card:nth-child(6n+6){background: var(--pink-soft); transform: rotate(1deg)}
+  .ing-card:hover{transform: translateY(-6px) rotate(0deg)}
+  /* Shine highlight on each card */
+  .ing-card::before{
+    content: "";
+    position: absolute;
+    top: 6px; left: 10px;
+    width: 20px; height: 6px;
+    background: rgba(255,255,255,.5);
+    border-radius: 50%;
+    filter: blur(1px);
+  }
+  /* Tiny sparkle on one corner */
+  .ing-card::after{
+    content: "✦";
+    position: absolute;
+    top: -8px; right: -6px;
+    color: var(--paper);
+    font-size: 16px;
+    filter: drop-shadow(0 2px 0 var(--ink));
+    opacity: .9;
+  }
+  .ing-card img{
+    width: 70%; max-height: 70px; object-fit: contain;
+    filter: drop-shadow(2px 3px 0 rgba(61,40,23,.2)) drop-shadow(0 6px 8px rgba(61,40,23,.15));
+    position: relative;
+    z-index: 2;
+  }
+  .ing-card .name{
+    font-family:'Caveat Brush', cursive;
+    color: var(--ink); font-size: 16px;
+    margin-top: 6px; letter-spacing: .5px;
+    position: relative; z-index: 2;
+  }
+
+  /* ================ ROLE / PROCESS ================ */
+  section.role{padding: 60px 40px; position:relative}
   .role-inner{
     background: var(--cream-deep);
     border: 3px solid var(--ink);
     border-radius: 32px;
     padding: 50px 50px 60px;
     box-shadow: var(--shadow);
-    position:relative;
-    overflow: hidden;
+    position:relative; overflow: hidden;
   }
   .role-inner::before{
-    /* recipe-card lines */
-    content:"";
-    position:absolute; inset:0;
+    content:""; position:absolute; inset:0;
     background-image: linear-gradient(to bottom, transparent 39px, rgba(139,90,60,.08) 40px);
     background-size: 100% 40px;
     pointer-events: none;
@@ -571,31 +989,20 @@
   }
   .role-grid{
     position:relative;
-    display:grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 50px;
-    align-items:start;
-    padding-left: 40px;
+    display:grid; grid-template-columns: 1.2fr 1fr;
+    gap: 50px; align-items:start; padding-left: 40px;
   }
   .role-grid .left h3{
-    font-family:'Fraunces', serif;
-    font-weight: 900;
-    font-style: italic;
-    font-size: 42px;
-    color: var(--brown-coco);
-    line-height: 1.1;
-    margin-bottom: 20px;
+    font-family:'Baloo 2', sans-serif; font-weight: 800;
+    font-size: 42px; color: var(--brown-coco);
+    line-height: 1.1; margin-bottom: 20px;
   }
-  .role-grid .left h3 em{color: var(--red-cherry); font-style: italic}
+  .role-grid .left h3 em{color: var(--pink-pop)}
   .role-grid .left p{
-    font-size: 16px;
-    color: var(--ink-soft);
-    margin-bottom: 16px;
-    line-height: 1.7;
+    font-size: 16px; color: var(--ink-soft);
+    margin-bottom: 16px; line-height: 1.7;
   }
-  .role-grid .right{
-    display:flex; flex-direction: column; gap: 14px;
-  }
+  .role-grid .right{display:flex; flex-direction: column; gap: 14px}
   .role-item{
     background: var(--paper);
     border: 2.5px solid var(--ink);
@@ -605,61 +1012,46 @@
     box-shadow: 0 3px 0 rgba(61,40,23,.1);
   }
   .role-item .check{
-    flex-shrink: 0;
-    width: 28px; height: 28px; border-radius: 50%;
-    background: var(--green-leaf);
-    border: 2.5px solid var(--ink);
+    flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+    background: var(--green-leaf); border: 2.5px solid var(--ink);
     display:flex; align-items:center; justify-content:center;
-    color: var(--paper);
-    font-weight: 900;
-    margin-top: 2px;
+    color: var(--paper); font-weight: 900; margin-top: 2px;
   }
   .role-item .content h4{
-    font-family:'Fraunces', serif;
-    font-weight: 700;
-    font-size: 18px;
-    color: var(--brown-coco);
-    margin-bottom: 2px;
+    font-family:'Baloo 2', sans-serif; font-weight: 700;
+    font-size: 18px; color: var(--brown-coco); margin-bottom: 2px;
   }
   .role-item .content p{
-    font-size: 14px;
-    color: var(--ink-soft);
-    line-height: 1.5;
+    font-size: 14px; color: var(--ink-soft); line-height: 1.5;
   }
 
-  /* ============================ TECH STACK ============================ */
-  section.tech{
-    padding: 40px 40px 60px;
-  }
+  /* ================ TECH STACK ================ */
+  section.tech{padding: 40px 40px 60px}
   .tech-pills{
     display:flex; flex-wrap: wrap; gap: 14px;
-    justify-content: center;
-    margin-top: 30px;
+    justify-content: center; margin-top: 30px;
   }
   .pill{
     background: var(--paper);
-    border: 2.5px solid var(--ink);
+    border: 3px solid var(--ink);
     border-radius: 999px;
     padding: 10px 22px;
-    font-family:'Fraunces', serif;
-    font-weight: 700;
-    font-size: 16px;
-    color: var(--brown-coco);
-    box-shadow: 0 3px 0 rgba(61,40,23,.1);
+    font-family:'Baloo 2', sans-serif; font-weight: 700;
+    font-size: 16px; color: var(--brown-coco);
+    box-shadow: 0 4px 0 var(--ink);
     display:inline-flex; align-items:center; gap: 10px;
-    transition: transform .15s;
+    transition: transform .2s, box-shadow .2s;
+    position: relative;
   }
-  .pill:hover{transform: translateY(-3px)}
-  .pill .dot{
-    width: 10px; height: 10px; border-radius: 50%;
-    background: var(--color, var(--pink-deeper));
-  }
+  .pill:hover{transform: translateY(-3px); box-shadow: 0 7px 0 var(--ink)}
+  .pill .dot{width: 12px; height: 12px; border-radius: 50%; background: var(--color, var(--pink-deeper)); box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--color, var(--pink-deeper))}
+  .pill:nth-child(odd){background: var(--pink-bubble); color: var(--ink)}
+  .pill:nth-child(3n){background: var(--yellow-pop)}
+  .pill:nth-child(4n){background: var(--blue-sky)}
+  .pill:nth-child(5n){background: var(--green-mint)}
 
-  /* ============================ CTA FOOTER ============================ */
-  section.cta-footer{
-    padding: 60px 40px 40px;
-    position:relative;
-  }
+  /* ================ CTA FOOTER ================ */
+  section.cta-footer{padding: 60px 40px 40px}
   .cta-card{
     background:
       radial-gradient(ellipse at 20% 0%, var(--pink-soft) 0%, transparent 60%),
@@ -668,62 +1060,45 @@
     border: 3px solid var(--ink);
     border-radius: 36px;
     padding: 60px 40px;
-    text-align:center;
-    position:relative;
+    text-align:center; position:relative;
     box-shadow: var(--shadow);
     overflow:hidden;
   }
   .cta-card .sparkle{
     position:absolute;
-    color: var(--red-cherry);
     font-family:'Caveat Brush', cursive;
-    font-size: 30px;
-    opacity: .5;
+    font-size: 30px; opacity: .5;
   }
-  .cta-card .s1{top:20px; left:40px; transform: rotate(-10deg)}
+  .cta-card .s1{top:20px; left:40px; transform: rotate(-10deg); color: var(--red-cherry)}
   .cta-card .s2{bottom: 30px; right: 50px; transform: rotate(8deg); color: var(--blue-deep)}
   .cta-card .s3{top: 40px; right: 60px; transform: rotate(15deg); color: var(--brown-warm)}
   .cta-card h2{
-    font-family:'Fraunces', serif;
-    font-weight: 900;
-    font-style: italic;
+    font-family:'Baloo 2', sans-serif; font-weight: 800;
     font-size: clamp(36px, 5vw, 56px);
-    color: var(--brown-coco);
-    line-height: 1.05;
+    color: var(--brown-coco); line-height: 1.05;
     margin-bottom: 16px;
   }
-  .cta-card h2 em{color: var(--red-cherry); font-style: italic}
+  .cta-card h2 em{color: var(--pink-pop)}
   .cta-card p{
     font-family:'Shadows Into Light', cursive;
-    font-size: 22px;
-    color: var(--ink-soft);
-    margin-bottom: 28px;
-    max-width: 600px;
+    font-size: 22px; color: var(--ink-soft);
+    margin-bottom: 28px; max-width: 600px;
     margin-left:auto; margin-right:auto;
   }
-  .cta-card .buttons{
-    display:flex; gap: 14px; justify-content:center; flex-wrap:wrap;
-  }
+  .cta-card .buttons{display:flex; gap: 14px; justify-content:center; flex-wrap:wrap}
 
   footer.credits{
-    text-align:center;
-    padding: 30px;
+    text-align:center; padding: 30px;
     font-family:'Shadows Into Light', cursive;
-    font-size: 18px;
-    color: var(--ink-soft);
+    font-size: 18px; color: var(--ink-soft);
   }
   footer.credits .heart{color: var(--red-cherry)}
 
-  /* ============================ REVEAL ANIMATIONS ============================ */
-  .reveal{opacity: 0; transform: translateY(30px); transition: opacity .8s ease, transform .8s cubic-bezier(0.22, 1, 0.36, 1)}
-  .reveal.in{opacity: 1; transform: none}
-  /* safety net: if something keeps reveal from triggering, show anyway */
-  .js-ready .reveal:not(.in){animation: autoreveal .8s ease forwards; animation-delay: 3s}
-  @keyframes autoreveal{to{opacity:1; transform:none}}
-  /* and if no JS at all, everything just shows */
-  html:not(.js) .reveal{opacity:1; transform:none}
+  /* reveal */
+  .reveal{transition: opacity .8s ease, transform .8s cubic-bezier(0.22, 1, 0.36, 1)}
+  html.js .reveal.in{opacity: 1 !important; transform: none !important}
 
-  /* ============================ RESPONSIVE ============================ */
+  /* responsive */
   @media (max-width: 980px){
     .hero{grid-template-columns: 1fr; padding: 30px 20px; gap: 20px}
     .hero-content{padding-left: 0}
@@ -731,22 +1106,24 @@
     .info-strip{grid-template-columns: repeat(2, 1fr); margin: 30px 20px}
     .info-strip .cell:nth-child(2){border-right: none}
     .info-strip .cell:nth-child(1), .info-strip .cell:nth-child(2){border-bottom: 2px dashed var(--brown-light)}
-    section.features, section.role, section.gallery, section.tech, section.cta-footer{padding-left: 20px; padding-right: 20px}
-    .features-grid{gap: 20px}
-    .feat.wide, .feat.large, .feat.narrow, .feat.small{grid-column: span 12}
-    .feat.large{grid-template-columns: 1fr}
-    .gallery-grid{grid-template-columns: 1fr 1fr; grid-template-rows: auto; gap: 16px}
-    .polaroid.p1{grid-column: 1/3; grid-row: 1}
+    section.scenes, section.role, section.ingredients-showcase, section.tech, section.cta-footer{padding-left: 20px; padding-right: 20px}
+    .scene-block, .scene-block.reverse{grid-template-columns: 1fr; gap: 24px}
+    .scene-block.reverse .scene-copy{order: 1}
+    .scene-block.reverse .scene-viewport{order: 2}
+    .ing-grid{grid-template-columns: repeat(4, 1fr)}
     .role-grid{grid-template-columns: 1fr; gap: 30px; padding-left: 20px}
     .role-inner{padding: 40px 24px 50px}
     .role-grid .left h3{font-size: 32px}
+    .scene-chat .chef-portrait{width: 28%}
+    .scene-menu .game-title{font-size: 28px}
     nav.topbar{margin: 16px 12px 0; padding: 8px 16px 8px 12px}
     nav.topbar a.back{font-size: 18px; padding: 4px 10px}
     nav.topbar .meta{display:none}
   }
   @media (max-width: 560px){
-    .gallery-grid{grid-template-columns: 1fr}
-    .polaroid.p1{grid-column: 1}
+    .ing-grid{grid-template-columns: repeat(3, 1fr); gap: 10px}
+    .ing-card{padding: 10px 6px 8px}
+    .ing-card .name{font-size: 11px}
     h1.title{font-size: 52px}
     .float-card{display:none}
     .role-inner .spiral{left: 16px}
@@ -754,15 +1131,20 @@
     .tech-pills{gap: 8px}
     .pill{font-size: 14px; padding: 8px 16px}
     .cta-card{padding: 40px 24px}
+    .scene-copy h3{font-size: 24px}
+    .scene-menu .game-title{font-size: 22px}
+    .scene-cabinet .recipe-popup{font-size: 9px}
+    .scene-cabinet .recipe-popup .title{font-size: 11px}
+    .scene-chat .chef-portrait{width: 32%}
   }
 </style>
 </head>
 <body>
 
-<!-- === NAVIGATION === -->
+<!-- ============ NAVIGATION ============ -->
 <nav class="topbar">
   <a href="index.html" class="back" aria-label="Back to portfolio">
-    <span class="arrow">←</span>
+    <span>←</span>
     <span>back to portfolio</span>
   </a>
   <div class="brand">
@@ -772,12 +1154,21 @@
   <div class="meta">★ case study ★</div>
 </nav>
 
-<!-- === HERO === -->
+<!-- ============ HERO ============ -->
 <section class="hero">
+  <!-- Confetti scattered around hero -->
+  <img class="confetti animate-float" style="top: 12%; left: 3%; width: 44px; --rot: -15deg" src="assets/ingredients/strawberries.png" alt="">
+  <img class="confetti animate-float" style="top: 7%; right: 4%; width: 52px; --rot: 20deg; animation-delay: .3s" src="assets/ingredients/blueberries.png" alt="">
+  <img class="confetti animate-float" style="bottom: 18%; left: 35%; width: 40px; --rot: -8deg; animation-delay: .8s" src="assets/ingredients/kiwi.png" alt="">
+  <img class="confetti animate-float" style="top: 40%; right: 3%; width: 48px; --rot: 12deg; animation-delay: 1.2s" src="assets/ingredients/vanilla.png" alt="">
+  <div class="confetti star animate-twinkle" style="top: 22%; right: 35%; font-size: 28px; --rot: 10deg">★</div>
+  <div class="confetti star animate-twinkle" style="top: 60%; left: 40%; font-size: 22px; --rot: -20deg; animation-delay: .6s; color: var(--blue-sky); filter: drop-shadow(0 2px 0 var(--blue-deep))">✦</div>
+  <div class="confetti heart animate-twinkle" style="bottom: 8%; right: 20%; font-size: 26px; --rot: 15deg; animation-delay: 1s">♡</div>
+  <div class="confetti sparkle animate-twinkle" style="top: 6%; left: 48%; font-size: 20px; animation-delay: 1.4s">✧</div>
+
   <div class="doodle d1">~ fresh batch ~</div>
   <div class="doodle d2">♡ nya! ♡</div>
   <div class="doodle d3">✦ cozy vibes ✦</div>
-  <div class="doodle d4">→ scroll down</div>
 
   <div class="hero-content reveal">
     <div class="kicker">
@@ -797,7 +1188,7 @@
     </p>
 
     <p class="hero-description">
-      A warm, hand-illustrated cooking game where your fridge becomes a recipe book. Pick your ingredients, chat with a tiny chef cat powered by Google's Gemini AI, and bake something cozy together. Built in Unity with a whole lot of love (and paw prints).
+      A warm, hand-illustrated cooking game where your fridge becomes a recipe book. Pick your ingredients, chat with a tiny chef cat powered by Google's Gemini AI, and bake something cozy together. Built in Unity across seven interconnected scenes.
     </p>
 
     <div class="hero-cta">
@@ -805,7 +1196,7 @@
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.67 5.56.67 11.83c0 5.01 3.24 9.26 7.75 10.76.57.1.78-.25.78-.55v-1.92c-3.15.69-3.81-1.52-3.81-1.52-.52-1.31-1.27-1.66-1.27-1.66-1.03-.71.08-.7.08-.7 1.14.08 1.74 1.17 1.74 1.17 1.01 1.74 2.66 1.24 3.31.95.1-.73.39-1.24.71-1.52-2.51-.28-5.15-1.26-5.15-5.59 0-1.24.44-2.24 1.17-3.03-.12-.29-.51-1.45.11-3.02 0 0 .96-.31 3.14 1.16.91-.25 1.89-.38 2.86-.38s1.95.13 2.86.38c2.18-1.47 3.14-1.16 3.14-1.16.62 1.57.23 2.73.11 3.02.73.79 1.17 1.79 1.17 3.03 0 4.34-2.64 5.3-5.16 5.58.4.35.76 1.03.76 2.07v3.07c0 .3.2.65.79.54 4.49-1.5 7.73-5.75 7.73-10.75C23.33 5.56 18.27.5 12 .5z"/></svg>
         view on github
       </a>
-      <a class="btn alt" href="#features">
+      <a class="btn alt" href="#scenes">
         <span>✦</span>
         <span>peek inside</span>
       </a>
@@ -815,14 +1206,13 @@
   <div class="hero-art reveal">
     <div class="blob"></div>
     <img class="chef" src="assets/mr-paw.png" alt="Mr. Paw, the chef cat mascot" />
-
     <div class="float-card fc-1">made with love</div>
     <div class="float-card fc-2">gemini AI ✨</div>
     <div class="float-card fc-3">unity · c#</div>
   </div>
 </section>
 
-<!-- === INFO STRIP === -->
+<!-- ============ INFO STRIP ============ -->
 <div class="info-strip reveal">
   <div class="cell">
     <div class="label">the year</div>
@@ -842,161 +1232,242 @@
   </div>
 </div>
 
-<!-- === FEATURES === -->
-<section class="features" id="features">
+<!-- ============ SCENES ============ -->
+<section class="scenes" id="scenes">
+  <!-- Scattered decorations -->
+  <img class="confetti animate-float" style="top: 2%; left: 5%; width: 48px; --rot: -10deg" src="assets/ingredients/chocolate.png" alt="">
+  <img class="confetti animate-float" style="top: 3%; right: 7%; width: 54px; --rot: 15deg; animation-delay: .4s" src="assets/ingredients/butter.png" alt="">
+  <img class="confetti animate-float" style="top: 30%; right: 2%; width: 42px; --rot: -18deg; animation-delay: .9s" src="assets/paw.png" alt="">
+  <img class="confetti animate-float" style="top: 55%; left: 2%; width: 44px; --rot: 8deg; animation-delay: 1.3s" src="assets/ingredients/white-sugar.png" alt="">
+  <img class="confetti animate-float" style="bottom: 20%; right: 4%; width: 50px; --rot: -12deg; animation-delay: .7s" src="assets/ingredients/milk.png" alt="">
+  <img class="confetti animate-float" style="bottom: 8%; left: 6%; width: 42px; --rot: 20deg; animation-delay: 1.6s" src="assets/ingredients/eggs.png" alt="">
+  <div class="confetti star animate-twinkle" style="top: 40%; left: 3%; font-size: 32px; --rot: 10deg">✦</div>
+  <div class="confetti heart animate-twinkle" style="top: 20%; right: 30%; font-size: 22px; --rot: -15deg; animation-delay: .3s">♡</div>
+  <div class="confetti star animate-twinkle" style="top: 70%; left: 48%; font-size: 26px; --rot: 20deg; animation-delay: 1s; color: var(--pink-pop); filter: drop-shadow(0 2px 0 var(--red-cherry))">★</div>
+
   <div class="section-head reveal">
     <span class="recipe-tag">recipe card · 01</span>
-    <h2>what's <span class="underline">cooking?</span></h2>
-    <p>a little peek at the ingredients that make Baking PawPaw feel like a warm kitchen on a sunday morning</p>
+    <h2>a walk through the <span class="underline">cottage</span></h2>
+    <p>seven Unity scenes, all lovingly illustrated, all wired together with singletons and prefab spawners</p>
   </div>
 
-  <div class="features-grid">
-
-    <!-- Large feature: AI recipe generator -->
-    <article class="feat large reveal" style="--accent: var(--red-cherry); --accent-soft: var(--pink-soft)">
-      <div class="num">01</div>
-      <div class="copy">
-        <div class="icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-            <circle cx="12" cy="12" r="4"/>
-          </svg>
+  <!-- SCENE 1: MAIN MENU -->
+  <div class="scene-block reveal">
+    <div class="scene-copy">
+      <div class="step-num">1</div>
+      <h3>the <em>main menu</em></h3>
+      <p>A cozy opening scene set in Mr. Paw's kitchen — a painted room with a teal fridge, polaroids pinned to the wall, achievement badges on the shelf, a little TV playing a baking montage, and that beloved cat-paw-fish wallpaper. The scene gets loaded by <code>StartButtonController.cs</code> which handles the first <code>SceneManager.LoadSceneAsync</code> call.</p>
+      <span class="tech-tag">● StartButtonController.cs</span>
+      <span class="tech-tag">● Scene 0 → Scene 1</span>
+    </div>
+    <div class="scene-viewport">
+      <div class="game-screen">
+        <div class="scene-menu">
+          <div class="game-title">Baking PawPaw</div>
+          <div class="start-btn">START ✦</div>
         </div>
-        <h3>the <em>AI recipe generator</em> that knows what's in your fridge</h3>
-        <p>Players collect ingredients into a virtual fridge, pick a difficulty (easy · medium · hard) and a time limit, and Mr. Paw reaches out to Google's Gemini API to cook up three tailored recipes they can actually make. The request goes through a Google Apps Script proxy so no API keys live in the game client.</p>
-        <div class="tech-line">built with · <b>UnityWebRequest</b> → <b>Google Apps Script</b> → <b>Gemini API</b></div>
       </div>
-      <div class="visual">
-        <img src="assets/ingredients.png" alt="Illustrated baking ingredients" />
-      </div>
-    </article>
-
-    <!-- Chat feature -->
-    <article class="feat small reveal" style="--accent: var(--blue-fridge); --accent-soft: var(--blue-soft)">
-      <div class="num">02</div>
-      <div class="icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-        </svg>
-      </div>
-      <h3>chat with a <em>tiny chef cat</em></h3>
-      <p>A scroll-bottomed conversation window with a friendly cat persona. Press Enter and Mr. Paw replies in real time — kneading up answers "as warm and fluffy as fresh bread."</p>
-      <div class="tech-line">scripts · <b>ChatManager.cs</b> · <b>TMP_InputField</b></div>
-    </article>
-
-    <!-- Fridge feature -->
-    <article class="feat wide reveal" style="--accent: var(--yellow-butter); --accent-soft: #fce9a8">
-      <div class="num">03</div>
-      <div class="icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="5" y="2" width="14" height="20" rx="2"/>
-          <path d="M5 10h14M9 6v2M9 14v4"/>
-        </svg>
-      </div>
-      <h3>the <em>fridge &amp; cabinet</em> inventory system</h3>
-      <p>A persistent <code>FoodData</code> singleton stores ingredients across Unity scenes using <code>DontDestroyOnLoad</code>. Each <code>FoodButton</code> carries its prefab, spawn position, and scale so the cabinet can reconstruct every chosen ingredient in a 3D-positioned layout. Click the fridge, grab what you need, walk to the kitchen — and it all shows up exactly where you left it.</p>
-      <div class="tech-line">tech · <b>Singleton pattern</b> · <b>ScriptableObject-style data</b> · <b>SceneManager</b></div>
-    </article>
-
-    <!-- Photo album -->
-    <article class="feat narrow reveal" style="--accent: var(--green-leaf); --accent-soft: #d5e9c4">
-      <div class="num">04</div>
-      <div class="icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-          <circle cx="12" cy="13" r="4"/>
-        </svg>
-      </div>
-      <h3><em>snap</em> your bakes</h3>
-      <p>An in-game camera saves <code>.png</code>s to <code>persistentDataPath</code>. The album auto-loads them as thumbnails in a grid.</p>
-    </article>
-
-    <!-- Achievements -->
-    <article class="feat narrow reveal" style="--accent: var(--brown-warm); --accent-soft: #e6c9a8">
-      <div class="num">05</div>
-      <div class="icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="8" r="6"/>
-          <path d="M15.5 13l2 7L12 17l-5.5 3 2-7"/>
-        </svg>
-      </div>
-      <h3><em>achievements</em> for cozy milestones</h3>
-      <p>PlayerPrefs-backed badges trigger when you hit milestones like "made 5 recipes." A banner slides in with title, description, and a little chime.</p>
-    </article>
-
-    <!-- Shader / Art -->
-    <article class="feat narrow reveal" style="--accent: var(--pink-deeper); --accent-soft: var(--pink-soft)">
-      <div class="num">06</div>
-      <div class="icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="13.5" cy="6.5" r="2.5"/>
-          <circle cx="17.5" cy="10.5" r="2.5"/>
-          <circle cx="8.5" cy="7.5" r="2.5"/>
-          <circle cx="6.5" cy="12.5" r="2.5"/>
-          <path d="M12 2a10 10 0 1 0 10 10c0-2-2-2-4-1s-4-1-2-4 0-5-4-5z"/>
-        </svg>
-      </div>
-      <h3>painterly <em>shader work</em></h3>
-      <p>Custom ShaderLab/HLSL shaders give baked goods their glossy glaze and frosting drips. ~70% of the codebase is shader code.</p>
-    </article>
-
-    <!-- URP -->
-    <article class="feat narrow reveal" style="--accent: var(--blue-deep); --accent-soft: var(--blue-soft)">
-      <div class="num">07</div>
-      <div class="icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-          <polyline points="2 17 12 22 22 17"/>
-          <polyline points="2 12 12 17 22 12"/>
-        </svg>
-      </div>
-      <h3>URP <em>scene flow</em></h3>
-      <p>Seven Unity scenes stitched together — start, fridge, cabinet, kitchen, chat, recipe, camera — each with its own scripted transitions.</p>
-    </article>
-
+    </div>
   </div>
+
+  <!-- SCENE 2: FRIDGE -->
+  <div class="scene-block reverse reveal">
+    <div class="scene-copy">
+      <div class="step-num">2</div>
+      <h3>the <em>fridge</em> scene</h3>
+      <p>Click the fridge to swing it open and find 10 wet ingredients illustrated by hand — eggs, milk, cream, butter, oil, yeast, vanilla, cream cheese, flour, chocolate. Each is a Unity prefab with its own spawn position and scale defined on <code>FoodButton.cs</code>. Tapping one toggles it into the persistent <code>FoodData.storedFoods</code> list that survives scene transitions via <code>DontDestroyOnLoad</code>.</p>
+      <span class="tech-tag">● FoodButton.cs</span>
+      <span class="tech-tag">● FoodData singleton</span>
+      <span class="tech-tag">● FridgeScene.cs</span>
+    </div>
+    <div class="scene-viewport">
+      <div class="game-screen">
+        <div class="scene-fridge">
+          <!-- Top shelf: eggs, milk, cream cheese -->
+          <img class="shelf-ing s1a" src="assets/ingredients/eggs.png" alt="eggs">
+          <img class="shelf-ing s1b" src="assets/ingredients/milk.png" alt="milk">
+          <img class="shelf-ing s1c" src="assets/ingredients/cream-cheese.png" alt="cream cheese">
+          <!-- Middle: butter, cream, vanilla, yeast -->
+          <img class="shelf-ing s2a" src="assets/ingredients/butter.png" alt="butter">
+          <img class="shelf-ing s2b" src="assets/ingredients/cream.png" alt="cream">
+          <img class="shelf-ing s2c" src="assets/ingredients/vanilla.png" alt="vanilla">
+          <img class="shelf-ing s2d" src="assets/ingredients/yeast.png" alt="yeast">
+          <!-- Bottom: chocolate, oil, strawberries -->
+          <img class="shelf-ing s3a" src="assets/ingredients/chocolate.png" alt="chocolate">
+          <img class="shelf-ing s3b" src="assets/ingredients/oil.png" alt="oil">
+          <img class="shelf-ing s3c" src="assets/ingredients/strawberries.png" alt="strawberries">
+
+          <!-- Recipe selections panel -->
+          <div class="recipe-panel">
+            <h5>✎ selected</h5>
+            <ul>
+              <li>eggs</li>
+              <li>milk</li>
+              <li>butter</li>
+              <li>flour</li>
+              <li>vanilla</li>
+              <li>cream</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 3: CABINET -->
+  <div class="scene-block reveal">
+    <div class="scene-copy">
+      <div class="step-num">3</div>
+      <h3>the <em>pantry cabinet</em></h3>
+      <p>A wooden cabinet holding the dry pantry essentials: baking soda, baking powder, white and brown sugar, plus the fresh stuff — strawberries, blueberries, kiwi. The <code>CabinetLoader.cs</code> script iterates through <code>FoodData.storedFoods</code> and re-spawns any previously-picked prefabs exactly where they were placed in the fridge scene, so walking between rooms feels continuous.</p>
+      <span class="tech-tag">● CabinetLoader.cs</span>
+      <span class="tech-tag">● Scene 2</span>
+      <span class="tech-tag">● prefab-driven layout</span>
+    </div>
+    <div class="scene-viewport">
+      <div class="game-screen">
+        <div class="scene-cabinet">
+          <!-- Shelf 1: white sugar, brown sugar, baking soda, baking powder -->
+          <img class="c-ing c1a" src="assets/ingredients/baking-soda.png" alt="baking soda">
+          <img class="c-ing c1b" src="assets/ingredients/white-sugar.png" alt="white sugar">
+          <img class="c-ing c1c" src="assets/ingredients/brown-sugar.png" alt="brown sugar">
+          <img class="c-ing c1d" src="assets/ingredients/baking-powder.png" alt="baking powder">
+          <!-- Shelf 2: flour, oil -->
+          <img class="c-ing c2a" src="assets/ingredients/flour.png" alt="flour">
+          <img class="c-ing c2b" src="assets/ingredients/chocolate.png" alt="chocolate">
+          <img class="c-ing c2c" src="assets/ingredients/cream.png" alt="cream">
+          <!-- Shelf 3: fruits -->
+          <img class="c-ing c3a" src="assets/ingredients/strawberries.png" alt="strawberries">
+          <img class="c-ing c3b" src="assets/ingredients/blueberries.png" alt="blueberries">
+          <img class="c-ing c3c" src="assets/ingredients/kiwi.png" alt="kiwi">
+
+          <!-- Recipe popup overlay -->
+          <div class="recipe-popup">
+            <div class="title">✎ generate recipes</div>
+            <div class="diff-row">
+              <div class="diff-btn">easy</div>
+              <div class="diff-btn active">medium</div>
+              <div class="diff-btn">hard</div>
+            </div>
+            <div class="time-input">
+              <span>⏱ time:</span>
+              <span class="input">30 min</span>
+            </div>
+            <div class="gen-btn">✦ generate ✦</div>
+            <div class="recipes">
+              <h6>1. berry cloud cake</h6>
+              <p>fold strawberries &amp; blueberries into whipped cream cheese; top a sponge base.</p>
+              <h6>2. kitten kiwi tart</h6>
+              <p>quick tart shell with a cream cheese filling, kiwi slices on top. cat-shaped cutter recommended!</p>
+              <h6>3. paw-print chocolate chip</h6>
+              <p>classic choc chip with a paw-shaped press. ready in 25.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 4: CHAT -->
+  <div class="scene-block reverse reveal">
+    <div class="scene-copy">
+      <div class="step-num">4</div>
+      <h3>chatting with <em>Mr. Paw</em></h3>
+      <p>A real-time chat interface where players can ask Mr. Paw general baking questions — proofing times, oven temperatures, technique tips, or just chat for company. <code>ChatManager.cs</code> keeps the full conversation history in a <code>List&lt;ChatMessage&gt;</code>, instantiates a user or AI prefab for each turn, and POSTs to a Google Apps Script proxy that forwards to Gemini. The cat always replies warm and fluffy, with the occasional <em>nya</em>.</p>
+      <span class="tech-tag">● ChatManager.cs</span>
+      <span class="tech-tag">● ScrollRect auto-scroll</span>
+      <span class="tech-tag">● TMP_InputField</span>
+    </div>
+    <div class="scene-viewport">
+      <div class="game-screen">
+        <div class="scene-chat">
+          <img class="chef-portrait" src="assets/mr-paw-cooking.png" alt="Mr. Paw with a spoon">
+          <div class="chat-frame">
+            <div class="chat-header">
+              <span class="online-dot"></span>
+              <span>mr. paw is online</span>
+            </div>
+            <div class="messages">
+              <div class="bubble ai">meow~! welcome to my cozy bakery. what can i whisk up for you today, nya?</div>
+              <div class="bubble user">how long should I let sourdough proof?</div>
+              <div class="bubble ai">about 4-6 hours at room temp until doubled in size, or overnight in the fridge for deeper flavor — the fridge method gives the tastiest crust, paw-romise!</div>
+              <div class="bubble user">what temperature do I bake cookies at?</div>
+              <div class="bubble ai">350°F (175°C) for 10-12 min gives soft &amp; chewy, 375°F for 8-10 min gives crispier edges. always line the tray with parchment for even bottoms ♡</div>
+            </div>
+            <div class="input-row">
+              <div class="fake-input">type a message...</div>
+              <div class="send">↑</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 5: ACHIEVEMENT -->
+  <div class="scene-block reveal">
+    <div class="scene-copy">
+      <div class="step-num">5</div>
+      <h3>cozy <em>achievements</em></h3>
+      <p>When players hit milestones — like making 5 recipes — a hand-drawn pink ribbon slides in from the top of the screen carrying a little gold badge and a cheery description. <code>GlobalAchievements.cs</code> tracks counters, saves unlock state with <code>PlayerPrefs</code> (codes like <code>12345</code>) so progress persists across sessions, and animates the banner in &amp; out via coroutine.</p>
+      <span class="tech-tag">● GlobalAchievements.cs</span>
+      <span class="tech-tag">● PlayerPrefs</span>
+      <span class="tech-tag">● IEnumerator animations</span>
+    </div>
+    <div class="scene-viewport">
+      <div class="game-screen">
+        <div class="scene-achievement">
+          <div class="toast">
+            <div class="ribbon">
+              <img class="badge-img" src="assets/achievement-badge.png" alt="achievement badge">
+              <div class="ach-title">Collection</div>
+              <div class="ach-desc">made 5 recipes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </section>
 
-<!-- === GALLERY === -->
-<section class="gallery">
+<!-- ============ INGREDIENTS SHOWCASE ============ -->
+<section class="ingredients-showcase">
+  <img class="confetti animate-float" style="top: 3%; left: 8%; width: 38px; --rot: -20deg" src="assets/paw.png" alt="">
+  <img class="confetti animate-float" style="top: 5%; right: 10%; width: 42px; --rot: 15deg; animation-delay: .5s" src="assets/paw.png" alt="">
+  <div class="confetti star animate-twinkle" style="top: 2%; left: 20%; font-size: 22px; color: var(--yellow-pop)">✦</div>
+  <div class="confetti heart animate-twinkle" style="top: 0%; right: 30%; font-size: 24px; animation-delay: .5s">♡</div>
+
   <div class="section-head reveal">
     <span class="recipe-tag">recipe card · 02</span>
-    <h2>a little <span class="underline">peek inside</span></h2>
-    <p>screens from around the cottage — wallpaper, fridge magnets, recipe notes and all</p>
+    <h2>the <span class="underline">whole pantry</span></h2>
+    <p>every single ingredient is hand-painted — no stock art, no procedural fill. each one is its own Unity prefab too.</p>
   </div>
 
-  <div class="gallery-wrap reveal">
-    <div class="gallery-grid">
-      <div class="polaroid p1">
-        <div class="tape"></div>
-        <div class="frame"><img src="assets/main-menu.jpg" alt="Main menu with cozy kitchen scene" /></div>
-        <div class="caption">the main menu · home sweet home</div>
-      </div>
-      <div class="polaroid p2">
-        <div class="tape"></div>
-        <div class="frame"><img src="assets/fridge.png" alt="Teal fridge with magnets" /></div>
-        <div class="caption">the fridge</div>
-      </div>
-      <div class="polaroid p3">
-        <div class="tape"></div>
-        <div class="frame"><img src="assets/chef-cooking.png" alt="Chef cat holding a spoon" /></div>
-        <div class="caption">mr. paw at work</div>
-      </div>
-      <div class="polaroid p4">
-        <div class="tape"></div>
-        <div class="frame"><img src="assets/chat-frame.png" alt="Chat interface with cat ears" /></div>
-        <div class="caption">chat window</div>
-      </div>
-      <div class="polaroid p5">
-        <div class="tape"></div>
-        <div class="frame"><img src="assets/ingredients.png" alt="Illustrated ingredients" /></div>
-        <div class="caption">the pantry</div>
-      </div>
+  <div class="ing-wrap reveal">
+    <div class="ing-grid">
+      <div class="ing-card"><img src="assets/ingredients/eggs.png" alt=""><div class="name">eggs</div></div>
+      <div class="ing-card"><img src="assets/ingredients/milk.png" alt=""><div class="name">milk</div></div>
+      <div class="ing-card"><img src="assets/ingredients/butter.png" alt=""><div class="name">butter</div></div>
+      <div class="ing-card"><img src="assets/ingredients/flour.png" alt=""><div class="name">flour</div></div>
+      <div class="ing-card"><img src="assets/ingredients/oil.png" alt=""><div class="name">oil</div></div>
+      <div class="ing-card"><img src="assets/ingredients/vanilla.png" alt=""><div class="name">vanilla</div></div>
+      <div class="ing-card"><img src="assets/ingredients/yeast.png" alt=""><div class="name">yeast</div></div>
+      <div class="ing-card"><img src="assets/ingredients/cream-cheese.png" alt=""><div class="name">cream cheese</div></div>
+      <div class="ing-card"><img src="assets/ingredients/cream.png" alt=""><div class="name">cream</div></div>
+      <div class="ing-card"><img src="assets/ingredients/chocolate.png" alt=""><div class="name">chocolate</div></div>
+      <div class="ing-card"><img src="assets/ingredients/baking-soda.png" alt=""><div class="name">baking soda</div></div>
+      <div class="ing-card"><img src="assets/ingredients/baking-powder.png" alt=""><div class="name">baking powder</div></div>
+      <div class="ing-card"><img src="assets/ingredients/white-sugar.png" alt=""><div class="name">white sugar</div></div>
+      <div class="ing-card"><img src="assets/ingredients/brown-sugar.png" alt=""><div class="name">brown sugar</div></div>
+      <div class="ing-card"><img src="assets/ingredients/strawberries.png" alt=""><div class="name">strawberries</div></div>
+      <div class="ing-card"><img src="assets/ingredients/blueberries.png" alt=""><div class="name">blueberries</div></div>
+      <div class="ing-card"><img src="assets/ingredients/kiwi.png" alt=""><div class="name">kiwi</div></div>
     </div>
   </div>
 </section>
 
-<!-- === MY ROLE === -->
+<!-- ============ ROLE ============ -->
 <section class="role">
   <div class="role-inner reveal">
     <div class="spiral"></div>
@@ -1004,35 +1475,36 @@
       <div class="left">
         <span class="recipe-tag" style="margin-bottom: 16px">recipe card · 03</span>
         <h3>my <em>ingredients</em> in the mix</h3>
-        <p>Baking PawPaw was a small-team hackathon project exploring whether an AI assistant could feel genuinely <em>cozy</em> rather than clinical — and we found the answer is yes, especially when it comes with paws.</p>
-<p>I led the art direction and visual identity, designed the UI and scene flow, and implemented the integration between Unity and the Gemini API using a Google Apps Script endpoint to keep the build keyless and deployment-ready.</p>
+        <p>Baking PawPaw was a small-team project where I wore a few aprons. The whole thing started as a conversation about whether an AI assistant could feel genuinely <em>cozy</em> instead of clinical — and the answer, it turns out, is "yes, if you give it paws."</p>
+        <p>I led the art direction and visual identity, designed the flow between scenes, and worked on the integration between Unity and the Gemini API via a Google Apps Script endpoint so the game could stay keyless and shippable.</p>
+      </div>
       <div class="right">
         <div class="role-item">
           <div class="check">✓</div>
           <div class="content">
-            <h4>Art direction &amp; UI</h4>
-            <p>Pastel palette, hand-painted textures, the cat-paw-fish wallpaper pattern, every button and frame.</p>
+            <h4>Art direction &amp; illustration</h4>
+            <p>All 17 ingredient sprites, the fridge &amp; cabinet backgrounds, the cat-paw-fish wallpaper, Mr. Paw himself, and every UI frame.</p>
           </div>
         </div>
         <div class="role-item">
           <div class="check">✓</div>
           <div class="content">
-            <h4>Game design &amp; flow</h4>
-            <p>Mapped the fridge → cabinet → kitchen → recipe loop; tuned the AI prompts for tone and recipe length.</p>
+            <h4>Scene design &amp; game flow</h4>
+            <p>Mapped the main-menu → fridge → cabinet → kitchen → recipe/chat loop across seven Unity scenes.</p>
           </div>
         </div>
         <div class="role-item">
           <div class="check">✓</div>
           <div class="content">
             <h4>Character design</h4>
-            <p>Designed Mr. Paw and his expressions — chef hat, whisker curls, little paint-brush paws and all.</p>
+            <p>Designed Mr. Paw and his expressions — chef hat, whisker curls, a tiny pastry brush in his paw.</p>
           </div>
         </div>
         <div class="role-item">
           <div class="check">✓</div>
           <div class="content">
             <h4>Gemini integration</h4>
-            <p>Prompt engineering for difficulty/time-based recipes; wired the Unity client to a GAS proxy.</p>
+            <p>Prompt-engineered the difficulty/time-based recipe generator; wired the Unity client to a GAS proxy.</p>
           </div>
         </div>
       </div>
@@ -1040,14 +1512,13 @@
   </div>
 </section>
 
-<!-- === TECH STACK === -->
+<!-- ============ TECH STACK ============ -->
 <section class="tech">
   <div class="section-head reveal">
     <span class="recipe-tag">recipe card · 04</span>
     <h2>the <span class="underline">pantry</span></h2>
     <p>everything on the shelves that made this possible</p>
   </div>
-
   <div class="tech-pills reveal">
     <div class="pill"><span class="dot" style="--color: #222c37"></span>Unity 6</div>
     <div class="pill"><span class="dot" style="--color: #9b4f96"></span>C#</div>
@@ -1061,16 +1532,14 @@
   </div>
 </section>
 
-<!-- === CTA FOOTER === -->
+<!-- ============ CTA ============ -->
 <section class="cta-footer">
   <div class="cta-card reveal">
     <span class="sparkle s1">✦</span>
     <span class="sparkle s2">♡</span>
     <span class="sparkle s3">★</span>
-
     <h2>want to see it <em>baking away?</em></h2>
     <p>clone the repo, open it in Unity, and Mr. Paw will meet you in the fridge</p>
-
     <div class="buttons">
       <a class="btn" href="https://github.com/SunnyGoose/BakingPawPaw" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.67 5.56.67 11.83c0 5.01 3.24 9.26 7.75 10.76.57.1.78-.25.78-.55v-1.92c-3.15.69-3.81-1.52-3.81-1.52-.52-1.31-1.27-1.66-1.27-1.66-1.03-.71.08-.7.08-.7 1.14.08 1.74 1.17 1.74 1.17 1.01 1.74 2.66 1.24 3.31.95.1-.73.39-1.24.71-1.52-2.51-.28-5.15-1.26-5.15-5.59 0-1.24.44-2.24 1.17-3.03-.12-.29-.51-1.45.11-3.02 0 0 .96-.31 3.14 1.16.91-.25 1.89-.38 2.86-.38s1.95.13 2.86.38c2.18-1.47 3.14-1.16 3.14-1.16.62 1.57.23 2.73.11 3.02.73.79 1.17 1.79 1.17 3.03 0 4.34-2.64 5.3-5.16 5.58.4.35.76 1.03.76 2.07v3.07c0 .3.2.65.79.54 4.49-1.5 7.73-5.75 7.73-10.75C23.33 5.56 18.27.5 12 .5z"/></svg>
@@ -1090,7 +1559,6 @@
 
 <script>
   document.documentElement.classList.add('js');
-  document.documentElement.classList.add('js-ready');
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
@@ -1098,8 +1566,13 @@
         io.unobserve(e.target);
       }
     });
-  }, { threshold: 0.12 });
+  }, { threshold: 0.05, rootMargin: '100px 0px 100px 0px' });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Safety net: force reveal after short delay
+  setTimeout(() => {
+    document.querySelectorAll('.reveal:not(.in)').forEach(el => el.classList.add('in'));
+  }, 800);
 </script>
 </body>
 </html>
