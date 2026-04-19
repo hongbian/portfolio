@@ -45,30 +45,38 @@
   }
 
   /* === ATMOSPHERIC FULL-PAGE BACKGROUND ===
-     Village scene at top scrolls with page, fades into snowy gradient below */
+     Snowflake pattern covers the whole page, village scene at top for the hero */
   body{
-    background:
-      url('assets-snow/snowflake-bg.jpg') center center / 600px 600px repeat;
-    background-attachment: fixed;
     background-color: var(--sky-night);
     min-height: 100vh;
     position: relative;
   }
+  /* Snowflake pattern — single cover image, blurred + darkened */
+  .snowflake-bg{
+    position: fixed; inset: 0;
+    z-index: -4;
+    background: url('assets-snow/snowflake-bg.jpg') center center / cover no-repeat;
+    filter: blur(2px) brightness(.65);
+    pointer-events: none;
+  }
+  /* Village image: absolute at top so it scrolls with the hero, fades out below */
+  body::before{
+    content:"";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 110vh;
+    z-index: -3;
+    background:
+      linear-gradient(180deg, transparent 0%, transparent 55%, rgba(74,90,120,.55) 82%, var(--sky-mid) 100%),
+      url('assets-snow/village-bg-raw.jpg') center top / cover no-repeat;
+    filter: brightness(.92) saturate(1.05);
+  }
+  /* Vignette + darkening overlay */
   body::after{
     content:"";
     position: fixed; inset: 0; z-index: -2;
     background:
-      radial-gradient(ellipse at center, rgba(0,0,0,.15) 0%, rgba(0,0,0,.65) 70%, rgba(0,0,0,.85) 100%);
-    pointer-events: none;
-  }
-  /* Blur layer for the snowflake pattern */
-  body::before{
-    content:"";
-    position: fixed; inset: 0;
-    z-index: -3;
-    background:
-      url('assets-snow/snowflake-bg.jpg') center center / 600px 600px repeat;
-    filter: blur(1.5px) brightness(.7);
+      radial-gradient(ellipse at center, rgba(0,0,0,.1) 0%, rgba(0,0,0,.55) 65%, rgba(0,0,0,.8) 100%);
     pointer-events: none;
   }
 
@@ -772,6 +780,9 @@
 </style>
 </head>
 <body>
+
+<!-- Snowflake pattern background -->
+<div class="snowflake-bg"></div>
 
 <!-- Snow layer -->
 <div class="snow-layer" id="snow"></div>
