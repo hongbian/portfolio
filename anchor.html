@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Anchor — AR grounding experience · Nurfatin Syazliana</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --abyss:#050d1a;
+    --deep:#0a1628;
+    --mid:#0f2038;
+    --surface:#1a3050;
+    --glass-bg:rgba(120,180,220,.08);
+    --glass-border:rgba(140,200,240,.18);
+    --glass-shine:rgba(200,230,255,.12);
+    --glass-frost:rgba(180,220,250,.06);
+    --glow-cyan:rgba(80,220,240,.6);
+    --glow-teal:rgba(60,200,180,.5);
+    --glow-purple:rgba(160,120,220,.4);
+    --glow-pink:rgba(220,120,180,.35);
+    --text-primary:rgba(220,240,255,.92);
+    --text-secondary:rgba(160,195,220,.7);
+    --text-dim:rgba(120,160,190,.5);
+    --accent-cyan:#50dce8;
+    --accent-teal:#3dc8b4;
+    --accent-lavender:#a88cdc;
+    --anchor-blue:#5a9ab5;
+    --anchor-blue-light:#8cc4d8;
+    --coral-pink:#e87a9a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--abyss);
+    color:var(--text-primary);
+    font-family:'Outfit',sans-serif;
+    font-weight:400;
+    overflow-x:hidden;
+    line-height:1.7;
+    min-height:100vh;
+    position:relative;
+  }
+
+  /* === DEEP OCEAN BACKGROUND === */
+  .ocean-bg{
+    position:fixed;inset:0;z-index:0;
+    background:
+      radial-gradient(ellipse at 20% 80%, rgba(60,200,180,.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(80,140,220,.1) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(160,120,220,.06) 0%, transparent 60%),
+      linear-gradient(180deg, #081420 0%, #0a1a30 30%, #0c1e38 60%, #081420 100%);
+    pointer-events:none;
+  }
+
+  /* Animated caustics/light rays */
+  .caustics{
+    position:fixed;inset:0;z-index:1;
+    pointer-events:none;
+    opacity:.25;
+    background:
+      repeating-conic-gradient(from 0deg at 30% 20%, transparent 0deg, rgba(80,220,240,.04) 2deg, transparent 4deg) 0 0 / 100% 100%,
+      repeating-conic-gradient(from 45deg at 70% 60%, transparent 0deg, rgba(60,200,180,.03) 3deg, transparent 6deg) 0 0 / 100% 100%;
+    animation: caustic-drift 20s ease-in-out infinite;
+  }
+  @keyframes caustic-drift{
+    0%,100%{transform:scale(1) rotate(0deg);opacity:.2}
+    50%{transform:scale(1.1) rotate(2deg);opacity:.35}
+  }
+
+  /* Floating particles */
+  .particle{
+    position:fixed;
+    border-radius:50%;
+    pointer-events:none;
+    z-index:2;
+    animation: particle-float linear infinite;
+  }
+  @keyframes particle-float{
+    0%{transform:translateY(0) translateX(0);opacity:0}
+    10%{opacity:1}
+    90%{opacity:1}
+    100%{transform:translateY(-100vh) translateX(30px);opacity:0}
+  }
+
+  /* === LIQUID GLASS PANELS === */
+  .glass{
+    background:
+      linear-gradient(135deg, rgba(140,200,240,.1) 0%, rgba(100,160,210,.04) 50%, rgba(80,140,200,.08) 100%);
+    backdrop-filter:blur(20px) saturate(1.2);
+    -webkit-backdrop-filter:blur(20px) saturate(1.2);
+    border:1px solid var(--glass-border);
+    border-radius:24px;
+    box-shadow:
+      0 8px 32px rgba(0,0,0,.4),
+      inset 0 1px 0 rgba(255,255,255,.08),
+      inset 0 -1px 0 rgba(0,0,0,.2);
+    position:relative;
+    overflow:hidden;
+  }
+  .glass::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;
+    height:1px;
+    background:linear-gradient(90deg, transparent 0%, rgba(200,230,255,.25) 30%, rgba(200,230,255,.15) 70%, transparent 100%);
+  }
+
+  /* Glass with stronger frost */
+  .glass-strong{
+    background:
+      linear-gradient(135deg, rgba(140,200,240,.14) 0%, rgba(100,160,210,.06) 50%, rgba(80,140,200,.1) 100%);
+    backdrop-filter:blur(30px) saturate(1.3);
+    -webkit-backdrop-filter:blur(30px) saturate(1.3);
+    border:1px solid rgba(140,200,240,.22);
+    border-radius:20px;
+    box-shadow:
+      0 12px 40px rgba(0,0,0,.45),
+      inset 0 1px 0 rgba(255,255,255,.1),
+      inset 0 -1px 0 rgba(0,0,0,.15);
+    position:relative;overflow:hidden;
+  }
+  .glass-strong::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;
+    height:1px;
+    background:linear-gradient(90deg, transparent 0%, rgba(200,240,255,.3) 30%, rgba(200,240,255,.2) 70%, transparent 100%);
+  }
+
+  /* === NAVBAR === */
+  nav.topbar{
+    position:sticky;top:16px;z-index:50;
+    margin:20px 24px 0;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:10px 22px 10px 16px;
+  }
+  nav.topbar a.back{
+    font-family:'Syne',sans-serif;
+    font-size:15px;font-weight:600;
+    color:var(--text-secondary);
+    text-decoration:none;
+    display:flex;align-items:center;gap:10px;
+    padding:8px 18px;
+    border-radius:999px;
+    transition:all .3s;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+  }
+  nav.topbar a.back:hover{background:var(--glass-bg);color:var(--accent-cyan);transform:translateX(-3px)}
+  nav.topbar .brand{
+    display:flex;align-items:center;gap:10px;
+    font-family:'Syne',sans-serif;
+    font-size:13px;font-weight:600;
+    color:var(--text-dim);
+    letter-spacing:3px;
+    text-transform:uppercase;
+  }
+  nav.topbar .brand .pulse{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--accent-cyan);
+    box-shadow:0 0 12px var(--glow-cyan),0 0 24px rgba(80,220,240,.3);
+    animation:pulse-glow 3s ease-in-out infinite;
+  }
+  @keyframes pulse-glow{
+    0%,100%{opacity:1;box-shadow:0 0 12px var(--glow-cyan),0 0 24px rgba(80,220,240,.3)}
+    50%{opacity:.5;box-shadow:0 0 6px var(--glow-cyan),0 0 12px rgba(80,220,240,.15)}
+  }
+  nav.topbar .meta{
+    font-family:'Space Mono',monospace;
+    font-size:12px;
+    color:var(--text-dim);
+    letter-spacing:1px;
+  }
+
+  /* === CONTENT WRAPPER === */
+  .content{position:relative;z-index:5}
+
+  /* === HERO === */
+  section.hero{
+    position:relative;
+    min-height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;
+    padding:40px 20px;
+  }
+  .hero-content{
+    position:relative;z-index:3;
+    text-align:center;
+    padding:40px;
+    max-width:1000px;
+  }
+  .hero-kicker{
+    display:inline-flex;align-items:center;gap:14px;
+    padding:8px 24px;
+    font-family:'Space Mono',monospace;
+    font-size:12px;
+    color:var(--accent-cyan);
+    letter-spacing:4px;
+    text-transform:uppercase;
+    margin-bottom:30px;
+    border:1px solid rgba(80,220,240,.25);
+    border-radius:999px;
+    background:rgba(80,220,240,.06);
+  }
+  .hero-kicker .dot{
+    width:6px;height:6px;border-radius:50%;
+    background:var(--accent-cyan);
+    box-shadow:0 0 10px var(--glow-cyan);
+  }
+  h1.hero-title{
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(72px,14vw,180px);
+    color:transparent;
+    background:linear-gradient(180deg, rgba(220,240,255,.95) 0%, var(--anchor-blue-light) 60%, var(--accent-teal) 100%);
+    -webkit-background-clip:text;background-clip:text;
+    letter-spacing:-2px;
+    line-height:.9;
+    margin-bottom:24px;
+    filter:drop-shadow(0 0 60px rgba(80,220,240,.2));
+  }
+  .hero-subtitle{
+    font-family:'Outfit',sans-serif;
+    font-weight:300;
+    font-size:clamp(17px,2.2vw,22px);
+    color:var(--text-secondary);
+    max-width:600px;
+    margin:0 auto 16px;
+    line-height:1.6;
+  }
+  .hero-subtitle .em{
+    color:var(--accent-cyan);
+    font-weight:500;
+  }
+  .hero-meta{
+    display:flex;gap:30px;justify-content:center;
+    margin-top:36px;flex-wrap:wrap;
+  }
+  .hero-meta .chip{
+    font-family:'Space Mono',monospace;
+    font-size:11px;
+    color:var(--text-dim);
+    letter-spacing:2px;
+    text-transform:uppercase;
+    padding:6px 16px;
+    border:1px solid rgba(140,200,240,.12);
+    border-radius:999px;
+  }
+
+  /* Floating 3D models around hero */
+  .hero-float{
+    position:absolute;
+    z-index:2;
+    pointer-events:none;
+    filter:drop-shadow(0 0 40px rgba(80,180,220,.3));
+  }
+  .hero-float img{
+    width:100%;height:auto;
+    animation:model-bob 6s ease-in-out infinite;
+  }
+  .hero-float.blob{
+    top:12%;left:5%;width:180px;
+    animation:model-bob 7s ease-in-out infinite;
+  }
+  .hero-float.fish{
+    top:20%;right:3%;width:220px;
+    animation:model-bob 8s ease-in-out 1s infinite;
+    transform:scaleX(-1);
+  }
+  .hero-float.shell{
+    bottom:15%;left:10%;width:160px;
+    animation:model-bob 6s ease-in-out .5s infinite;
+  }
+  @keyframes model-bob{
+    0%,100%{transform:translateY(0) rotate(0deg)}
+    25%{transform:translateY(-15px) rotate(2deg)}
+    75%{transform:translateY(10px) rotate(-1deg)}
+  }
+
+  /* === SECTION LAYOUT === */
+  section.chapter{
+    position:relative;
+    padding:100px 40px 120px;
+    max-width:1400px;
+    margin:0 auto;
+  }
+
+  /* Section headers */
+  .section-label{
+    font-family:'Space Mono',monospace;
+    font-size:11px;
+    color:var(--accent-teal);
+    letter-spacing:5px;
+    text-transform:uppercase;
+    margin-bottom:10px;
+  }
+  .section-title{
+    font-family:'Syne',sans-serif;
+    font-weight:700;
+    font-size:clamp(36px,5vw,62px);
+    color:var(--text-primary);
+    letter-spacing:-1px;
+    line-height:1.1;
+    margin-bottom:20px;
+  }
+  .section-title .accent{
+    color:var(--accent-cyan);
+  }
+  .section-desc{
+    font-weight:300;
+    font-size:18px;
+    color:var(--text-secondary);
+    max-width:600px;
+    line-height:1.7;
+  }
+
+  /* === STORY META STRIP === */
+  .story-meta{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1px;
+    margin:0 24px 0;
+    overflow:hidden;
+    border-radius:20px;
+    border:1px solid var(--glass-border);
+    background:rgba(0,0,0,.3);
+  }
+  .story-meta .cell{
+    padding:28px 24px;
+    background:var(--glass-frost);
+    backdrop-filter:blur(12px);
+    position:relative;
+  }
+  .story-meta .cell::after{
+    content:"";position:absolute;right:0;top:20%;bottom:20%;
+    width:1px;background:var(--glass-border);
+  }
+  .story-meta .cell:last-child::after{display:none}
+  .story-meta .label{
+    font-family:'Space Mono',monospace;
+    font-size:10px;
+    color:var(--accent-teal);
+    letter-spacing:3px;
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .story-meta .value{
+    font-family:'Outfit',sans-serif;
+    font-size:16px;font-weight:500;
+    color:var(--text-primary);
+  }
+  .story-meta .value .hl{color:var(--accent-cyan)}
+
+  /* === CONCEPT / INSPIRATION === */
+  .concept-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+    margin-top:50px;
+    align-items:start;
+  }
+  .concept-card{
+    padding:44px;
+  }
+  .concept-card h3{
+    font-family:'Syne',sans-serif;
+    font-weight:700;font-size:26px;
+    color:var(--text-primary);
+    margin-bottom:16px;
+    display:flex;align-items:center;gap:12px;
+  }
+  .concept-card h3 .icon{
+    width:36px;height:36px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;
+    background:rgba(80,220,240,.1);
+    border:1px solid rgba(80,220,240,.2);
+  }
+  .concept-card p{
+    font-size:16px;
+    color:var(--text-secondary);
+    line-height:1.8;
+    font-weight:300;
+  }
+  .concept-card p+p{margin-top:14px}
+  .concept-card em{
+    color:var(--accent-cyan);
+    font-style:normal;
+    font-weight:500;
+  }
+
+  /* === 3D MODEL SHOWCASE === */
+  .models-section{
+    margin-top:80px;
+    padding:60px 0;
+  }
+  .models-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:30px;
+    margin-top:50px;
+  }
+  .model-card{
+    padding:30px;
+    text-align:center;
+    transition:transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s;
+  }
+  .model-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 80px rgba(80,220,240,.1);
+  }
+  .model-card .model-img{
+    width:100%;
+    aspect-ratio:1;
+    object-fit:contain;
+    border-radius:16px;
+    margin-bottom:20px;
+    filter:drop-shadow(0 10px 30px rgba(80,180,220,.25));
+    transition:transform .4s;
+  }
+  .model-card:hover .model-img{transform:scale(1.05) rotate(2deg)}
+  .model-card h4{
+    font-family:'Syne',sans-serif;
+    font-weight:600;font-size:20px;
+    color:var(--text-primary);
+    margin-bottom:6px;
+  }
+  .model-card .model-sub{
+    font-family:'Space Mono',monospace;
+    font-size:11px;
+    color:var(--text-dim);
+    letter-spacing:2px;
+    text-transform:uppercase;
+  }
+
+  /* === EXERCISES SECTION === */
+  .exercises{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:24px;
+    margin-top:50px;
+  }
+  .exercise-card{
+    padding:36px 30px;
+    position:relative;
+    overflow:hidden;
+  }
+  .exercise-card .ex-num{
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:64px;
+    color:rgba(80,220,240,.08);
+    position:absolute;
+    top:-10px;right:16px;
+    line-height:1;
+  }
+  .exercise-card .ex-icon{
+    width:48px;height:48px;
+    border-radius:14px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:24px;
+    margin-bottom:18px;
+    background:rgba(80,220,240,.1);
+    border:1px solid rgba(80,220,240,.15);
+  }
+  .exercise-card h4{
+    font-family:'Syne',sans-serif;
+    font-weight:600;font-size:20px;
+    color:var(--text-primary);
+    margin-bottom:10px;
+  }
+  .exercise-card p{
+    font-size:15px;
+    color:var(--text-secondary);
+    line-height:1.7;
+    font-weight:300;
+  }
+
+  /* === APP SCREENS SHOWCASE === */
+  .screens-showcase{
+    margin-top:60px;
+    padding:50px 30px;
+    border-radius:28px;
+    background:
+      radial-gradient(ellipse at 30% 30%, rgba(80,220,240,.06) 0%, transparent 50%),
+      rgba(10,22,40,.6);
+    border:1px solid var(--glass-border);
+    overflow:hidden;
+  }
+  .screens-row{
+    display:flex;
+    gap:20px;
+    overflow-x:auto;
+    padding:20px 10px 30px;
+    scroll-snap-type:x mandatory;
+  }
+  .screens-row::-webkit-scrollbar{height:4px}
+  .screens-row::-webkit-scrollbar-track{background:rgba(255,255,255,.03);border-radius:2px}
+  .screens-row::-webkit-scrollbar-thumb{background:var(--glass-border);border-radius:2px}
+  .screen-item{
+    flex:0 0 auto;
+    scroll-snap-align:start;
+  }
+  .screen-item img{
+    height:400px;
+    width:auto;
+    border-radius:16px;
+    border:1px solid var(--glass-border);
+    box-shadow:0 10px 40px rgba(0,0,0,.5);
+    transition:transform .3s;
+  }
+  .screen-item img:hover{transform:scale(1.03)}
+
+  /* === CODEX / AQUARIUM === */
+  .showcase-duo{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:30px;
+    margin-top:50px;
+  }
+  .showcase-panel{
+    padding:30px;
+    text-align:center;
+  }
+  .showcase-panel img{
+    width:100%;max-width:380px;
+    border-radius:16px;
+    border:1px solid var(--glass-border);
+    box-shadow:0 12px 40px rgba(0,0,0,.4);
+    margin-bottom:16px;
+  }
+  .showcase-panel h4{
+    font-family:'Syne',sans-serif;
+    font-weight:600;font-size:20px;
+    color:var(--text-primary);
+    margin-bottom:6px;
+  }
+  .showcase-panel p{
+    font-size:14px;
+    color:var(--text-secondary);
+    font-weight:300;
+  }
+
+  /* === OCEAN BG SECTION (using their asset) === */
+  .ocean-scene{
+    position:relative;
+    margin:60px 24px;
+    border-radius:28px;
+    overflow:hidden;
+    height:300px;
+  }
+  .ocean-scene img{
+    width:100%;height:100%;
+    object-fit:cover;
+    filter:brightness(.9) saturate(1.2);
+  }
+  .ocean-scene .overlay{
+    position:absolute;inset:0;
+    background:
+      linear-gradient(180deg, rgba(5,13,26,.6) 0%, transparent 40%, transparent 70%, rgba(5,13,26,.7) 100%),
+      radial-gradient(ellipse at center, transparent 40%, rgba(5,13,26,.5) 100%);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .ocean-scene .overlay-text{
+    font-family:'Syne',sans-serif;
+    font-weight:700;
+    font-size:clamp(28px,4vw,48px);
+    color:var(--text-primary);
+    text-align:center;
+    text-shadow:0 4px 20px rgba(0,0,0,.6);
+  }
+  .ocean-scene .overlay-text .accent{color:var(--accent-cyan)}
+
+  /* === MY ROLE === */
+  .role-section{
+    padding:50px;
+    margin-top:60px;
+  }
+  .role-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:24px 40px;
+    margin-top:30px;
+  }
+  .role-item{
+    padding:24px;
+    border-radius:16px;
+    background:rgba(80,220,240,.03);
+    border:1px solid rgba(80,220,240,.08);
+    transition:border-color .3s;
+  }
+  .role-item:hover{border-color:rgba(80,220,240,.2)}
+  .role-item h5{
+    font-family:'Syne',sans-serif;
+    font-weight:600;font-size:16px;
+    color:var(--accent-cyan);
+    margin-bottom:6px;
+  }
+  .role-item p{
+    font-size:14px;
+    color:var(--text-secondary);
+    line-height:1.6;
+    font-weight:300;
+  }
+
+  /* === TECH STACK === */
+  .tech-section{padding:80px 40px;text-align:center}
+  .tech-stack{
+    display:flex;flex-wrap:wrap;justify-content:center;gap:12px;
+    margin-top:30px;
+  }
+  .tech-chip{
+    padding:10px 22px;
+    border-radius:999px;
+    font-family:'Space Mono',monospace;
+    font-size:12px;
+    color:var(--text-secondary);
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    border:1px solid var(--glass-border);
+    background:var(--glass-frost);
+    transition:all .3s;
+  }
+  .tech-chip:hover{
+    border-color:var(--accent-cyan);
+    color:var(--accent-cyan);
+    box-shadow:0 0 20px rgba(80,220,240,.15);
+  }
+
+  /* === VIDEO EMBED === */
+  .video-section{
+    margin:0 24px;
+    border-radius:28px;
+    overflow:hidden;
+    border:1px solid var(--glass-border);
+    background:rgba(0,0,0,.3);
+    aspect-ratio:16/9;
+    max-width:1000px;
+    margin-left:auto;margin-right:auto;
+  }
+  .video-section iframe{
+    width:100%;height:100%;
+    border:none;
+  }
+
+  /* === CTA === */
+  .final-cta{
+    margin:80px 40px;
+    padding:80px 40px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+    border-radius:28px;
+    background:
+      radial-gradient(ellipse at 50% 40%, rgba(80,220,240,.1) 0%, transparent 60%),
+      var(--glass-frost);
+    border:1px solid var(--glass-border);
+  }
+  .final-cta h3{
+    font-family:'Syne',sans-serif;
+    font-weight:700;
+    font-size:clamp(36px,5vw,56px);
+    color:var(--text-primary);
+    letter-spacing:-1px;
+    margin-bottom:16px;
+  }
+  .final-cta h3 .accent{color:var(--accent-cyan)}
+  .final-cta p{
+    font-size:18px;color:var(--text-secondary);
+    font-weight:300;
+    max-width:500px;margin:0 auto 30px;
+  }
+  .btn-anchor{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:14px 32px;
+    font-family:'Syne',sans-serif;
+    font-weight:600;font-size:16px;
+    color:var(--abyss);
+    background:linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-teal) 100%);
+    border:none;border-radius:999px;
+    text-decoration:none;
+    box-shadow:0 0 30px rgba(80,220,240,.3),0 6px 20px rgba(0,0,0,.3);
+    transition:transform .2s,box-shadow .2s;
+    cursor:pointer;letter-spacing:.5px;
+  }
+  .btn-anchor:hover{
+    transform:translateY(-3px);
+    box-shadow:0 0 50px rgba(80,220,240,.5),0 10px 30px rgba(0,0,0,.4);
+  }
+  .btn-anchor.ghost{
+    background:transparent;
+    color:var(--text-primary);
+    border:1px solid var(--glass-border);
+    box-shadow:0 6px 20px rgba(0,0,0,.3);
+  }
+  .btn-anchor.ghost:hover{border-color:var(--accent-cyan);color:var(--accent-cyan)}
+
+  /* === FOOTER === */
+  footer.credits{
+    text-align:center;
+    padding:40px 20px;
+    font-family:'Space Mono',monospace;
+    font-size:12px;
+    color:var(--text-dim);
+    letter-spacing:2px;
+    border-top:1px solid rgba(140,200,240,.08);
+  }
+  footer .glow{color:var(--accent-cyan)}
+
+  /* === ANIMATIONS === */
+  .reveal{opacity:0;transform:translateY(30px);transition:opacity .9s ease,transform .9s cubic-bezier(.22,1,.36,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  /* Staggered children */
+  .stagger .reveal:nth-child(1){transition-delay:.05s}
+  .stagger .reveal:nth-child(2){transition-delay:.12s}
+  .stagger .reveal:nth-child(3){transition-delay:.2s}
+  .stagger .reveal:nth-child(4){transition-delay:.28s}
+
+  /* === RESPONSIVE === */
+  @media(max-width:960px){
+    section.chapter{padding:60px 20px 80px}
+    .concept-grid{grid-template-columns:1fr;gap:20px}
+    .models-grid{grid-template-columns:1fr 1fr;gap:20px}
+    .exercises{grid-template-columns:1fr;gap:16px}
+    .story-meta{grid-template-columns:repeat(2,1fr);margin:0 12px}
+    .showcase-duo{grid-template-columns:1fr;gap:20px}
+    .role-grid{grid-template-columns:1fr}
+    .role-section{padding:30px 20px}
+    .hero-float.blob{width:120px;top:8%;left:2%}
+    .hero-float.fish{width:150px;right:0}
+    .hero-float.shell{width:110px;left:3%}
+    nav.topbar{margin:12px 10px 0}
+    nav.topbar .meta{display:none}
+    .final-cta{margin:40px 14px;padding:60px 20px}
+    .ocean-scene{margin:40px 12px;height:200px}
+    .screens-showcase{margin-top:40px;padding:30px 16px}
+  }
+  @media(max-width:520px){
+    h1.hero-title{font-size:60px}
+    .hero-float{display:none}
+    .models-grid{grid-template-columns:1fr}
+    .hero-meta{gap:12px}
+    .hero-meta .chip{font-size:10px;padding:4px 12px}
+    .story-meta{grid-template-columns:1fr}
+    .story-meta .cell::after{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- Background layers -->
+<div class="ocean-bg"></div>
+<div class="caustics"></div>
+
+<!-- Particles -->
+<div id="particles"></div>
+
+<!-- Main content -->
+<div class="content">
+
+<!-- Navigation -->
+<nav class="topbar glass">
+  <a href="index.html" class="back">
+    <span>←</span>
+    <span>Portfolio</span>
+  </a>
+  <div class="brand">
+    <span class="pulse"></span>
+    <span>NRF.SYZL</span>
+  </div>
+  <div class="meta">FigBuild 2026</div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-float blob">
+    <img src="assets-anchor/blob-creature.png" alt="Bioluminescent blob creature">
+  </div>
+  <div class="hero-float fish">
+    <img src="assets-anchor/fish.png" alt="Glowing fish">
+  </div>
+  <div class="hero-float shell">
+    <img src="assets-anchor/shell.png" alt="Pearl shell">
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-kicker">
+      <span class="dot"></span>
+      FigBuild 2026 · Atlanta
+    </div>
+    <h1 class="hero-title">Anchor</h1>
+    <p class="hero-subtitle">
+      An AR grounding experience that brings you back to your body through
+      <span class="em">bioluminescent ocean creatures</span> and gentle sensory exercises.
+    </p>
+    <div class="hero-meta">
+      <span class="chip">AR Experience</span>
+      <span class="chip">Mental Health</span>
+      <span class="chip">Blender + Figma</span>
+      <span class="chip">3-Person Team</span>
+    </div>
+  </div>
+</section>
+
+<!-- Meta strip -->
+<div class="story-meta reveal">
+  <div class="cell">
+    <div class="label">Event</div>
+    <div class="value">FigBuild <span class="hl">2026</span></div>
+  </div>
+  <div class="cell">
+    <div class="label">My Role</div>
+    <div class="value">Artist <span class="hl">&</span> Designer</div>
+  </div>
+  <div class="cell">
+    <div class="label">Built With</div>
+    <div class="value">Figma <span class="hl">·</span> Blender</div>
+  </div>
+  <div class="cell">
+    <div class="label">Focus</div>
+    <div class="value">AR <span class="hl">+</span> Interoception</div>
+  </div>
+</div>
+
+<!-- ============ THE PROBLEM ============ -->
+<section class="chapter">
+  <div class="section-label reveal">01 — Inspiration</div>
+  <div class="section-title reveal">The sense no one <span class="accent">talks about</span></div>
+  <div class="section-desc reveal">
+    Interoception is how your body knows it exists — heartbeat, breath, tension.
+    When it breaks down, the world stops feeling real.
+  </div>
+
+  <div class="concept-grid stagger">
+    <div class="concept-card glass reveal">
+      <h3><span class="icon">⚓</span> The problem</h3>
+      <p>
+        Someone close to our team experiences derealization — that deeply unsettling feeling
+        that the world isn't real, that you've disconnected from your own body and surroundings.
+      </p>
+      <p>
+        Every existing grounding tool treats this as a <em>cognitive problem</em>, offering instructions
+        to follow at the exact moment the thinking mind is the least reliable thing available.
+      </p>
+    </div>
+    <div class="concept-card glass reveal">
+      <h3><span class="icon">🌊</span> Our approach</h3>
+      <p>
+        Instead of asking users to think their way back to their body, Anchor gives the
+        interoceptive system <em>direct, sensory inputs</em> to work with.
+      </p>
+      <p>
+        When a dissociative shift is detected, the world simply becomes more alive.
+        <em>Bioluminescent fish appear on nearby surfaces.</em> A soft ambient tone begins.
+        No alarms, no clinical language — just an ocean that appears when you need it most.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="chapter">
+  <div class="section-label reveal">02 — The Experience</div>
+  <div class="section-title reveal">Three ways to <span class="accent">come back</span></div>
+  <div class="section-desc reveal">
+    Each exercise targets a different interoceptive channel — 
+    vision, touch, and breath — disguised as an immersive underwater world.
+  </div>
+
+  <div class="exercises stagger">
+    <div class="exercise-card glass reveal">
+      <div class="ex-num">01</div>
+      <div class="ex-icon">🐚</div>
+      <h4>Collect Seashells</h4>
+      <p>
+        AR shells appear on surfaces around you. Reaching out and picking them up
+        re-engages spatial awareness and tactile body sense through physical movement.
+      </p>
+    </div>
+    <div class="exercise-card glass reveal">
+      <div class="ex-num">02</div>
+      <div class="ex-icon">🐠</div>
+      <h4>Snap the Fish</h4>
+      <p>
+        Bioluminescent fish swim through your environment. Tracking and photographing them
+        reactivates visual seeking and the eye-brain connection that grounds you in space.
+      </p>
+    </div>
+    <div class="exercise-card glass reveal">
+      <div class="ex-num">03</div>
+      <div class="ex-icon">🫧</div>
+      <h4>Breathe Underwater</h4>
+      <p>
+        The world slowly submerges. Guided breathing exercises restore the
+        breath-heartbeat feedback loop, the most fundamental interoceptive signal.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Ocean environment divider -->
+<div class="ocean-scene reveal">
+  <img src="assets-anchor/ocean-bg.png" alt="Underwater environment">
+  <div class="overlay">
+    <div class="overlay-text">healing deserves to be <span class="accent">beautiful</span></div>
+  </div>
+</div>
+
+<!-- ============ 3D MODELS ============ -->
+<section class="chapter">
+  <div class="section-label reveal">03 — Creatures</div>
+  <div class="section-title reveal">Hand-modeled in <span class="accent">Blender</span></div>
+  <div class="section-desc reveal">
+    Every creature in the Anchor ocean was modeled and animated by hand — 
+    designed to feel soft, alive, and safe.
+  </div>
+
+  <div class="models-grid stagger">
+    <div class="model-card glass reveal">
+      <img class="model-img" src="assets-anchor/blob-creature.png" alt="Blob creature">
+      <h4>The Blob</h4>
+      <div class="model-sub">Blender · Animated</div>
+    </div>
+    <div class="model-card glass reveal">
+      <img class="model-img" src="assets-anchor/fish.png" alt="Pink fish">
+      <h4>The Fish</h4>
+      <div class="model-sub">Blender · Animated</div>
+    </div>
+    <div class="model-card glass reveal">
+      <img class="model-img" src="assets-anchor/shell.png" alt="Shell with pearl">
+      <h4>The Shell</h4>
+      <div class="model-sub">Blender · Collectible</div>
+    </div>
+  </div>
+
+  <!-- Codex + Aquarium -->
+  <div class="showcase-duo" style="margin-top:50px">
+    <div class="showcase-panel glass reveal">
+      <img src="assets-anchor/creature-codex.png" alt="Creature Codex — 6 of 24 unlocked">
+      <h4>The Creature Codex</h4>
+      <p>Every completed session earns a creature that takes up residence in a growing personal ocean — 24 to collect.</p>
+    </div>
+    <div class="showcase-panel glass reveal">
+      <img src="assets-anchor/aquarium.png" alt="Personal aquarium view">
+      <h4>Your Aquarium</h4>
+      <p>Watch your ocean habitat grow over time. A beautiful record of every moment you came back to yourself.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIDEO ============ -->
+<section class="chapter" style="padding-bottom:40px">
+  <div class="section-label reveal">04 — Walkthrough</div>
+  <div class="section-title reveal" style="margin-bottom:40px">See it in <span class="accent">motion</span></div>
+  <div class="video-section reveal">
+    <iframe src="https://www.youtube.com/embed/GxFZwxGiBCc" title="Anchor Demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+  </div>
+</section>
+
+<!-- ============ MY ROLE ============ -->
+<section class="chapter" id="role">
+  <div class="role-section glass reveal">
+    <div class="section-label">05 — My Contribution</div>
+    <div class="section-title" style="font-size:clamp(30px,4vw,44px)">What I <span class="accent">built</span></div>
+    <p style="color:var(--text-secondary);font-weight:300;margin-top:10px;max-width:600px">
+      As artist and designer on a three-person team, I owned the visual identity
+      from concept through prototype.
+    </p>
+    <div class="role-grid">
+      <div class="role-item">
+        <h5>Design & Planning</h5>
+        <p>Led the overall app concept, user flows, and interaction design across mobile and AR glasses interfaces.</p>
+      </div>
+      <div class="role-item">
+        <h5>3D Modeling</h5>
+        <p>Hand-modeled all bioluminescent creatures and underwater environments in Blender. Rigged and animated each creature.</p>
+      </div>
+      <div class="role-item">
+        <h5>AR Implementation</h5>
+        <p>Integrated Blender models into the AR prototype, creating the spatial experience of creatures appearing in real space.</p>
+      </div>
+      <div class="role-item">
+        <h5>Glasses UI</h5>
+        <p>Designed the full AR glasses interface — health metrics, session flow, and the transparent HUD overlay for grounding tasks.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TECH ============ -->
+<section class="tech-section reveal">
+  <div class="section-label">Tools</div>
+  <div class="section-title" style="font-size:clamp(30px,4vw,44px)">How we <span class="accent">built</span> it</div>
+  <div class="tech-stack" style="margin-top:24px">
+    <span class="tech-chip">Figma</span>
+    <span class="tech-chip">FigmaMake</span>
+    <span class="tech-chip">Blender</span>
+    <span class="tech-chip">AR Prototyping</span>
+    <span class="tech-chip">3D Animation</span>
+    <span class="tech-chip">UI/UX Design</span>
+  </div>
+  <p style="color:var(--text-dim);font-size:14px;margin-top:20px;font-weight:300">
+    Designed at FigBuild 2026, Atlanta GA · March 2026
+  </p>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="final-cta reveal">
+  <h3>Come up for <span class="accent">air</span></h3>
+  <p>
+    Thanks for diving in with us. Head back to the portfolio or explore the Figma prototype.
+  </p>
+  <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+    <a class="btn-anchor" href="index.html">
+      <span>←</span>
+      <span>Back to portfolio</span>
+    </a>
+    <a class="btn-anchor ghost" href="https://www.figma.com/design/upPtjN1LPLwW5BLeADVrdh/Anchor?node-id=1-2" target="_blank">
+      <span>View in Figma</span>
+      <span>→</span>
+    </a>
+  </div>
+</section>
+
+<footer class="credits">
+  Designed <span class="glow">&</span> modeled by Nurfatin Syazliana · FigBuild 2026
+</footer>
+
+</div><!-- /content -->
+
+<script>
+  // Floating particles
+  (function(){
+    const container = document.getElementById('particles');
+    const count = 30;
+    for(let i=0;i<count;i++){
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const size = 2 + Math.random()*4;
+      const hue = 180 + Math.random()*40;
+      p.style.width = size+'px';
+      p.style.height = size+'px';
+      p.style.left = (Math.random()*100)+'vw';
+      p.style.top = (60+Math.random()*40)+'vh';
+      p.style.background = `hsla(${hue},60%,70%,.4)`;
+      p.style.boxShadow = `0 0 ${size*3}px hsla(${hue},60%,60%,.3)`;
+      p.style.animationDuration = (15+Math.random()*20)+'s';
+      p.style.animationDelay = (Math.random()*-20)+'s';
+      container.appendChild(p);
+    }
+  })();
+
+  // Reveal on scroll
+  document.documentElement.classList.add('js');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:0.08,rootMargin:'60px 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  setTimeout(()=>{
+    document.querySelectorAll('.reveal:not(.in)').forEach(el=>el.classList.add('in'));
+  },2000);
+</script>
+</body>
+</html>
