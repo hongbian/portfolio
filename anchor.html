@@ -566,81 +566,177 @@ body{
 }
 .exercise .target .val{color:var(--lume-teal)}
 
-/* ═══ AR WALKTHROUGH — pinboard style ═══ */
-.ar-board{
+/* ═══ AR CAPTURE — live glasses footage ═══ */
+.ar-capture{
   position:relative;
-  margin:120px 60px;
-  padding:80px 40px;
+  margin:80px 60px 120px;
+  padding:28px;
   background:
-    radial-gradient(ellipse at center, rgba(78,236,255,.03) 0%, transparent 70%),
-    rgba(6,18,32,.4);
+    radial-gradient(ellipse at center, rgba(78,236,255,.04) 0%, transparent 70%),
+    rgba(6,18,32,.5);
   border:1px solid var(--ink-ghost);
-  border-radius:2px;
   overflow:hidden;
 }
-.ar-board::before{
-  content:"AR_CAPTURE.SEQ";
-  position:absolute;top:20px;left:30px;
+/* Top strip with mission meta */
+.ar-capture .strip{
+  display:flex;justify-content:space-between;align-items:center;
   font-family:'JetBrains Mono',monospace;
   font-size:10px;
-  color:var(--lume-cyan);
-  letter-spacing:.3em;
-  opacity:.7;
-}
-.ar-board::after{
-  content:"6_FRAMES";
-  position:absolute;top:20px;right:30px;
-  font-family:'JetBrains Mono',monospace;
-  font-size:10px;
+  letter-spacing:.25em;
+  text-transform:uppercase;
   color:var(--ink-faint);
-  letter-spacing:.3em;
+  margin-bottom:18px;
+  padding-bottom:14px;
+  border-bottom:1px solid var(--ink-ghost);
 }
+.ar-capture .strip .left{display:flex;gap:24px;align-items:center}
+.ar-capture .strip .rec{
+  display:inline-flex;align-items:center;gap:8px;
+  color:var(--lume-coral);
+}
+.ar-capture .strip .rec::before{
+  content:"";display:block;
+  width:8px;height:8px;border-radius:50%;
+  background:var(--lume-coral);
+  box-shadow:0 0 10px var(--lume-coral);
+  animation:rec-blink 1.4s ease-in-out infinite;
+}
+@keyframes rec-blink{0%,100%{opacity:1}50%{opacity:.25}}
+.ar-capture .strip .meta-chip{color:var(--lume-cyan)}
 
-.ar-grid{
-  display:grid;
-  grid-template-columns:repeat(6, 1fr);
-  gap:16px;
-  margin-top:40px;
-}
-.ar-tile{
+/* Video frame */
+.ar-frame{
   position:relative;
+  aspect-ratio:16/9;
+  background:#000;
   border:1px solid var(--glass-border);
-  background:rgba(0,0,0,.3);
   overflow:hidden;
-  transition:transform .3s, border-color .3s;
 }
-.ar-tile:hover{
-  transform:scale(1.04);
-  border-color:var(--lume-cyan);
-  z-index:10;
-  box-shadow:0 0 30px rgba(78,236,255,.3);
+.ar-frame video{
+  width:100%;height:100%;
+  object-fit:cover;
+  display:block;
 }
-.ar-tile img{
-  width:100%;height:auto;display:block;
+/* Glass overlays ON the video - simulating looking through glasses */
+.ar-frame .corner{
+  position:absolute;z-index:4;pointer-events:none;
+  width:28px;height:28px;
+  border:1.5px solid var(--lume-cyan);
+  filter:drop-shadow(0 0 6px rgba(78,236,255,.7));
 }
-.ar-tile .stamp{
-  position:absolute;top:6px;left:6px;
-  font-family:'JetBrains Mono',monospace;
-  font-size:8px;
+.ar-frame .corner.tl{top:14px;left:14px;border-right:none;border-bottom:none}
+.ar-frame .corner.tr{top:14px;right:14px;border-left:none;border-bottom:none}
+.ar-frame .corner.bl{bottom:14px;left:14px;border-right:none;border-top:none}
+.ar-frame .corner.br{bottom:14px;right:14px;border-left:none;border-top:none}
+
+/* Center crosshair */
+.ar-frame .crosshair{
+  position:absolute;inset:0;z-index:3;pointer-events:none;
+  display:flex;align-items:center;justify-content:center;
+}
+.ar-frame .crosshair svg{
+  width:52px;height:52px;
   color:var(--lume-cyan);
-  letter-spacing:.2em;
-  padding:2px 6px;
-  background:rgba(3,8,16,.8);
-  border:1px solid rgba(78,236,255,.3);
+  opacity:.55;
+  filter:drop-shadow(0 0 6px rgba(78,236,255,.5));
+  animation:crosshair-pulse 3s ease-in-out infinite;
 }
-.ar-tile .dot{
-  position:absolute;top:6px;right:6px;
-  width:6px;height:6px;border-radius:50%;
-  background:var(--lume-teal);
-  box-shadow:0 0 8px var(--lume-teal);
+@keyframes crosshair-pulse{
+  0%,100%{opacity:.35;transform:scale(1)}
+  50%{opacity:.7;transform:scale(1.08)}
 }
 
-/* rotation variation for slight pinboard feel */
-.ar-tile:nth-child(1){transform:rotate(-1deg)}
-.ar-tile:nth-child(3){transform:rotate(.8deg)}
-.ar-tile:nth-child(4){transform:rotate(-.5deg)}
-.ar-tile:nth-child(6){transform:rotate(1.2deg)}
-.ar-tile:hover{transform:rotate(0) scale(1.04)}
+/* Side HUD readouts on the video */
+.ar-frame .hud-side{
+  position:absolute;z-index:3;pointer-events:none;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--lume-cyan);
+  text-shadow:0 0 6px rgba(78,236,255,.6);
+}
+.ar-frame .hud-side.left{top:50%;left:18px;transform:translateY(-50%);line-height:2}
+.ar-frame .hud-side.right{top:50%;right:18px;transform:translateY(-50%);line-height:2;text-align:right}
+
+.ar-frame .hud-side .row{display:flex;align-items:center;gap:6px;margin:8px 0}
+.ar-frame .hud-side .row::before{content:"◇";color:var(--lume-teal)}
+.ar-frame .hud-side .val{color:var(--ink);margin-left:4px}
+
+/* Play overlay */
+.ar-frame .play-btn{
+  position:absolute;inset:0;z-index:5;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(3,8,16,.3);
+  backdrop-filter:blur(1px);
+  cursor:none;
+  transition:opacity .3s;
+}
+.ar-frame.playing .play-btn{opacity:0;pointer-events:none}
+.ar-frame .play-btn .inner{
+  width:86px;height:86px;
+  border:1.5px solid var(--lume-cyan);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(78,236,255,.08);
+  backdrop-filter:blur(10px);
+  box-shadow:0 0 40px rgba(78,236,255,.3);
+  transition:transform .3s, background .3s;
+}
+.ar-frame .play-btn:hover .inner{
+  transform:scale(1.1);
+  background:rgba(78,236,255,.18);
+}
+.ar-frame .play-btn svg{
+  width:28px;height:28px;
+  color:var(--lume-cyan);
+  margin-left:4px;
+}
+.ar-frame .play-btn .label{
+  position:absolute;bottom:30%;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  color:var(--lume-cyan);
+  opacity:.9;
+}
+
+/* Task strip below video */
+.ar-tasks{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:0;
+  margin-top:18px;
+  border:1px solid var(--ink-ghost);
+}
+.ar-task{
+  padding:16px 20px;
+  border-right:1px solid var(--ink-ghost);
+  font-family:'JetBrains Mono',monospace;
+  display:flex;align-items:center;gap:14px;
+}
+.ar-task:last-child{border-right:none}
+.ar-task .num{
+  font-size:22px;
+  color:var(--lume-cyan);
+  font-weight:500;
+  line-height:1;
+}
+.ar-task .info{display:flex;flex-direction:column;gap:3px}
+.ar-task .label{
+  font-size:9px;letter-spacing:.25em;
+  color:var(--ink-faint);text-transform:uppercase;
+}
+.ar-task .val{
+  font-size:11px;letter-spacing:.15em;
+  color:var(--ink);text-transform:uppercase;
+}
+.ar-task .status{
+  margin-left:auto;
+  font-size:9px;letter-spacing:.25em;
+  color:var(--lume-teal);
+}
 
 /* ═══ CREATURES SHOWCASE ═══ */
 .creatures-showcase{
@@ -1028,7 +1124,6 @@ body{
   .pullquote{padding:0 30px}
   .exercises{grid-template-columns:1fr 1fr}
   .exercise:nth-child(1),.exercise:nth-child(2),.exercise:nth-child(3){grid-column:span 1;margin-top:0}
-  .ar-grid{grid-template-columns:repeat(3,1fr)}
   .creatures-showcase{grid-template-columns:1fr 1fr;padding:0 30px}
   .creature-slot.big,.creature-slot.med,.creature-slot.sm{grid-column:span 1}
   .role-matrix{grid-template-columns:1fr 1fr}
@@ -1038,6 +1133,9 @@ body{
   .phones-mobile{display:grid !important}
   .hero{padding:120px 30px 60px}
   .hud-top, .hud-bottom{padding:10px 30px;font-size:9px}
+  .ar-capture{margin:60px 20px 80px;padding:18px}
+  .ar-frame .hud-side{font-size:9px}
+  .ar-frame .corner{width:20px;height:20px}
 }
 @media(max-width:640px){
   body{cursor:auto}
@@ -1047,13 +1145,11 @@ body{
   .section-num{padding-top:0;border-top:none}
   .two-col{grid-template-columns:1fr;gap:40px}
   .exercises{grid-template-columns:1fr}
-  .ar-grid{grid-template-columns:1fr 1fr}
   .creatures-showcase{grid-template-columns:1fr;padding:0 20px}
   .role-matrix{grid-template-columns:1fr}
   .role-cell{border-right:none;border-bottom:1px solid var(--ink-ghost)}
   .role-cell:last-child{border-bottom:none}
   .role-section{padding:40px 24px;margin:80px 20px}
-  .ar-board{margin:80px 20px;padding:60px 20px}
   .video-section, .cta-section{margin-left:20px;margin-right:20px;padding:40px 20px}
   .cta-section{padding:60px 20px}
   .hero-readout{grid-template-columns:repeat(2, 1fr);gap:24px}
@@ -1062,6 +1158,15 @@ body{
   .hud-top .center{display:none}
   .back-link{top:auto;bottom:30px;left:20px}
   .footer{flex-direction:column;align-items:flex-start;font-size:9px}
+  .ar-capture .strip{flex-direction:column;gap:6px;align-items:flex-start;font-size:9px}
+  .ar-capture .strip .left{gap:12px;flex-wrap:wrap}
+  .ar-frame .hud-side{display:none}
+  .ar-frame .crosshair svg{width:40px;height:40px}
+  .ar-tasks{grid-template-columns:1fr}
+  .ar-task{border-right:none;border-bottom:1px solid var(--ink-ghost)}
+  .ar-task:last-child{border-bottom:none}
+  .ar-frame .play-btn .label{display:none}
+  .ar-frame .play-btn .inner{width:64px;height:64px}
 }
 .phones-mobile{display:none;grid-template-columns:1fr 1fr;gap:16px;padding:0 30px;margin:60px 0}
 .phones-mobile img{width:100%;height:auto;border-radius:10px;border:1px solid var(--glass-border)}
@@ -1298,43 +1403,99 @@ body{
   </div>
 </section>
 
-<!-- ═══ 03 — AR CAPTURE SEQUENCE ═══ -->
+<!-- ═══ 03 — AR CAPTURE (live video) ═══ -->
 <section class="section" style="padding-top:40px">
   <div class="section-head reveal">
     <div class="section-num">03 / CAPTURE</div>
     <h2 class="section-title">Through the <em>glasses</em>.</h2>
   </div>
   <p class="lead reveal">
-    The AR session viewed from the glasses themselves — creatures appearing on real surfaces,
-    the camera feed layered with the underwater scene beneath.
+    Live capture from the prototype — the AR grounding session running in a real office space.
+    <em>See</em> the seashells on the table. <em>Notice</em> the fish across the room. <em>Breathe</em>
+    underwater until the waters settle.
   </p>
 </section>
 
-<div class="ar-board reveal">
-  <div class="ar-grid">
-    <div class="ar-tile">
-      <span class="stamp">01</span><span class="dot"></span>
-      <img src="assets-anchor/screen-ar-1.png" alt="AR walkthrough frame 1">
+<div class="ar-capture reveal">
+  <div class="strip">
+    <div class="left">
+      <span class="rec">REC</span>
+      <span>◇ ANCHOR_SESSION_0309</span>
+      <span class="meta-chip">DEPTH: 0–6m</span>
     </div>
-    <div class="ar-tile">
-      <span class="stamp">02</span><span class="dot"></span>
-      <img src="assets-anchor/screen-ar-2.png" alt="AR walkthrough frame 2">
+    <div>00:40 · 30fps · TRACKING_LOCKED</div>
+  </div>
+
+  <div class="ar-frame" id="arFrame">
+    <!-- Corner brackets (glasses frame) -->
+    <span class="corner tl"></span>
+    <span class="corner tr"></span>
+    <span class="corner bl"></span>
+    <span class="corner br"></span>
+
+    <!-- Side HUD readouts -->
+    <div class="hud-side left">
+      <div class="row">HRV<span class="val">68</span></div>
+      <div class="row">BR<span class="val">14</span></div>
+      <div class="row">EYE<span class="val">OK</span></div>
     </div>
-    <div class="ar-tile">
-      <span class="stamp">03</span><span class="dot"></span>
-      <img src="assets-anchor/screen-ar-3.png" alt="AR walkthrough frame 3">
+    <div class="hud-side right">
+      <div class="row">TRK<span class="val">ON</span></div>
+      <div class="row">FPS<span class="val">30</span></div>
+      <div class="row">AR<span class="val">LIVE</span></div>
     </div>
-    <div class="ar-tile">
-      <span class="stamp">04</span><span class="dot"></span>
-      <img src="assets-anchor/screen-ar-4.png" alt="AR walkthrough frame 4">
+
+    <!-- Center crosshair -->
+    <div class="crosshair">
+      <svg viewBox="0 0 52 52" fill="none" stroke="currentColor" stroke-width="1">
+        <circle cx="26" cy="26" r="18" opacity=".4"/>
+        <circle cx="26" cy="26" r="3" fill="currentColor"/>
+        <line x1="26" y1="2" x2="26" y2="14"/>
+        <line x1="26" y1="38" x2="26" y2="50"/>
+        <line x1="2" y1="26" x2="14" y2="26"/>
+        <line x1="38" y1="26" x2="50" y2="26"/>
+      </svg>
     </div>
-    <div class="ar-tile">
-      <span class="stamp">05</span><span class="dot"></span>
-      <img src="assets-anchor/screen-ar-5.png" alt="AR walkthrough frame 5">
+
+    <!-- Play overlay -->
+    <div class="play-btn" id="playBtn">
+      <div class="inner">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4 L20 12 L6 20 Z"/></svg>
+      </div>
+      <div class="label">◇ BEGIN_SESSION</div>
     </div>
-    <div class="ar-tile">
-      <span class="stamp">06</span><span class="dot"></span>
-      <img src="assets-anchor/screen-ar-6.png" alt="AR walkthrough frame 6">
+
+    <video id="arVideo" preload="metadata" playsinline loop muted
+           poster="assets-anchor/anchor-ar-poster.jpg">
+      <source src="assets-anchor/anchor-ar.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <!-- Task strip -->
+  <div class="ar-tasks">
+    <div class="ar-task">
+      <span class="num">01</span>
+      <div class="info">
+        <span class="label">◇ SEE</span>
+        <span class="val">Collect 3 seashells</span>
+      </div>
+      <span class="status">3/3 ✓</span>
+    </div>
+    <div class="ar-task">
+      <span class="num">02</span>
+      <div class="info">
+        <span class="label">◇ NOTICE</span>
+        <span class="val">Snap 2 fish</span>
+      </div>
+      <span class="status">2/2 ✓</span>
+    </div>
+    <div class="ar-task">
+      <span class="num">03</span>
+      <div class="info">
+        <span class="label">◇ BREATHE</span>
+        <span class="val">1 guided cycle</span>
+      </div>
+      <span class="status">1/1 ✓</span>
     </div>
   </div>
 </div>
@@ -1568,6 +1729,23 @@ body{
       focusEl.textContent = focusStates[Math.floor(Math.random() * focusStates.length)];
     }
   }, 2200);
+
+  /* AR video — click play */
+  (() => {
+    const frame = document.getElementById('arFrame');
+    const video = document.getElementById('arVideo');
+    const btn = document.getElementById('playBtn');
+    if (!frame || !video || !btn) return;
+    btn.addEventListener('click', () => {
+      video.play();
+      frame.classList.add('playing');
+    });
+    // Click on video (after start) to pause/resume
+    video.addEventListener('click', () => {
+      if (video.paused) { video.play(); frame.classList.add('playing'); }
+      else { video.pause(); frame.classList.remove('playing'); }
+    });
+  })();
 
   /* Reveal on scroll */
   const io = new IntersectionObserver((entries) => {
