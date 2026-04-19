@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 140" fill="none">
+  <defs>
+    <radialGradient id="bulb" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#fff8dc"/>
+      <stop offset="30%" stop-color="#ffe39c"/>
+      <stop offset="70%" stop-color="#f1c868"/>
+      <stop offset="100%" stop-color="#d99f3e"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffe39c" stop-opacity=".6"/>
+      <stop offset="60%" stop-color="#ffcf6b" stop-opacity=".2"/>
+      <stop offset="100%" stop-color="#f1c868" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Outer atmospheric glow -->
+  <circle cx="50" cy="70" r="50" fill="url(#glow)">
+    <animate attributeName="opacity" values=".85;1;.85" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Hanging rope -->
+  <line x1="50" y1="0" x2="50" y2="18" stroke="#3d2817" stroke-width="1.8" stroke-linecap="round"/>
+
+  <!-- Top cap ring -->
+  <path d="M 38 18 Q 50 14 62 18 L 62 22 Q 50 19 38 22 Z" fill="#8b5d3a" stroke="#3d2817" stroke-width="1.5"/>
+
+  <!-- Lantern body - rounded oval bulb shape -->
+  <ellipse cx="50" cy="70" rx="24" ry="32" fill="url(#bulb)" stroke="#8b5d3a" stroke-width="1.5">
+    <animate attributeName="opacity" values="1;.9;1" dur="2s" repeatCount="indefinite"/>
+  </ellipse>
+
+  <!-- Inner bright core -->
+  <ellipse cx="46" cy="64" rx="8" ry="12" fill="#fffbec" opacity=".75">
+    <animate attributeName="opacity" values=".75;.95;.75" dur="1.8s" repeatCount="indefinite"/>
+  </ellipse>
+
+  <!-- Metal frame bars (horizontal) -->
+  <path d="M 27 62 Q 50 58 73 62" stroke="#6b4a33" stroke-width="1.2" fill="none" opacity=".6"/>
+  <path d="M 26 80 Q 50 84 74 80" stroke="#6b4a33" stroke-width="1.2" fill="none" opacity=".6"/>
+
+  <!-- Metal frame bars (vertical - 2 side curves) -->
+  <path d="M 30 42 Q 26 70 32 98" stroke="#6b4a33" stroke-width="1.2" fill="none" opacity=".5"/>
+  <path d="M 70 42 Q 74 70 68 98" stroke="#6b4a33" stroke-width="1.2" fill="none" opacity=".5"/>
+
+  <!-- Top cap of bulb -->
+  <path d="M 35 42 Q 50 38 65 42 L 62 46 Q 50 43 38 46 Z" fill="#8b5d3a" stroke="#3d2817" stroke-width="1.2"/>
+
+  <!-- Bottom cap/tassel -->
+  <path d="M 35 100 L 65 100 L 60 108 L 40 108 Z" fill="#8b5d3a" stroke="#3d2817" stroke-width="1.5"/>
+  <path d="M 44 108 L 44 118 M 50 108 L 50 120 M 56 108 L 56 118" stroke="#e3b14e" stroke-width="1.2" stroke-linecap="round" opacity=".85"/>
+  <circle cx="44" cy="120" r="1.5" fill="#e3b14e"/>
+  <circle cx="50" cy="122" r="1.8" fill="#e3b14e"/>
+  <circle cx="56" cy="120" r="1.5" fill="#e3b14e"/>
+</svg>
